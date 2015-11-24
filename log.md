@@ -1,14 +1,12 @@
 
 ----
-
-24th Nov 2015
+23rd Nov, 12pm, Room 219A
 
 Meeting -
 Pete
 Karlson
 Will
 Mo
-Room 219A, 23rd Nov, 12pm
 Agenda - 
 Team Name?
 Victorious Secret
