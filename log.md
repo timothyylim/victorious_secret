@@ -1,6 +1,6 @@
 
 ----
-23rd Nov, 12pm, Room 219A
+24th Nov, 12pm, Room 219A
 
 Meeting -
 Pete
