@@ -1,28 +1,28 @@
-Meeting 1
+# Meeting 1
 Attended: Pete, Karlson, Mo, Will
 Location: Room 219A
 Time: 23rd Nov, 12pm
 
-Agenda - 
-Team Name?
+# Agenda - 
+1. Team Name?
 Victorious Secret
 Primitive Action
 D'hoTA
 What is the Premier League, for 500 Alex.
 
-What to learn? areas for preliminary reading, lectures on battlecode, logics, path-finding algorithms, maybe some MLs?
+2. What to learn? areas for preliminary reading, lectures on battlecode, logics, path-finding algorithms, maybe some MLs?
 
-The next 2 weeks, the 10 lectures on the battlecode websites
-Path-finding algorithms - A* search, Dijkstra
-AI planning - SATPlan, GRAPLAN, POP
-Q learning - Reinforcement learning
-Review winning bots
+⋅⋅⋅The next 2 weeks, the 10 lectures on the battlecode websites
+⋅⋅⋅ Path-finding algorithms - A* search, Dijkstra
+⋅⋅⋅ AI planning - SATPlan, GRAPLAN, POP
+⋅⋅⋅ Q learning - Reinforcement learning
+⋅⋅⋅Review winning bots
 
-9th Dec - Get preliminary readings done and make a basic bot
+⋅⋅⋅ 9th Dec - Get preliminary readings done and make a basic bot
 
-Split the learning after 2 weeks into logic , pathfinding or planning, ML, so each member has his edge
+⋅⋅⋅ Split the learning after 2 weeks into logic , pathfinding or planning, ML, so each member has his edge
 
-Timeline, when we will finish preparations and start cracking on it? And aim to finish by when?
+3. Timeline, when we will finish preparations and start cracking on it? And aim to finish by when?
 
 Dec - Battlecode registration opens
 
@@ -44,11 +44,9 @@ Qualifying Tournament - One week after the Seeding Tournament, this tournament d
 Newbie Tournament - As part of the Final Tournament, the top newbie teams also compete for a prize.
 Final Tournament - On January 31st, the top teams compete for glory and fame.
 
-Supervisor?
-Dump Claudia; it’s not her, it’s us.  - wtf? don't rmb me writing this (Karlson)
-
+4. Supervisor?
 Go for Stephen Mugglement  - Send the proposal. arrange a meeting on Thursday afternoon.
 
-Get Tim to make a repo 
+5. Get Tim to make a repo 
 
 Next meeting - Thursday with Stephen Muggleton, plus discuss on milestones
