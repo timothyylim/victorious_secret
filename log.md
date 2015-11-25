@@ -22,7 +22,7 @@ Time: 23rd Nov, 12pm
 
    The next 2 weeks, the 10 lectures on the battlecode websites
    
-   Path-finding algorithms - A* search, Dijkstra
+   Path-finding algorithms - A* search, Dijkstra, "bug nav"
    
    AI planning - SATPlan, GRAPLAN, POP
    
