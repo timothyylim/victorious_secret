@@ -1,41 +1,54 @@
+Meeting 1
+Attended: Pete, Karlson, Mo, Will
+Location: Room 219A
+Time: 23rd Nov, 12pm
 
-----
-24th Nov, 12pm, Room 219A
-
-Meeting -
-Pete
-Karlson
-Will
-Mo
 Agenda - 
 Team Name?
 Victorious Secret
 Primitive Action
+D'hoTA
+What is the Premier League, for 500 Alex.
 
 What to learn? areas for preliminary reading, lectures on battlecode, logics, path-finding algorithms, maybe some MLs?
 
 The next 2 weeks, the 10 lectures on the battlecode websites
-Path-finding algorithms - general 
-AI planning - SATPlan, GRAPLAN
+Path-finding algorithms - A* search, Dijkstra
+AI planning - SATPlan, GRAPLAN, POP
 Q learning - Reinforcement learning
 Review winning bots
 
-9th Dec - get the preliminary readings done and make a basic bot
+9th Dec - Get preliminary readings done and make a basic bot
 
-Split the learning after 2 weeks into logic and ML
+Split the learning after 2 weeks into logic , pathfinding or planning, ML, so each member has his edge
 
 Timeline, when we will finish preparations and start cracking on it? And aim to finish by when?
-9th Dec - get preliminary reading done, get the basic bots done.
+
+Dec - Battlecode registration opens
+
+9th Dec - Get preliminary reading done and the basic bots done.
  
-Beginning Jan - release
+Around 5th Jan (Last year figure) - Competition begins, Spec release
 
-End of Jan -
+12th Jan (Last year figure)  - Sprint tournament deadline
 
-What to do with Claudia, now we have Duncan?
-Dump Claudia; it’s not her, it’s us. 
+20th Jan (Last year figure)  - Seeding tournament deadline
 
-Go for Stephen Mugglement  - send the proposal. Friday’s morning
+27th Jan (Last year figure) - Final Submission deadline
+
+6th Feb (Last year figure) - Open tournament deadline
+
+Sprint Tournament - One week after spec release, you're given a chance to win small prizes in this tournament. The goal is to get an idea of the meta-game, and a chance to test your bot prototypes.
+Seeding Tournament - One week after the Sprint Tournament, this tournament determines your positioning in the Qualifying Tournament.
+Qualifying Tournament - One week after the Seeding Tournament, this tournament determines the contestants going into the Final Tournament, and showcases the final strategies of all the competitors. Final submissions must be in by this Tournament. Historically, the top 16 teams have advanced to the Final Tournament.
+Newbie Tournament - As part of the Final Tournament, the top newbie teams also compete for a prize.
+Final Tournament - On January 31st, the top teams compete for glory and fame.
+
+Supervisor?
+Dump Claudia; it’s not her, it’s us.  - wtf? don't rmb me writing this (Karlson)
+
+Go for Stephen Mugglement  - Send the proposal. arrange a meeting on Thursday afternoon.
 
 Get Tim to make a repo 
 
-Next meeting - will schedule sometimes this week.
+Next meeting - Thursday with Stephen Muggleton, plus discuss on milestones
