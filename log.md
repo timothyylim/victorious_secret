@@ -11,7 +11,6 @@ D'hoTA
 What is the Premier League, for 500 Alex.
 
 2. What to learn? areas for preliminary reading, lectures on battlecode, logics, path-finding algorithms, maybe some MLs?
-
 ⋅⋅⋅The next 2 weeks, the 10 lectures on the battlecode websites
 ⋅⋅⋅ Path-finding algorithms - A* search, Dijkstra
 ⋅⋅⋅ AI planning - SATPlan, GRAPLAN, POP
