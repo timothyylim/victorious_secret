@@ -1,5 +1,7 @@
 # victorious-secret
 
+AI for MIT Battlecode 2016
+
 Battlecode: https://www.battlecode.org/contestants/
 
 Intro to Battlecode: http://cory.li/battlecode-intro/
