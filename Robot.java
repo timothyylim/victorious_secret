@@ -18,6 +18,7 @@ public abstract class Robot {
 	public Random rand;
 	protected static Nav nav;
 	protected static Fight fight;
+	public MapLocation targetLoc;
 	
 	public abstract void move() throws GameActionException;
 	

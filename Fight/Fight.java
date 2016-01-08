@@ -10,16 +10,19 @@ public class Fight {
 	
 	private static RobotController rc;
 	private static Robot robot;
+	private Team opponent;
+	private int lastTargeted = 0;
 	
 	public Fight(RobotController _rc, Robot _robot) {
 		rc = _rc;
 		robot = _robot;
+		opponent = rc.getTeam().opponent();
 	}
 	
 	public Boolean fight()
 	{
 		RobotInfo[] zEnemies = rc.senseNearbyRobots(rc.getType().attackRadiusSquared, Team.ZOMBIE);
-		RobotInfo[] oEnemies = rc.senseNearbyRobots(rc.getType().attackRadiusSquared, rc.getTeam().opponent());
+		RobotInfo[] oEnemies = rc.senseNearbyRobots(rc.getType().attackRadiusSquared, opponent);
 		RobotInfo[] aEnemies = joinRobotInfo(zEnemies, oEnemies);
 		
 		if(zEnemies.length > 0)
@@ -28,7 +31,28 @@ public class Fight {
 			{
 				try 
 				{
-					rc.attackLocation(aEnemies[0].location);
+					int target = 0;
+					//Look for the last robot we targeted
+					Boolean found = false;
+					for(RobotInfo i : aEnemies)
+					{
+						if(i.ID == lastTargeted)
+						{
+							found = true;
+							break;
+						}
+						target ++;
+					}
+					//If we can't find one then just choose one at random
+					if(!found)
+					 {
+						target = robot.rand.nextInt(aEnemies.length);
+						lastTargeted = aEnemies[target].ID;
+					 }
+					
+					//Attack the targets last known location
+					robot.targetLoc = aEnemies[target].location;
+					rc.attackLocation(robot.targetLoc);
 				} 
 				catch (GameActionException e) {
 					// TODO Auto-generated catch block

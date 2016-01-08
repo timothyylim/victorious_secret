@@ -4,8 +4,7 @@
 package victorious_secret.Units;
 
 import java.util.Random;
-import battlecode.common.GameActionException;
-import battlecode.common.RobotController;
+import battlecode.common.*;
 import victorious_secret.Robot;
 import victorious_secret.Fight.Fight;
 import victorious_secret.Nav.Nav;
@@ -40,13 +39,35 @@ public class Archon extends Robot {
 	@Override
 	public void move() throws GameActionException 
 	{
-		nav.move();
+		if(!spawn(RobotType.SOLDIER))
+		{
+			nav.move();
+		}
 	}
 
 	@Override
 	protected void actions() throws GameActionException {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private Boolean spawn(RobotType roro) throws GameActionException 
+	{
+		if(rc.isCoreReady() && rc.hasBuildRequirements(roro))
+		{
+			int i = 0;
+			do
+			{
+				Direction buildDir = Direction.values()[rand.nextInt(8)];
+				if(rc.canBuild(buildDir, roro))
+				{
+					rc.build(buildDir, roro);
+					return true;
+				}
+				i++;
+			}while(i > 5);
+		}
+		return false;
 	}
 
 }
