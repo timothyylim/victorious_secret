@@ -1,10 +1,14 @@
 /**
  * 
  */
-package victorious_secret;
+package victorious_secret.Units;
 
+import java.util.Random;
 import battlecode.common.GameActionException;
+import battlecode.common.RobotController;
 import victorious_secret.Robot;
+import victorious_secret.Fight.Fight;
+import victorious_secret.Nav.Nav;
 
 /**
  * @author APOC
@@ -42,14 +46,21 @@ public class Turret extends Robot {
 	/**
 	 * 
 	 */
-	public Turret() {
-		// TODO Auto-generated constructor stub
+	public Turret(RobotController _rc) 
+	{
+		rc = _rc;
+		rand = new Random(rc.getID());
+		nav = new Nav(rc, this);
+		fight = new Fight(rc, this);
 	}
 
 	@Override
-	public void move() {
-		// TODO Auto-generated method stub
-		
+	public void move() throws GameActionException 
+	{
+		if(!fight.fight())
+		{
+			nav.move();
+		}
 	}
 
 	@Override

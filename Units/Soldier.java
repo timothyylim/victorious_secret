@@ -1,14 +1,18 @@
 /**
  * 
  */
-package victorious_secret;
+package victorious_secret.Units;
 
+import java.util.Random;
 import battlecode.common.GameActionException;
+import battlecode.common.RobotController;
 import victorious_secret.Robot;
+import victorious_secret.Fight.Fight;
+import victorious_secret.Nav.Nav;
 
 /**
  * @author APOC
- * This class handles Scouts. Note, Scouts cannot attack
+ * 
  * http://s3.amazonaws.com/battlecode-releases-2016/releases/javadoc/battlecode/common/RobotType.html#SOLDIER
 An all-around ranged unit.
 canAttack(): true
@@ -31,14 +35,21 @@ public class Soldier extends Robot {
 	/**
 	 * 
 	 */
-	public Soldier() {
-		// TODO Auto-generated constructor stub
+	public Soldier(RobotController _rc) 
+	{
+		rc = _rc;
+		rand = new Random(rc.getID());
+		nav = new Nav(rc, this);
+		fight = new Fight(rc, this);
 	}
 
 	@Override
-	public void move() {
-		// TODO Auto-generated method stub
-		
+	public void move() throws GameActionException 
+	{
+		if(!fight.fight())
+		{
+			nav.move();
+		}
 	}
 
 	@Override
