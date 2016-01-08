@@ -1,6 +1,5 @@
 package victorious_secret;
 
-import java.util.Random;
 import victorious_secret.Units.*;
 import battlecode.common.*;
 
@@ -24,7 +23,9 @@ public class RobotPlayer
 			case SOLDIER:robot = new Soldier(rc); break;
 			case TURRET: robot = new Turret(rc); break;
 			case VIPER: robot = new Viper(rc); break;
-			default: throw new GameActionException(GameActionExceptionType.CANT_DO_THAT, "Whoa, I dont know what this unit is!" + " " + rc.getType().toString()); break;
+			default: 
+				throw new GameActionException(GameActionExceptionType.CANT_DO_THAT, 
+						"Whoa, I dont know what this unit is!" + " " + rc.getType().toString()); 
 			}
 
 			while (true) 
@@ -39,5 +40,6 @@ public class RobotPlayer
 			e.printStackTrace();
 		}
 	}
+}
 	
 	

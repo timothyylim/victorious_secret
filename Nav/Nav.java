@@ -6,8 +6,6 @@ package victorious_secret.Nav;
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
-import battlecode.common.RobotInfo;
-import battlecode.common.Team;
 import victorious_secret.Robot;
 
 /**
@@ -35,7 +33,7 @@ public class Nav {
 			int i = 0;
 			do
 			{
-				Direction movingDirection = Direction.values()[robot.rand(8)];
+				Direction movingDirection = Direction.values()[robot.rand.nextInt(8)];
 				if(rc.canMove(movingDirection))
 				{
 					rc.move(movingDirection);

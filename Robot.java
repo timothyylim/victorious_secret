@@ -15,12 +15,12 @@ import battlecode.common.*;
 public abstract class Robot {
 	
 	protected static RobotController rc;
-	public static Robot robot;
-	protected static Random rand;
+	public Random rand;
 	protected static Nav nav;
 	protected static Fight fight;
 	
 	public abstract void move() throws GameActionException;
 	
 	protected abstract void actions() throws GameActionException;
+
 }
