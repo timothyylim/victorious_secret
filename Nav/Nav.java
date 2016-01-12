@@ -35,17 +35,16 @@ public class Nav {
 			robot.targetMoveLoc = averageEnemyLoc();
 			robot.targetMoveLoc = new MapLocation((2 * rc.getLocation().x) - robot.targetMoveLoc.x, (2 * rc.getLocation().y) - robot.targetMoveLoc.y);
 		}
-		move();
+		randMove();
 	}
 	
-	private MapLocation averageEnemyLoc()
+	public MapLocation averageEnemyLoc()
 	{
 		if(robot.fight.seenEnemies.length == 0) //robot.fight.seenEnemies == null || 
 		{
 			return rc.getLocation();
 		}
-		
-		
+	
 		int x = 0;
 		int y = 0;
 
@@ -63,15 +62,26 @@ public class Nav {
 	
 	public void guard(MapLocation archonLoc) throws GameActionException
 	{
+		/*UPDATED GUARD STRATEGY - CLUMP TOGETHER */
+		/*Assume archonLoc is the location of the nearest guard*/
+		int x = archonLoc.x;
+		int y = archonLoc.y;
+		
+		/* ORIGINAL GUARD FUNCTION
 		MapLocation avgEnemy = averageEnemyLoc();
-		int x = (rc.getLocation().x) - ((avgEnemy.x - (archonLoc.x+2)) / 2);
-		int y = (rc.getLocation().y) - ((avgEnemy.y - (archonLoc.y+2)) / 2);
+		int x = (rc.getLocation().x) - (int)(((avgEnemy.x - archonLoc.x) / 2)*.5);
+		int y = (rc.getLocation().y) - (int)(((avgEnemy.y - archonLoc.y) / 2)*.5);
+		*/
 		robot.targetMoveLoc = new MapLocation(x, y);
 		
-		move();	
+		randMove();	
+	}
+	public void move() throws GameActionException
+	{
+		flee();
 	}
 	
-	public void move() throws GameActionException
+	public void randMove() throws GameActionException
 	{
 		if(rc.isCoreReady()) 
 		{
@@ -111,6 +121,13 @@ public class Nav {
 					return;
 				}
 			}
+			else if(robot.messageIn != null)
+			{					
+				if(rc.canMove(robot.messageIn)) 
+				{
+					rc.move(robot.messageIn);
+				}
+			}
 			else
 			{
 				int i = 0;
@@ -129,4 +146,3 @@ public class Nav {
 		}
 	}	
 }
-

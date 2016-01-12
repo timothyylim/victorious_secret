@@ -41,6 +41,7 @@ public class Soldier extends Robot {
 		rand = new Random(rc.getID());
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
+		
 	}
 
 	@Override
@@ -48,7 +49,16 @@ public class Soldier extends Robot {
 	{
 		if(!fight.fight())
 		{
-			nav.move();
+			broadcast();
+			listen();
+
+			if(rc.getHealth() < 20){
+				
+				nav.flee();	
+			}else{
+				nav.move();		
+			}
+			
 		}
 	}
 

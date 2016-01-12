@@ -56,7 +56,7 @@ public class Guard extends Robot {
 		RobotInfo[] team = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
 		for(RobotInfo i : team)
 		{
-			if(i.type == RobotType.ARCHON)
+			if(i.type == RobotType.GUARD) //was Archon
 			{
 				archon = i;
 				return;
@@ -82,8 +82,12 @@ public class Guard extends Robot {
 			}
 			else
 			{
-				nav.move();
-			}
+				if(rc.getHealth()<20){
+					nav.flee();
+				}else{
+					nav.move();
+				}		
+			}	
 			
 		}
 	}

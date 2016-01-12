@@ -29,7 +29,7 @@ public class Archon extends Robot {
 	 * 
 	 */
 	
-	private RobotType[] buildQueue = {RobotType.GUARD, RobotType.SOLDIER};
+	private RobotType[] buildQueue = {RobotType.SOLDIER}; //RobotType.GUARD, 
 		
 	public Archon(RobotController _rc) 
 	{

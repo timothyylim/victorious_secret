@@ -21,8 +21,95 @@ public abstract class Robot {
 	public MapLocation targetShootLoc;
 	public MapLocation targetMoveLoc;
 	
+	public int listeningTo;
+	public Direction messageIn;
+	
+	
+	
 	public abstract void move() throws GameActionException;
 	
 	protected abstract void actions() throws GameActionException;
+	
+	protected void listen() throws GameActionException
+	{
+		Signal sig = rc.readSignal();;
+		
+		if(sig == null)
+		{
+			messageIn = null;
+			return;
+		}
+		
+		listeningTo = sig.getID();
+		int n = 1;
 
+		do
+		{
+			sig = rc.readSignal();
+			if(sig.getID() == listeningTo)					
+			{
+				n += 1;
+			}
+		}while(sig != null);
+		
+		switch(n)
+		{
+			case 1:
+				messageIn = Direction.NORTH;
+				break;
+			case 2:
+				messageIn = Direction.EAST;
+				break;
+			case 3:
+				messageIn = Direction.SOUTH;
+				break;
+			case 4:
+				messageIn = Direction.WEST;
+				break;
+			default:
+				messageIn = null;
+				break;
+		}
+	}
+
+	
+	protected void broadcast() throws GameActionException
+	{		
+		Direction messageOut;
+		if(fight.seenEnemies != null && fight.seenEnemies.length == 0)
+		{
+			messageOut = rc.getLocation().directionTo(nav.averageEnemyLoc());
+			
+			//start broadcast
+			switch(messageOut)
+			{
+				case NORTH:
+				case NORTH_EAST:
+					rc.broadcastSignal(rc.getType().sensorRadiusSquared);
+					break;
+					
+				case EAST:
+				case SOUTH_EAST:
+					rc.broadcastSignal(rc.getType().sensorRadiusSquared);
+					rc.broadcastSignal(rc.getType().sensorRadiusSquared);
+					break;
+					
+				case SOUTH:
+				case SOUTH_WEST:
+					rc.broadcastSignal(rc.getType().sensorRadiusSquared);
+					rc.broadcastSignal(rc.getType().sensorRadiusSquared);
+					break;
+					
+				case WEST:
+				case NORTH_WEST:
+					rc.broadcastSignal(rc.getType().sensorRadiusSquared);
+					rc.broadcastSignal(rc.getType().sensorRadiusSquared);
+					break;
+				default:
+					break;
+			}	
+		}
+		 
+		
+	}	
 }

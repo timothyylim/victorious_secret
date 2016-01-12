@@ -3,6 +3,7 @@ package victorious_secret.Fight;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
+import battlecode.common.RobotType;
 import battlecode.common.Team;
 import victorious_secret.Robot;
 
@@ -46,29 +47,38 @@ public class Fight {
 			{
 				try 
 				{
-					int target = 0;
 					//Look for the last robot we targeted
 					Boolean found = false;
+					RobotInfo target = null;
+					
 					for(RobotInfo i : seenEnemies)
 					{
-						if(i.ID == lastTargeted)
-						{
+						if(i.type == RobotType.BIGZOMBIE){
 							found = true;
+							target = i;
 							break;
 						}
-						target ++;
 					}
-					//If we can't find one then just choose one at random
 					if(!found)
-					 {
-						target = robot.rand.nextInt(seenEnemies.length);
-						lastTargeted = seenEnemies[target].ID;
-					 }
-					
+					{
+						double minHealth = 9999999;
+						for(RobotInfo i : seenEnemies)
+						{
+							if(i.health < minHealth)
+							{
+								minHealth = i.health;
+								target = i;
+							}
+						}
+					}
+						
 					//Attack the targets last known location
-					robot.targetShootLoc = seenEnemies[target].location;
+					robot.targetShootLoc = target.location;
 					//robot.targetMoveLoc = robot.targetShootLoc;
-					rc.attackLocation(robot.targetShootLoc);
+					if(rc.canAttackLocation(robot.targetShootLoc))
+					{
+						rc.attackLocation(robot.targetShootLoc);
+					}
 				} 
 				catch (GameActionException e) {
 					// TODO Auto-generated catch block
