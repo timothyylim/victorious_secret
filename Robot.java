@@ -16,9 +16,10 @@ public abstract class Robot {
 	
 	protected static RobotController rc;
 	public Random rand;
-	protected static Nav nav;
-	protected static Fight fight;
-	public MapLocation targetLoc;
+	public static Nav nav;
+	public static Fight fight;
+	public MapLocation targetShootLoc;
+	public MapLocation targetMoveLoc;
 	
 	public abstract void move() throws GameActionException;
 	

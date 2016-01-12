@@ -5,7 +5,10 @@ package victorious_secret.Units;
 
 import java.util.Random;
 import battlecode.common.GameActionException;
+import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
+import battlecode.common.RobotType;
 import victorious_secret.Robot;
 import victorious_secret.Fight.Fight;
 import victorious_secret.Nav.Nav;
@@ -36,6 +39,10 @@ public class Guard extends Robot {
 	/**
 	 * 
 	 */
+	
+	RobotInfo archon;
+	
+	
 	public Guard(RobotController _rc) 
 	{
 		rc = _rc;
@@ -44,12 +51,40 @@ public class Guard extends Robot {
 		fight = new Fight(rc, this);
 	}
 
+	private void spot_archon()
+	{
+		RobotInfo[] team = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
+		for(RobotInfo i : team)
+		{
+			if(i.type == RobotType.ARCHON)
+			{
+				archon = i;
+				return;
+			}
+		}
+	}
+
 	@Override
 	public void move() throws GameActionException 
 	{
+		if(archon == null)
+		{
+			spot_archon();
+		}
+
 		if(!fight.fight())
 		{
-			nav.move();
+			
+			if(archon != null)
+			{
+				spot_archon();
+				nav.guard(archon.location);
+			}
+			else
+			{
+				nav.move();
+			}
+			
 		}
 	}
 

@@ -28,20 +28,24 @@ public class Archon extends Robot {
 	/**
 	 * 
 	 */
+	
+	private RobotType[] buildQueue = {RobotType.GUARD, RobotType.SOLDIER};
+		
 	public Archon(RobotController _rc) 
 	{
 		rc = _rc;
 		rand = new Random(rc.getID());
 		nav = new Nav(rc, this);
-		//fight = new Fight(rc, this); Archons cannot fight
+		fight = new Fight(rc, this);
 	}
 
 	@Override
 	public void move() throws GameActionException 
-	{
-		if(!spawn(RobotType.SOLDIER))
+	{	
+		fight.spotEnemies();
+		if(!spawn(buildQueue[rand.nextInt(buildQueue.length)]))
 		{
-			nav.move();
+			nav.flee();
 		}
 	}
 

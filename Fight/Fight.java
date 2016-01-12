@@ -12,6 +12,8 @@ public class Fight {
 	private static Robot robot;
 	private Team opponent;
 	private int lastTargeted = 0;
+	public RobotInfo[] seenEnemies;
+	public RobotInfo[] attackableEnemies;
 	
 	public Fight(RobotController _rc, Robot _robot) {
 		rc = _rc;
@@ -19,13 +21,26 @@ public class Fight {
 		opponent = rc.getTeam().opponent();
 	}
 	
-	public Boolean fight()
+	public void spotEnemies()
+	{
+		RobotInfo[] zEnemies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, Team.ZOMBIE);
+		RobotInfo[] oEnemies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, opponent);
+		seenEnemies = joinRobotInfo(zEnemies, oEnemies);
+	}
+	
+	//TODO: BETTER NAME
+	public void targetkEnemies()
 	{
 		RobotInfo[] zEnemies = rc.senseNearbyRobots(rc.getType().attackRadiusSquared, Team.ZOMBIE);
 		RobotInfo[] oEnemies = rc.senseNearbyRobots(rc.getType().attackRadiusSquared, opponent);
-		RobotInfo[] aEnemies = joinRobotInfo(zEnemies, oEnemies);
-		
-		if(zEnemies.length > 0)
+		attackableEnemies = joinRobotInfo(zEnemies, oEnemies);
+	}
+	
+	public Boolean fight()
+	{
+		spotEnemies();
+		targetkEnemies();
+		if(attackableEnemies.length > 0)
 		{
 			if (rc.isWeaponReady()) 
 			{
@@ -34,7 +49,7 @@ public class Fight {
 					int target = 0;
 					//Look for the last robot we targeted
 					Boolean found = false;
-					for(RobotInfo i : aEnemies)
+					for(RobotInfo i : seenEnemies)
 					{
 						if(i.ID == lastTargeted)
 						{
@@ -46,13 +61,14 @@ public class Fight {
 					//If we can't find one then just choose one at random
 					if(!found)
 					 {
-						target = robot.rand.nextInt(aEnemies.length);
-						lastTargeted = aEnemies[target].ID;
+						target = robot.rand.nextInt(seenEnemies.length);
+						lastTargeted = seenEnemies[target].ID;
 					 }
 					
 					//Attack the targets last known location
-					robot.targetLoc = aEnemies[target].location;
-					rc.attackLocation(robot.targetLoc);
+					robot.targetShootLoc = seenEnemies[target].location;
+					//robot.targetMoveLoc = robot.targetShootLoc;
+					rc.attackLocation(robot.targetShootLoc);
 				} 
 				catch (GameActionException e) {
 					// TODO Auto-generated catch block
@@ -61,8 +77,15 @@ public class Fight {
 				return true;
 			}
 		}
+		else 
+		{
+			lastTargeted = 0;
+			robot.targetShootLoc = null;
+			//robot.targetMoveLoc = null;	
+		}
+		
 		return false;
-	}
+	} 
 	
 	private static RobotInfo[] joinRobotInfo(RobotInfo[] zEnemies, RobotInfo[] oEnemies) 
 	{
