@@ -32,7 +32,7 @@ public abstract class Robot {
 	
 	protected void listen() throws GameActionException
 	{
-		Signal sig = rc.readSignal();;
+		Signal sig = rc.readSignal();
 		
 		if(sig == null)
 		{
@@ -43,13 +43,15 @@ public abstract class Robot {
 		listeningTo = sig.getID();
 		int n = 1;
 
+        //ADDED COMMENT
 		do
 		{
-			sig = rc.readSignal();
 			if(sig.getID() == listeningTo)					
 			{
 				n += 1;
 			}
+
+			sig = rc.readSignal();
 		}while(sig != null);
 		
 		switch(n)
