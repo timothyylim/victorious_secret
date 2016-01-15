@@ -7,6 +7,9 @@ public class RobotPlayer
 {
 	static RobotController rc;
 	private static Robot robot;
+
+	public Boolean DEBUG;
+
 			
 	public static void run(RobotController _rc)
 	{
@@ -14,6 +17,9 @@ public class RobotPlayer
 		
 		try
 		{
+
+
+
 			//Set the unit to the correct class
 			switch (rc.getType())
 			{

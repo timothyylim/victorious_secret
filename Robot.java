@@ -4,6 +4,8 @@
 package victorious_secret;
 
 import java.util.Random;
+
+import battlecode.util.SquareArray;
 import victorious_secret.Nav.Nav;
 import victorious_secret.Fight.Fight;
 import battlecode.common.*;
@@ -23,6 +25,8 @@ public abstract class Robot {
 	
 	public int listeningTo;
 	public Direction messageIn;
+
+
 	
 	
 	
@@ -32,27 +36,28 @@ public abstract class Robot {
 	
 	protected void listen() throws GameActionException
 	{
-		Signal sig = rc.readSignal();
+		Signal[] sigs = rc.emptySignalQueue();
 		
-		if(sig == null)
+		if(sigs.length == 0)
 		{
 			messageIn = null;
 			return;
 		}
-		
-		listeningTo = sig.getID();
-		int n = 1;
 
-        //ADDED COMMENT
-		do
-		{
+        int n = 0;
+        for(Signal sig : sigs)
+        {
+            if(listeningTo == 0)
+            {
+                listeningTo = sig.getID();
+            }
+
 			if(sig.getID() == listeningTo)					
 			{
 				n += 1;
 			}
-
-			sig = rc.readSignal();
-		}while(sig != null);
+		}
+        listeningTo = 0;
 		
 		switch(n)
 		{
@@ -80,7 +85,7 @@ public abstract class Robot {
 		Direction messageOut;
 		if(fight.seenEnemies != null && fight.seenEnemies.length == 0)
 		{
-			messageOut = rc.getLocation().directionTo(nav.averageEnemyLoc());
+			messageOut = rc.getLocation().directionTo(nav.averageLoc(fight.seenEnemies));
 			
 			//start broadcast
 			switch(messageOut)

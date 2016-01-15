@@ -1,83 +1,114 @@
 package victorious_secret.Fight;
 
-import battlecode.common.GameActionException;
-import battlecode.common.RobotController;
-import battlecode.common.RobotInfo;
-import battlecode.common.RobotType;
-import battlecode.common.Team;
+import battlecode.common.*;
 import victorious_secret.Robot;
 
 public class Fight {
 	
 	private static RobotController rc;
 	private static Robot robot;
-	private Team opponent;
-	private int lastTargeted = 0;
+	private RobotInfo lastTargeted;
 	public RobotInfo[] seenEnemies;
 	public RobotInfo[] attackableEnemies;
 	
 	public Fight(RobotController _rc, Robot _robot) {
 		rc = _rc;
 		robot = _robot;
-		opponent = rc.getTeam().opponent();
 	}
 	
-	public void spotEnemies()
+	public RobotInfo[] spotEnemies()
 	{
-		RobotInfo[] zEnemies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, Team.ZOMBIE);
-		RobotInfo[] oEnemies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, opponent);
-		seenEnemies = joinRobotInfo(zEnemies, oEnemies);
+		return rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
 	}
 	
 	//TODO: BETTER NAME
-	public void targetkEnemies()
+	public RobotInfo[] targetEnemies()
 	{
-		RobotInfo[] zEnemies = rc.senseNearbyRobots(rc.getType().attackRadiusSquared, Team.ZOMBIE);
-		RobotInfo[] oEnemies = rc.senseNearbyRobots(rc.getType().attackRadiusSquared, opponent);
-		attackableEnemies = joinRobotInfo(zEnemies, oEnemies);
+		return rc.senseHostileRobots(rc.getLocation(), rc.getType().attackRadiusSquared);
 	}
-	
+
+	public RobotInfo findLastTargeted(RobotInfo[] listOfEnemies)
+	{
+		if(lastTargeted == null)
+		{
+			return null;
+		}
+		for(RobotInfo i : listOfEnemies)
+		{
+			if(i.ID == lastTargeted.ID)
+			{
+				return i;
+			}
+		}
+		return null;
+	}
+
+	public RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies)
+	{
+		double minHealth = 9999999;
+		RobotInfo bestTarget = null;
+
+		for(RobotInfo i : seenEnemies)
+		{
+			if(i.health < minHealth)
+			{
+				minHealth = i.health;
+				bestTarget = i;
+			}
+		}
+		return bestTarget;
+	}
+
+	public RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies, RobotType targetType)
+	{
+		double minHealth = 9999999;
+		RobotInfo bestTarget = null;
+
+		for(RobotInfo i : seenEnemies)
+		{
+			if(i.type == targetType && i.health < minHealth)
+			{
+				minHealth = i.health;
+				bestTarget = i;
+			}
+		}
+		if(bestTarget == null)
+		{
+			return null;
+		}
+		else
+		{
+			return bestTarget;
+		}
+	}
+
 	public Boolean fight()
 	{
-		spotEnemies();
-		targetkEnemies();
+		seenEnemies = spotEnemies();
+		attackableEnemies = targetEnemies();
 		if(attackableEnemies.length > 0)
 		{
 			if (rc.isWeaponReady()) 
 			{
 				try 
 				{
-					//Look for the last robot we targeted
-					Boolean found = false;
-					RobotInfo target = null;
-					
-					for(RobotInfo i : seenEnemies)
+					//Default is to always shoot at the last thing we attacked
+					lastTargeted = findLastTargeted(attackableEnemies);
+
+					//Then is to always shoot at Big Zombies if they're available
+					if(lastTargeted == null)
 					{
-						if(i.type == RobotType.BIGZOMBIE){
-							found = true;
-							target = i;
-							break;
-						}
+						lastTargeted = findLowestHealthEnemy(attackableEnemies, RobotType.BIGZOMBIE);
 					}
-					if(!found)
-					{
-						double minHealth = 9999999;
-						for(RobotInfo i : seenEnemies)
-						{
-							if(i.health < minHealth)
-							{
-								minHealth = i.health;
-								target = i;
-							}
-						}
+
+					//Otherwise just shoot at the lowest health zombie
+					if(lastTargeted == null) {
+						lastTargeted = findLowestHealthEnemy(attackableEnemies);
 					}
-						
-					//Attack the targets last known location
-					robot.targetShootLoc = target.location;
-					//robot.targetMoveLoc = robot.targetShootLoc;
-					if(rc.canAttackLocation(robot.targetShootLoc))
+
+					if(rc.canAttackLocation(lastTargeted.location))
 					{
-						rc.attackLocation(robot.targetShootLoc);
+						rc.attackLocation(lastTargeted.location);
 					}
 				} 
 				catch (GameActionException e) {
@@ -89,31 +120,9 @@ public class Fight {
 		}
 		else 
 		{
-			lastTargeted = 0;
-			robot.targetShootLoc = null;
-			//robot.targetMoveLoc = null;	
+			lastTargeted = null;
 		}
 		
 		return false;
-	} 
-	
-	private static RobotInfo[] joinRobotInfo(RobotInfo[] zEnemies, RobotInfo[] oEnemies) 
-	{
-		RobotInfo[] out = new RobotInfo[zEnemies.length + oEnemies.length];
-		int i = 0;
-		
-		for(RobotInfo j:zEnemies)
-		{
-			out[i] = j;
-			i++;
-		}
-		
-		for(RobotInfo j:oEnemies)
-		{
-			out[i] = j;
-			i++;
-		}
-		
-		return out;
-	}	
+	}
 }

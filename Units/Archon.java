@@ -42,7 +42,7 @@ public class Archon extends Robot {
 	@Override
 	public void move() throws GameActionException 
 	{	
-		fight.spotEnemies();
+		//fight.spotEnemies();
 		if(!spawn(buildQueue[rand.nextInt(buildQueue.length)]))
 		{
 			nav.flee();
@@ -53,6 +53,12 @@ public class Archon extends Robot {
 	protected void actions() throws GameActionException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	private MapLocation bestArchonLocation()
+	{
+		MapLocation[] aLocs = rc.getInitialArchonLocations(rc.getTeam());
+		return aLocs[0];
 	}
 	
 	private Boolean spawn(RobotType roro) throws GameActionException 
