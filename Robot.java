@@ -8,6 +8,8 @@ import java.util.Random;
 import victorious_secret.Behaviour.Nav;
 import victorious_secret.Behaviour.Fight;
 import battlecode.common.*;
+import victorious_secret.Strategy.Scout;
+
 /**
  * @author APOC
  * This serves as the root class from which all other robots derive
@@ -28,6 +30,7 @@ public abstract class Robot {
 	//TODO: put enum into own class
 	public enum Strategy {ATTACK, DEFEND, FLEE, SCOUT};
 	public Strategy strat;
+
 	
 	public abstract void move() throws GameActionException;
 	

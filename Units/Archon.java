@@ -5,6 +5,7 @@ package victorious_secret.Units;
 
 import java.util.Random;
 import battlecode.common.*;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
@@ -29,7 +30,7 @@ public class Archon extends Robot {
 	 * 
 	 */
 	
-	private RobotType[] buildQueue = {RobotType.SOLDIER}; //RobotType.GUARD, 
+	private RobotType[] buildQueue = {RobotType.SCOUT}; //RobotType.GUARD,
 		
 	public Archon(RobotController _rc) 
 	{
@@ -39,10 +40,11 @@ public class Archon extends Robot {
 		fight = new Fight(rc, this);
 
 		//Uncomment as necessary 
-		strat = Strategy.DEFEND;
+//		strat = Strategy.DEFEND;
 //		strat = Strategy.ATTACK;
-//		strat = Strategy.SCOUT;
+		strat = Strategy.SCOUT;
 //		strat = Strategy.FLEE;
+
 	}
 
 	@Override
@@ -60,7 +62,8 @@ public class Archon extends Robot {
 				break;
 
 			case SCOUT:
-				//TODO:throw exception
+
+
 				break;
 			
 			case FLEE:
