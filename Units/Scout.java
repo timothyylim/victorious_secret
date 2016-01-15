@@ -3,8 +3,10 @@
  */
 package victorious_secret.Units;
 
+import java.util.Map;
 import java.util.Random;
 import battlecode.common.GameActionException;
+import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import victorious_secret.Nav.Nav;
 import victorious_secret.Fight.Fight;
@@ -31,6 +33,8 @@ public class Scout extends Robot {
 	/**
 	 * 
 	 */
+	MapLocation archonPos;
+
 	public Scout(RobotController _rc) 
 	{
 		rc = _rc;
