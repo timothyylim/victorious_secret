@@ -18,6 +18,8 @@ public class Nav {
 	private static RobotController rc;
 	private static Robot robot;
 
+
+
 	public Nav(RobotController _rc, Robot _robot)
 	{
 		rc = _rc;

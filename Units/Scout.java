@@ -34,6 +34,7 @@ public class Scout extends Robot {
 	 * 
 	 */
 	MapLocation archonPos;
+	int peteTest;
 
 	public Scout(RobotController _rc) 
 	{
