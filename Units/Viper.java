@@ -7,8 +7,8 @@ import java.util.Random;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import victorious_secret.Robot;
-import victorious_secret.Fight.Fight;
-import victorious_secret.Nav.Nav;
+import victorious_secret.Behaviour.Fight;
+import victorious_secret.Behaviour.Nav;
 
 /**
  * @author APOC
@@ -41,6 +41,7 @@ public class Viper extends Robot {
 		rand = new Random(rc.getID());
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
+		strat = Strategy.DEFEND;
 	}
 
 	@Override
@@ -51,11 +52,4 @@ public class Viper extends Robot {
 			nav.move();
 		}
 	}
-
-	@Override
-	protected void actions() throws GameActionException {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

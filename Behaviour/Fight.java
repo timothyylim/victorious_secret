@@ -1,4 +1,4 @@
-package victorious_secret.Fight;
+package victorious_secret.Behaviour;
 
 import battlecode.common.*;
 import victorious_secret.Robot;
@@ -18,13 +18,15 @@ public class Fight {
 	
 	public RobotInfo[] spotEnemies()
 	{
-		return rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
+		seenEnemies = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
+		return seenEnemies;
 	}
 	
 	//TODO: BETTER NAME
 	public RobotInfo[] targetEnemies()
 	{
-		return rc.senseHostileRobots(rc.getLocation(), rc.getType().attackRadiusSquared);
+		attackableEnemies = rc.senseHostileRobots(rc.getLocation(), rc.getType().attackRadiusSquared);
+		return attackableEnemies;
 	}
 
 	public RobotInfo findLastTargeted(RobotInfo[] listOfEnemies)
@@ -48,7 +50,7 @@ public class Fight {
 		double minHealth = 9999999;
 		RobotInfo bestTarget = null;
 
-		for(RobotInfo i : seenEnemies)
+		for(RobotInfo i : listOfEnemies)
 		{
 			if(i.health < minHealth)
 			{
@@ -64,7 +66,7 @@ public class Fight {
 		double minHealth = 9999999;
 		RobotInfo bestTarget = null;
 
-		for(RobotInfo i : seenEnemies)
+		for(RobotInfo i : listOfEnemies)
 		{
 			if(i.type == targetType && i.health < minHealth)
 			{

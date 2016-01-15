@@ -5,9 +5,8 @@ package victorious_secret;
 
 import java.util.Random;
 
-import battlecode.util.SquareArray;
-import victorious_secret.Nav.Nav;
-import victorious_secret.Fight.Fight;
+import victorious_secret.Behaviour.Nav;
+import victorious_secret.Behaviour.Fight;
 import battlecode.common.*;
 /**
  * @author APOC
@@ -26,13 +25,11 @@ public abstract class Robot {
 	public int listeningTo;
 	public Direction messageIn;
 
-
-	
-	
+	//TODO: put enum into own class
+	public enum Strategy {ATTACK, DEFEND, FLEE, SCOUT};
+	public Strategy strat;
 	
 	public abstract void move() throws GameActionException;
-	
-	protected abstract void actions() throws GameActionException;
 	
 	protected void listen() throws GameActionException
 	{
@@ -79,7 +76,6 @@ public abstract class Robot {
 		}
 	}
 
-	
 	protected void broadcast() throws GameActionException
 	{		
 		Direction messageOut;

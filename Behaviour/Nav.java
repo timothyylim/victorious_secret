@@ -1,7 +1,7 @@
 /**
  *
  */
-package victorious_secret.Nav;
+package victorious_secret.Behaviour;
 
 import battlecode.common.*;
 import victorious_secret.Robot;
@@ -105,7 +105,6 @@ public class Nav {
         move();
 	}
 
-
     public void kite(RobotInfo target) throws GameActionException
     {
         //Kiting wants to stay as close to the edge of their attack range but stay within ours
@@ -136,7 +135,8 @@ public class Nav {
 
         }
     }
-	public void move() throws GameActionException
+
+    public void move() throws GameActionException
 	{
         if(rc.isCoreReady()) {
             //First move to target

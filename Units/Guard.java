@@ -5,13 +5,12 @@ package victorious_secret.Units;
 
 import java.util.Random;
 import battlecode.common.GameActionException;
-import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import victorious_secret.Robot;
-import victorious_secret.Fight.Fight;
-import victorious_secret.Nav.Nav;
+import victorious_secret.Behaviour.Fight;
+import victorious_secret.Behaviour.Nav;
 
 /**
  * @author APOC
@@ -49,6 +48,7 @@ public class Guard extends Robot {
 		rand = new Random(rc.getID());
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
+		strat = Strategy.DEFEND;
 	}
 
 	private void spot_archon()
@@ -91,11 +91,4 @@ public class Guard extends Robot {
 			
 		}
 	}
-
-	@Override
-	protected void actions() throws GameActionException {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

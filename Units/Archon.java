@@ -6,8 +6,8 @@ package victorious_secret.Units;
 import java.util.Random;
 import battlecode.common.*;
 import victorious_secret.Robot;
-import victorious_secret.Fight.Fight;
-import victorious_secret.Nav.Nav;
+import victorious_secret.Behaviour.Fight;
+import victorious_secret.Behaviour.Nav;
 
 
 /**
@@ -37,11 +37,35 @@ public class Archon extends Robot {
 		rand = new Random(rc.getID());
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
+
+		strat = Strategy.DEFEND;
 	}
 
 	@Override
 	public void move() throws GameActionException 
-	{	
+	{
+
+		switch(strat)
+		{
+			case DEFEND:
+				turtle();
+				break;
+
+			case ATTACK:
+				attackPete();
+				break;
+
+			case SCOUT:
+				//TODO:throw exception
+				break;
+			
+			case FLEE:
+				fleeMo();
+			default:
+				break;
+
+
+		}
 		//fight.spotEnemies();
 		if(!spawn(buildQueue[rand.nextInt(buildQueue.length)]))
 		{
@@ -49,10 +73,14 @@ public class Archon extends Robot {
 		}
 	}
 
-	@Override
-	protected void actions() throws GameActionException {
-		// TODO Auto-generated method stub
-		
+	private void fleeMo() {
+	}
+
+	private void attackPete() {
+	}
+
+	private void turtle() {
+		//TODO: TIM
 	}
 
 	private MapLocation bestArchonLocation()

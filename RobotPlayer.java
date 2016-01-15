@@ -17,9 +17,6 @@ public class RobotPlayer
 		
 		try
 		{
-
-
-
 			//Set the unit to the correct class
 			switch (rc.getType())
 			{
