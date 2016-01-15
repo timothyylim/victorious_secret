@@ -38,7 +38,11 @@ public class Archon extends Robot {
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 
+		//Uncomment as necessary 
 		strat = Strategy.DEFEND;
+//		strat = Strategy.ATTACK;
+//		strat = Strategy.SCOUT;
+//		strat = Strategy.FLEE;
 	}
 
 	@Override
