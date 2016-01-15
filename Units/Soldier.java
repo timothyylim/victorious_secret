@@ -47,6 +47,12 @@ public class Soldier extends Robot {
 	@Override
 	public void move() throws GameActionException 
 	{
+		
+		if(strat == Strategy.DEFEND){
+			
+			
+		}
+		
 		if(!fight.fight())
 		{
 			broadcast();
