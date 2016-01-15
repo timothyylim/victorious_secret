@@ -3,33 +3,98 @@ package victorious_secret.Behaviour;
 import battlecode.common.*;
 import victorious_secret.Robot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Fight {
 	
-	private static RobotController rc;
-	private static Robot robot;
-	private RobotInfo lastTargeted;
-	public RobotInfo[] seenEnemies;
-	public RobotInfo[] attackableEnemies;
+	protected static RobotController rc;
+	protected static Robot robot;
+	protected static RobotInfo lastTargeted;
+	public static RobotInfo[] seenEnemies;
+	public static RobotInfo[] attackableEnemies;
 	
 	public Fight(RobotController _rc, Robot _robot) {
 		rc = _rc;
 		robot = _robot;
 	}
 	
-	public RobotInfo[] spotEnemies()
+	public static RobotInfo[] spotEnemies()
 	{
 		seenEnemies = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
 		return seenEnemies;
 	}
-	
+
+    public static RobotInfo[] spotAllies()
+    {
+        seenEnemies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
+        return seenEnemies;
+    }
+
 	//TODO: BETTER NAME
-	public RobotInfo[] targetEnemies()
+	public static RobotInfo[] targetEnemies()
 	{
 		attackableEnemies = rc.senseHostileRobots(rc.getLocation(), rc.getType().attackRadiusSquared);
 		return attackableEnemies;
 	}
 
-	public RobotInfo findLastTargeted(RobotInfo[] listOfEnemies)
+	public RobotInfo[] inRangeOf()
+	{
+		return inRangeOf(spotEnemies(), rc.getLocation());
+	}
+
+    public boolean locationUnderThreat(RobotInfo[] listOfEnemies, MapLocation loc)
+    {
+        return inRangeOf(listOfEnemies, loc) != null;
+
+    }
+
+	public RobotInfo[] inRangeOf(RobotInfo[] listOfEnemies, MapLocation loc)
+	{
+		List<RobotInfo> inRange = new ArrayList<>();
+
+		for(RobotInfo r : listOfEnemies)
+		{
+			if(loc.distanceSquaredTo(r.location) <= r.type.attackRadiusSquared) {
+				inRange.add(r);
+			}
+		}
+		if(inRange.size() > 0)
+		{
+			RobotInfo[] out = new RobotInfo[inRange.size()];
+			inRange.toArray(out);
+			return out;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	public RobotInfo findClosestEnemy(RobotInfo[] listOfEnemies)
+	{
+		return findClosestEnemy(listOfEnemies, rc.getLocation());
+	}
+
+	public RobotInfo findClosestEnemy(RobotInfo[] listOfEnemies, MapLocation loc)
+	{
+		double minDistance = 9999999;
+		RobotInfo closestTarget = null;
+
+
+		for(RobotInfo i : listOfEnemies)
+		{
+			int sqDist = i.location.distanceSquaredTo(loc);
+			if(sqDist  < minDistance)
+			{
+				minDistance = sqDist;
+				closestTarget = i;
+			}
+		}
+		return closestTarget;
+	}
+
+	public static RobotInfo findLastTargeted(RobotInfo[] listOfEnemies)
 	{
 		if(lastTargeted == null)
 		{
@@ -45,7 +110,7 @@ public class Fight {
 		return null;
 	}
 
-	public RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies)
+	public static RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies)
 	{
 		double minHealth = 9999999;
 		RobotInfo bestTarget = null;
@@ -61,7 +126,7 @@ public class Fight {
 		return bestTarget;
 	}
 
-	public RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies, RobotType targetType)
+	public static RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies, RobotType targetType)
 	{
 		double minHealth = 9999999;
 		RobotInfo bestTarget = null;
@@ -84,47 +149,5 @@ public class Fight {
 		}
 	}
 
-	public Boolean fight()
-	{
-		seenEnemies = spotEnemies();
-		attackableEnemies = targetEnemies();
-		if(attackableEnemies.length > 0)
-		{
-			if (rc.isWeaponReady()) 
-			{
-				try 
-				{
-					//Default is to always shoot at the last thing we attacked
-					lastTargeted = findLastTargeted(attackableEnemies);
 
-					//Then is to always shoot at Big Zombies if they're available
-					if(lastTargeted == null)
-					{
-						lastTargeted = findLowestHealthEnemy(attackableEnemies, RobotType.BIGZOMBIE);
-					}
-
-					//Otherwise just shoot at the lowest health zombie
-					if(lastTargeted == null) {
-						lastTargeted = findLowestHealthEnemy(attackableEnemies);
-					}
-
-					if(rc.canAttackLocation(lastTargeted.location))
-					{
-						rc.attackLocation(lastTargeted.location);
-					}
-				} 
-				catch (GameActionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return true;
-			}
-		}
-		else 
-		{
-			lastTargeted = null;
-		}
-		
-		return false;
-	}
 }

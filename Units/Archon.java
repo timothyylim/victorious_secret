@@ -38,7 +38,7 @@ public class Archon extends Robot {
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 
-		//Uncomment as necessary 
+		//Uncomment as necessary
 		strat = Strategy.DEFEND;
 //		strat = Strategy.ATTACK;
 //		strat = Strategy.SCOUT;
@@ -73,7 +73,7 @@ public class Archon extends Robot {
 		//fight.spotEnemies();
 		if(!spawn(buildQueue[rand.nextInt(buildQueue.length)]))
 		{
-			nav.flee();
+			Nav.flee();
 		}
 	}
 

@@ -71,24 +71,24 @@ public class Guard extends Robot {
 		{
 			spot_archon();
 		}
-
-		if(!fight.fight())
-		{
-			
-			if(archon != null)
-			{
-				spot_archon();
-				nav.guard(archon.location);
-			}
-			else
-			{
-				if(rc.getHealth()<20){
-					nav.flee();
-				}else{
-					nav.move();
-				}		
-			}	
-			
-		}
+//
+//		if(!fight.fight())
+//		{
+//
+//			if(archon != null)
+//			{
+//				spot_archon();
+//				nav.guard(archon.location);
+//			}
+//			else
+//			{
+//				if(rc.getHealth()<20){
+//					nav.flee();
+//				}else{
+//					nav.move();
+//				}
+//			}
+//
+//		}
 	}
 }

@@ -41,24 +41,35 @@ public class Soldier extends Robot {
 		rand = new Random(rc.getID());
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
-		strat = Strategy.DEFEND;
+		strat = Strategy.ATTACK;
 	}
 
 	@Override
 	public void move() throws GameActionException 
 	{
-		if(!fight.fight())
-		{
-			broadcast();
-			listen();
+		broadcast();
+		listen();
 
-			if(rc.getHealth() < 20){
-				
-				nav.flee();	
-			}else{
-				nav.move();		
-			}
-			
+		if(rc.getHealth() < 20)
+		{
+			strat = Strategy.FLEE;
 		}
+
+		switch(strat) {
+            case DEFEND:
+                break;
+            case ATTACK:
+                akk.kiteStratgey();
+                break;
+
+            case SCOUT:
+                //TODO:throw exception
+                break;
+
+            case FLEE:
+                nav.flee();
+            default:
+                break;
+        }
 	}
 }
