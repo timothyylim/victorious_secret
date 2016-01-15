@@ -100,8 +100,9 @@ public class Nav {
 
 		robot.targetMoveLoc = averageLoc(locs);
 
-        moveToTarget(robot.targetMoveLoc);
+        move();
 	}
+
 
     public void kite(RobotInfo target) throws GameActionException
     {
@@ -110,7 +111,7 @@ public class Nav {
         {
             case ARCHON:
             case ZOMBIEDEN:
-
+                //Get close
                 break;
 
             case TURRET:
@@ -118,6 +119,16 @@ public class Nav {
                 break;
 
             default:
+                int ar = rc.getType().attackRadiusSquared;
+                int tr = target.type.attackRadiusSquared;
+                int sqDistance = rc.getLocation().distanceSquaredTo(target.location);
+
+                if(ar < tr)
+                {
+                    //Then their range is greater than our range and we can't kite
+                    //charge();
+                    //return;
+                }
 
                 break;
 
@@ -129,14 +140,14 @@ public class Nav {
             //First move to target
             if (robot.targetMoveLoc != null)
             {
-                //Then we sucessfully moved towards our target
                 if(moveToTarget(robot.targetMoveLoc))
                 {
+                    //Then we sucessfully moved towards our target
                     return;
                 }
             }
-            //Then try moving to broadcast location
-            //Only then do you rand move
+
+            //If that fails then do you rand move
             randMove();
         }
 	}
