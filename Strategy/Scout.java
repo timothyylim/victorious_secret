@@ -119,6 +119,7 @@ public class Scout {
                 }
             }
         }
+
     }
 
     public MapLocation averageArchonLoc() throws GameActionException{

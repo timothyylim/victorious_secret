@@ -8,7 +8,11 @@ import java.util.Random;
 import victorious_secret.Behaviour.Nav;
 import victorious_secret.Behaviour.Fight;
 import battlecode.common.*;
+<<<<<<< HEAD
 import victorious_secret.Strategy.Scout;
+=======
+import victorious_secret.Strategy.Attack;
+>>>>>>> 1144482c476d6468aa36dc2c137eb235c3e56a8f
 
 /**
  * @author APOC
@@ -21,6 +25,7 @@ public abstract class Robot {
 	public Random rand;
 	public static Nav nav;
 	public static Fight fight;
+    public static Attack akk;
 	public MapLocation targetShootLoc;
 	public MapLocation targetMoveLoc;
 	
@@ -28,7 +33,7 @@ public abstract class Robot {
 	public Direction messageIn;
 
 	//TODO: put enum into own class
-	public enum Strategy {ATTACK, DEFEND, FLEE, SCOUT};
+	public enum Strategy {ATTACK, DEFEND, FLEE, SCOUT}
 	public Strategy strat;
 
 	
@@ -82,9 +87,9 @@ public abstract class Robot {
 	protected void broadcast() throws GameActionException
 	{		
 		Direction messageOut;
-		if(fight.seenEnemies != null && fight.seenEnemies.length == 0)
+		if(Fight.seenEnemies != null && Fight.seenEnemies.length == 0)
 		{
-			messageOut = rc.getLocation().directionTo(nav.averageLoc(fight.seenEnemies));
+			messageOut = rc.getLocation().directionTo(Nav.averageLoc(Fight.seenEnemies));
 			
 			//start broadcast
 			switch(messageOut)

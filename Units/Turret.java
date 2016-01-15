@@ -58,9 +58,9 @@ public class Turret extends Robot {
 	@Override
 	public void move() throws GameActionException 
 	{
-		if(!fight.fight())
-		{
-			nav.move();
-		}
+//		if(!fight.fight())
+//		{
+//			nav.move();
+//		}
 	}
 }
