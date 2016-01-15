@@ -47,6 +47,7 @@ public class Soldier extends Robot {
 	@Override
 	public void move() throws GameActionException 
 	{
+
 		broadcast();
 		listen();
 
