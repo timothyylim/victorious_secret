@@ -6,6 +6,7 @@ package victorious_secret.Units;
 import java.util.Random;
 
 import battlecode.common.*;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
@@ -32,7 +33,9 @@ public class Archon extends Robot {
 	 */
 	Defend defend;
 	
+
 	//private RobotType[] buildQueue = {RobotType.SOLDIER}; //RobotType.GUARD, 
+
 		
 	public Archon(RobotController _rc) 
 	{
@@ -42,12 +45,15 @@ public class Archon extends Robot {
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 
-		//Uncomment as necessary 
+
+		//Uncomment as necessary
 		strat = Strategy.DEFEND;
 		defend = new Defend(rc, this);
+
 //		strat = Strategy.ATTACK;
-//		strat = Strategy.SCOUT;
+		strat = Strategy.SCOUT;
 //		strat = Strategy.FLEE;
+
 	}
 
 	@Override
@@ -65,7 +71,8 @@ public class Archon extends Robot {
 				break;
 
 			case SCOUT:
-				//TODO:throw exception
+
+
 				break;
 			
 			case FLEE:
@@ -76,10 +83,12 @@ public class Archon extends Robot {
 
 		}
 		//fight.spotEnemies();
+
 //		if(!spawn(buildQueue[rand.nextInt(buildQueue.length)]))
 //		{
 //			nav.flee();
 //		}
+
 	}
 
 	private void fleeMo() {

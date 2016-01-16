@@ -88,7 +88,7 @@ public class Guard extends Robot {
 //
 //		if(!fight.fight())
 //		{
-//			
+//
 //			if(archon != null)
 //			{
 //				spot_archon();
@@ -100,9 +100,9 @@ public class Guard extends Robot {
 //					nav.flee();
 //				}else{
 //					nav.move();
-//				}		
+//				}
 //			}	
-//			
+//
 //		}
 	}
 }

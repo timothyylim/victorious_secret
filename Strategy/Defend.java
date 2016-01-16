@@ -1,5 +1,6 @@
 package victorious_secret.Strategy;
 import battlecode.common.*;
+import victorious_secret.Behaviour.Fight;
 import victorious_secret.RobotPlayer;
 import victorious_secret.Robot;
 
@@ -21,10 +22,9 @@ public class Defend {
 	
 	public void turtle() throws GameActionException {
 		// Look for enemies 
-		RobotInfo[] zombieEnemies = rc.senseNearbyRobots(rc.getType().attackRadiusSquared, Team.ZOMBIE);
-		RobotInfo[] normalEnemies = rc.senseNearbyRobots(rc.getType().attackRadiusSquared, rc.getTeam().opponent());
-		RobotInfo[] opponentEnemies = joinRobotInfo(zombieEnemies, normalEnemies);
-		
+
+		RobotInfo[] opponentEnemies = Fight.targetEnemies();
+
 		if(opponentEnemies.length > 0 && rc.getType().canAttack()){
 			// Optimize who to attack?
 			if(rc.isWeaponReady()){
@@ -39,7 +39,8 @@ public class Defend {
 				// ARCHON
 				if(rc.getType() == RobotType.ARCHON){			
 					//If Zombie Rush
-					buildGuardRing();				
+					buildGuardRing();
+                    //buildSoldierRing();
 				}
 			}
 			//GUARD
@@ -120,7 +121,35 @@ public class Defend {
 			rc.build(Direction.WEST, RobotType.GUARD);
 		}
 	}
-	
+
+	private void buildSoldierRing() throws GameActionException {
+		// TODO Auto-generated method stub
+		if(rc.canBuild(Direction.NORTH_EAST, RobotType.SOLDIER)){
+			rc.build(Direction.NORTH_EAST, RobotType.SOLDIER);
+		}
+		else if(rc.canBuild(Direction.SOUTH_WEST, RobotType.SOLDIER)){
+			rc.build(Direction.SOUTH_WEST, RobotType.SOLDIER);
+		}
+		else if(rc.canBuild(Direction.NORTH_WEST, RobotType.SOLDIER)){
+			rc.build(Direction.NORTH_WEST, RobotType.SOLDIER);
+		}
+		else if(rc.canBuild(Direction.SOUTH_EAST, RobotType.SOLDIER)){
+			rc.build(Direction.SOUTH_EAST, RobotType.SOLDIER);
+		}
+		else if(rc.canBuild(Direction.NORTH, RobotType.SOLDIER)){
+			rc.build(Direction.NORTH, RobotType.SOLDIER);
+		}
+		else if(rc.canBuild(Direction.SOUTH, RobotType.SOLDIER)){
+			rc.build(Direction.SOUTH, RobotType.SOLDIER);
+		}
+		else if(rc.canBuild(Direction.EAST, RobotType.SOLDIER)){
+			rc.build(Direction.EAST, RobotType.SOLDIER);
+		}
+		else if(rc.canBuild(Direction.WEST, RobotType.SOLDIER)){
+			rc.build(Direction.WEST, RobotType.SOLDIER);
+		}
+	}
+
 	private static Direction getForward(Direction archon_direction) {
 		if (archon_direction == Direction.NORTH_EAST){
 			return Direction.EAST;

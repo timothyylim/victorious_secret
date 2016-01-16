@@ -4,6 +4,7 @@
 package victorious_secret.Behaviour;
 
 import battlecode.common.*;
+import scala.xml.PrettyPrinter;
 import victorious_secret.Robot;
 
 /**
@@ -26,7 +27,7 @@ public class Nav {
 		robot = _robot;
 	}
 
-    public MapLocation averageLoc(RobotInfo[] listOfEnemies)
+    public static MapLocation averageLoc(RobotInfo[] listOfEnemies)
     {
 
         if(listOfEnemies.length == 0) //robot.fight.seenEnemies == null ||
@@ -50,7 +51,7 @@ public class Nav {
 
     }
 
-    public MapLocation averageLoc(MapLocation[] listOfEnemiesLoc)
+    public static MapLocation averageLoc(MapLocation[] listOfEnemiesLoc)
     {
         if(listOfEnemiesLoc.length == 0) //robot.fight.seenEnemies == null ||
         {
@@ -72,20 +73,20 @@ public class Nav {
         return new MapLocation(x,  y);
     }
 
-	public void flee() throws GameActionException
+	public static void flee() throws GameActionException
 	{
 		if(robot.fight.seenEnemies != null && robot.fight.seenEnemies.length > 0)
 		{
-            MapLocation[] locs = {rc.getLocation(), averageLoc(robot.fight.attackableEnemies)};
+            MapLocation[] locs = {rc.getLocation(), averageLoc(robot.fight.seenEnemies)};
 
             robot.targetMoveLoc = averageLoc(locs);
-
 		}
+
         move();
 
 	}
 
-    public void guard(MapLocation archonLoc) throws GameActionException
+    public static void guard(MapLocation archonLoc) throws GameActionException
 	{
 		/*UPDATED GUARD STRATEGY - CLUMP TOGETHER */
 		/*Assume archonLoc is the location of the nearest guard*/
@@ -105,38 +106,7 @@ public class Nav {
         move();
 	}
 
-    public void kite(RobotInfo target) throws GameActionException
-    {
-        //Kiting wants to stay as close to the edge of their attack range but stay within ours
-        switch (target.type)
-        {
-            case ARCHON:
-            case ZOMBIEDEN:
-                //Get close
-                break;
-
-            case TURRET:
-
-                break;
-
-            default:
-                int ar = rc.getType().attackRadiusSquared;
-                int tr = target.type.attackRadiusSquared;
-                int sqDistance = rc.getLocation().distanceSquaredTo(target.location);
-
-                if(ar < tr)
-                {
-                    //Then their range is greater than our range and we can't kite
-                    //charge();
-                    //return;
-                }
-
-                break;
-
-        }
-    }
-
-    public void move() throws GameActionException
+    public static void move() throws GameActionException
 	{
         if(rc.isCoreReady()) {
             //First move to target
@@ -154,7 +124,7 @@ public class Nav {
         }
 	}
 
-    public boolean moveToTarget(MapLocation targetMoveLoc) throws GameActionException
+    public static boolean moveToTarget(MapLocation targetMoveLoc) throws GameActionException
     {
 
         Direction movingDirection = rc.getLocation().directionTo(targetMoveLoc);
@@ -190,7 +160,31 @@ public class Nav {
         return false;
     }
 
-	public void randMove() throws GameActionException
+    public static MapLocation spiralClockwise(MapLocation center) throws GameActionException
+    {
+        if(center != null)
+        {
+            return rc.getLocation().add(rc.getLocation().directionTo(center).rotateLeft());
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public static MapLocation spiralAnitClockwise(MapLocation center) throws GameActionException
+    {
+        if(center != null)
+        {
+            return rc.getLocation().add(rc.getLocation().directionTo(center).rotateRight());
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+	public static void randMove() throws GameActionException
 	{
         int i = 0;
         do
