@@ -48,7 +48,6 @@ public class Defend {
 			}
 			
 			//************//
-			//ZOMBIE RUSH!!!
 			if(ZombieRush == false){
 				
 				
