@@ -12,7 +12,9 @@ public class Fight {
 	protected static Robot robot;
 	protected static RobotInfo lastTargeted;
 	public static RobotInfo[] seenEnemies;
+	public static RobotInfo[] seenZombies;
 	public static RobotInfo[] attackableEnemies;
+
 	
 	public Fight(RobotController _rc, Robot _robot) {
 		rc = _rc;
@@ -30,6 +32,12 @@ public class Fight {
         seenEnemies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
         return seenEnemies;
     }
+
+	public static RobotInfo[] spotZombies()
+	{
+		seenZombies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, Team.ZOMBIE);
+		return seenZombies;
+	}
 
 	//TODO: BETTER NAME
 	public static RobotInfo[] targetEnemies()
