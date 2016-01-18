@@ -13,6 +13,8 @@ public class Fight {
 	protected static RobotInfo lastTargeted;
 	public static RobotInfo[] seenEnemies;
 	public static RobotInfo[] seenZombies;
+	public static RobotInfo[] seenOpponents; //array of all units belonging to the other player
+	public static RobotInfo[] seenAllies;
 	public static RobotInfo[] attackableEnemies;
 
 	
@@ -29,7 +31,7 @@ public class Fight {
 
     public static RobotInfo[] spotAllies()
     {
-        seenEnemies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
+        seenAllies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
         return seenEnemies;
     }
 
@@ -37,6 +39,12 @@ public class Fight {
 	{
 		seenZombies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, Team.ZOMBIE);
 		return seenZombies;
+	}
+
+	public static RobotInfo[] spotOpponents()
+	{
+		seenOpponents = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam().opponent());
+		return seenOpponents;
 	}
 
 	//TODO: BETTER NAME
