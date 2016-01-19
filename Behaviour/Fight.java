@@ -1,7 +1,7 @@
-package victorious_secret.Behaviour;
+package victorious_secret_defense.Behaviour;
 
 import battlecode.common.*;
-import victorious_secret.Robot;
+import victorious_secret_defense.Robot;
 
 import java.util.ArrayList;
 import java.util.List;

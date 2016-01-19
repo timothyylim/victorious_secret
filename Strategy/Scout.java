@@ -1,10 +1,8 @@
-package victorious_secret.Strategy;
+package victorious_secret_defense.Strategy;
 
 import battlecode.common.*;
-import victorious_secret.Robot;
+import victorious_secret_defense.Robot;
 import java.util.Vector;
-
-import static battlecode.common.Direction.*;
 
 /**
  * Created by ple15 on 15/01/16.

@@ -1,14 +1,15 @@
 /**
  * 
  */
-package victorious_secret.Units;
+package victorious_secret_defense.Units;
 
 import java.util.Random;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
-import victorious_secret.Robot;
-import victorious_secret.Behaviour.Fight;
-import victorious_secret.Behaviour.Nav;
+import victorious_secret_defense.Robot;
+import victorious_secret_defense.Behaviour.Fight;
+import victorious_secret_defense.Behaviour.Nav;
+import victorious_secret_defense.Strategy.Defend;
 
 /**
  * @author APOC
@@ -46,6 +47,7 @@ public class Turret extends Robot {
 	/**
 	 * 
 	 */
+	Defend defend;
 	public Turret(RobotController _rc) 
 	{
 		rc = _rc;
@@ -53,14 +55,20 @@ public class Turret extends Robot {
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 		strat = Strategy.DEFEND;
+		defend = new Defend(rc, this);
 	}
 
 	@Override
 	public void move() throws GameActionException 
 	{
-//		if(!fight.fight())
-//		{
-//			nav.move();
-//		}
+		switch(strat)
+		{
+			case DEFEND:
+				defend.turtle();
+				break;
+			default:
+				break;
+
+		}
 	}
 }

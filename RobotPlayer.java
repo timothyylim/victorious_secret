@@ -1,6 +1,6 @@
-package victorious_secret;
+package victorious_secret_defense;
 
-import victorious_secret.Units.*;
+import victorious_secret_defense.Units.*;
 import battlecode.common.*;
 
 public class RobotPlayer

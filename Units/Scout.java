@@ -1,15 +1,15 @@
 /**
  * 
  */
-package victorious_secret.Units;
+package victorious_secret_defense.Units;
 
 import java.util.Random;
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
-import victorious_secret.Behaviour.Fight;
-import victorious_secret.Behaviour.Nav;
-import victorious_secret.Robot;
+import victorious_secret_defense.Behaviour.Fight;
+import victorious_secret_defense.Behaviour.Nav;
+import victorious_secret_defense.Robot;
 
 /**
  * @author APOC
@@ -34,7 +34,7 @@ public class Scout extends Robot {
 	 */
 	MapLocation archonPos;
 	int peteTest;
-	victorious_secret.Strategy.Scout scout;
+	victorious_secret_defense.Strategy.Scout scout;
 
 	public Scout(RobotController _rc) 
 	{
@@ -43,7 +43,7 @@ public class Scout extends Robot {
 		nav = new Nav(rc, this);
 		strat = Strategy.DEFEND;
 		fight = new Fight(rc, this);
-		scout = new victorious_secret.Strategy.Scout(rc,this);
+		scout = new victorious_secret_defense.Strategy.Scout(rc,this);
 	}
 
 	@Override

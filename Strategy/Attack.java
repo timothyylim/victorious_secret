@@ -1,8 +1,8 @@
-package victorious_secret.Strategy;
+package victorious_secret_defense.Strategy;
 
 import battlecode.common.*;
-import victorious_secret.Behaviour.Fight;
-import victorious_secret.Robot;
+import victorious_secret_defense.Behaviour.Fight;
+import victorious_secret_defense.Robot;
 
 /**
  * Created by ple15 on 15/01/16.

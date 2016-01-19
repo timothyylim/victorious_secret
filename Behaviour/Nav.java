@@ -1,11 +1,10 @@
 /**
  *
  */
-package victorious_secret.Behaviour;
+package victorious_secret_defense.Behaviour;
 
 import battlecode.common.*;
-import scala.xml.PrettyPrinter;
-import victorious_secret.Robot;
+import victorious_secret_defense.Robot;
 
 /**
  * @author APOC

@@ -1,16 +1,15 @@
 /**
  * 
  */
-package victorious_secret.Units;
+package victorious_secret_defense.Units;
 
 import java.util.Random;
 
 import battlecode.common.*;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import victorious_secret.Robot;
-import victorious_secret.Behaviour.Fight;
-import victorious_secret.Behaviour.Nav;
-import victorious_secret.Strategy.Defend;
+import victorious_secret_defense.Robot;
+import victorious_secret_defense.Behaviour.Fight;
+import victorious_secret_defense.Behaviour.Nav;
+import victorious_secret_defense.Strategy.Defend;
 
 
 /**
@@ -51,7 +50,8 @@ public class Archon extends Robot {
 		defend = new Defend(rc, this);
 
 //		strat = Strategy.ATTACK;
-		strat = Strategy.SCOUT;
+//		strat = Strategy.SCOUT;
+		strat = Strategy.DEFEND;
 //		strat = Strategy.FLEE;
 
 	}

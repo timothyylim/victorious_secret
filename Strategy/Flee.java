@@ -1,4 +1,4 @@
-package victorious_secret.Strategy;
+package victorious_secret_defense.Strategy;
 
 /**
  * Created by ple15 on 15/01/16.
