@@ -1,7 +1,10 @@
 package victorious_secret.Strategy;
 
 import battlecode.common.*;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import victorious_secret.Robot;
+
+import java.util.Random;
 import java.util.Vector;
 
 import static battlecode.common.Direction.*;
@@ -13,21 +16,35 @@ public class Scout {
 
     private static RobotController rc;
     private static Robot robot;
+    private static Flee flee;
 
 
     public Vector<RobotInfo> archonLocations;
     public Vector<RobotInfo> zombieDenLocations;
     public Vector<RobotInfo> enemyArchonLocations;
 
-    private Direction currentVector;
+    /*Scout Strategy 3 Variables: Turrent information*/
+    public MapLocation turretLoc;
+
+
+
+    MapLocation[] corners = {new MapLocation(9999,9999),new MapLocation(-9999,9999),new MapLocation(9999,-9999),new MapLocation(-9999,-9999)};
+
+
 
     public Scout(RobotController _rc, Robot _robot) {
         rc = _rc;
         robot = _robot;
 
+        flee = new Flee();
+        flee.initialiseFlee(rc);
+
         archonLocations = new Vector<RobotInfo>();
         zombieDenLocations = new Vector<RobotInfo>();
         enemyArchonLocations = new Vector<RobotInfo>();
+
+
+
     }
 
     /********************************************STRATEGY METHODS**********************************************
@@ -40,7 +57,6 @@ public class Scout {
     public void runScoutStrategy1() throws GameActionException{
 
 
-
     }
 
     /*Redherring strategy
@@ -49,6 +65,24 @@ public class Scout {
     public void runScoutStrategy2() throws GameActionException{
 
 
+    }
+
+    /*Turret Strategy
+    * don't move
+    * scan for enemies
+    * pass enemy locations to turret*/
+    public void runScoutStrategy3() throws GameActionException{
+        sense_map();
+        turretLoc = findClosestRobot(robot.fight.seenAllies,RobotType.TURRET);
+        flee.setTarget(turretLoc);
+
+        if(rc.isCoreReady()){
+            broadcastEnemyInTurretBlindSpot();
+        }
+
+        if(rc.isCoreReady()){
+            rc.move(flee.getNextMove());
+        }
 
     }
 
@@ -63,11 +97,29 @@ public class Scout {
         robot.fight.spotZombies();
         robot.fight.spotAllies();
 
+        //Sense terrain
+
         //Update knowledge
         updateArchonLocations();
         updateEnemyArchonLocations();
         updateZombieDenLocations();
     }
+
+   private void broadcastEnemyInTurretBlindSpot() throws GameActionException{
+
+       if(robot.fight.seenEnemies != null && robot.fight.seenEnemies.length >0){
+           MapLocation loc = enemyInTurretBlindSpot(robot.fight.seenEnemies);
+
+           if(loc != null){
+               if(rc.isCoreReady()){
+                   rc.broadcastMessageSignal(loc.x,loc.y,rc.getType().sensorRadiusSquared);
+
+               }
+
+           }
+
+       }
+   }
 
     private void updateArchonLocations(){
         for(RobotInfo i:robot.fight.seenAllies){
@@ -111,6 +163,7 @@ public class Scout {
         }
     }
 
+    /*
     public boolean isAttractingZombies() throws GameActionException {
 
         if(robot.fight.seenZombies != null && robot.fight.seenZombies.length>0){
@@ -124,28 +177,48 @@ public class Scout {
         }
         return false;
     }
-
+*/
     /*********************************END CLASS SPECIFIC BEHAVIOR************************************************/
 
+    //Returns the first enemy in the robots array that is within the turret's blindspot
+    public MapLocation enemyInTurretBlindSpot(RobotInfo[] robots) {
 
+        if(robots != null && robots.length>0){
 
-    public MapLocation averageTeammateLoc() throws GameActionException{
+            if(turretLoc != null){
 
-        return robot.nav.averageLoc(robot.fight.seenAllies);
+                for(RobotInfo i : robots){
+                    int dist = i.location.distanceSquaredTo(turretLoc);
 
+                    if(dist < RobotType.TURRET.attackRadiusSquared && dist > RobotType.TURRET.sensorRadiusSquared) {
+                        return i.location;
+
+                    }
+                }
+
+            }
+        }
+        return null;
     }
 
-    public MapLocation averageOpponentLoc() throws GameActionException{
+    public MapLocation findClosestRobot(RobotInfo[] robots, RobotType type){
+        double minDistance = 9999999;
+        RobotInfo closestTarget = null;
 
-        return robot.nav.averageLoc(robot.fight.seenOpponents);
+
+        for(RobotInfo i : robots)
+        {
+            if(i.type == type){
+                int sqDist = i.location.distanceSquaredTo(rc.getLocation());
+                if(sqDist  < minDistance)
+                {
+                    minDistance = sqDist;
+                    closestTarget = i;
+                }
+            }
+        }
+        return closestTarget.location;
     }
-
-    public MapLocation averageZombieLoc() throws GameActionException{
-
-        return robot.nav.averageLoc(robot.fight.seenZombies);
-    }
-
-
 
 
 }

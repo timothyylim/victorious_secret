@@ -71,6 +71,7 @@ public class Archon extends Robot {
 				break;
 
 			case SCOUT:
+				//spawn(RobotType.SCOUT);
 
 
 				break;

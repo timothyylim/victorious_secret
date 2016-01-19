@@ -60,7 +60,7 @@ public class Soldier extends Robot {
             case DEFEND:
                 break;
             case ATTACK:
-                akk.kiteStratgey();
+           //     akk.kiteStratgey();
                 break;
 
             case SCOUT:
@@ -68,7 +68,7 @@ public class Soldier extends Robot {
                 break;
 
             case FLEE:
-                nav.flee();
+            //    nav.flee();
             default:
                 break;
         }

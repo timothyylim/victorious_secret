@@ -4,8 +4,8 @@
 package victorious_secret.Units;
 
 import java.util.Random;
-import battlecode.common.GameActionException;
-import battlecode.common.RobotController;
+
+import battlecode.common.*;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
@@ -46,6 +46,8 @@ public class Turret extends Robot {
 	/**
 	 * 
 	 */
+	MapLocation attackLoc;
+
 	public Turret(RobotController _rc) 
 	{
 		rc = _rc;
@@ -58,9 +60,57 @@ public class Turret extends Robot {
 	@Override
 	public void move() throws GameActionException 
 	{
-//		if(!fight.fight())
-//		{
-//			nav.move();
-//		}
+
+		//updateAttackLoc();
+		listenForSignal();
+		if(attackLoc != null){
+
+			if(rc.isCoreReady()){
+				if(rc.canAttackLocation(attackLoc)){
+					rc.attackLocation(attackLoc);
+				}
+			}
+		}
+
+	}
+
+
+	public boolean listenForSignal(){
+
+		Signal[] sigs = rc.emptySignalQueue();
+		if(sigs != null && sigs.length > 0){
+
+			Signal sig = sigs[sigs.length-1];
+			int[] message = sig.getMessage();
+			if(message != null){
+				System.out.println("signalreceved");
+				attackLoc = new MapLocation(message[0],message[1]);
+				return true;
+			}
+			/*
+			int[] loc = sigs[0].getMessage();//.getMessage();
+			if(loc !=null){
+
+			}
+			*/
+		}
+		return false;
+	}
+
+	public void updateAttackLoc(){
+		if(listenForSignal()){
+
+		}else{
+
+			fight.targetEnemies();
+			if(fight.attackableEnemies != null && fight.attackableEnemies.length>0){
+
+				RobotInfo i = fight.findClosestEnemy(fight.attackableEnemies);
+				attackLoc = i.location;
+//						fight.findLowestHealthEnemy(fight.attackableEnemies).location;
+			}else{
+				attackLoc = null;
+			}
+		}
 	}
 }

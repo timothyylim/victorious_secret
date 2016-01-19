@@ -8,11 +8,9 @@ import java.util.Random;
 import victorious_secret.Behaviour.Nav;
 import victorious_secret.Behaviour.Fight;
 import battlecode.common.*;
-<<<<<<< HEAD
+
 import victorious_secret.Strategy.Scout;
-=======
 import victorious_secret.Strategy.Attack;
->>>>>>> 1144482c476d6468aa36dc2c137eb235c3e56a8f
 
 /**
  * @author APOC
