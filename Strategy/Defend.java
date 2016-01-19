@@ -40,7 +40,6 @@ public class Defend {
 				if(rc.getType() == RobotType.ARCHON){			
 					//If Zombie Rush
 					buildGuardRing();
-                    //buildSoldierRing();
 				}
 			}
 			//GUARD
@@ -49,6 +48,7 @@ public class Defend {
 			}
 			
 			//************//
+			//ZOMBIE RUSH!!!
 			if(ZombieRush == false){
 				
 				

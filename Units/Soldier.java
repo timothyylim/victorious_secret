@@ -6,6 +6,7 @@ package victorious_secret.Units;
 import java.util.Random;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
+import victorious_secret.Behaviour.Signalling;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
@@ -42,14 +43,20 @@ public class Soldier extends Robot {
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 		strat = Strategy.ATTACK;
+		sig  = new Signalling(rc, this);
+		team = rc.getTeam();
+		setArchonLocations();
+
 	}
 
 	@Override
 	public void move() throws GameActionException 
 	{
+        //System.out.println();
+		sig.listen();
 
-		broadcast();
-		listen();
+	//	listen();
+	//	broadcast();
 
 		if(rc.getHealth() < 20)
 		{
@@ -60,7 +67,12 @@ public class Soldier extends Robot {
             case DEFEND:
                 break;
             case ATTACK:
+<<<<<<< HEAD
            //     akk.kiteStratgey();
+=======
+                akk.attack();
+
+>>>>>>> dff46167e1fb53bf02627ac505bdf83179ee74c7
                 break;
 
             case SCOUT:
@@ -72,5 +84,9 @@ public class Soldier extends Robot {
             default:
                 break;
         }
+
+
+        //sig.setMessage(Signalling.MessageType.MOVE_EAST);
+        sig.broadcast();
 	}
 }

@@ -34,7 +34,9 @@ public class Scout extends Robot {
 	 */
 	MapLocation archonPos;
 	int peteTest;
+
 	victorious_secret.Strategy.Scout scout;
+
 
 	public Scout(RobotController _rc) 
 	{
@@ -44,6 +46,7 @@ public class Scout extends Robot {
 		strat = Strategy.DEFEND;
 		fight = new Fight(rc, this);
 		scout = new victorious_secret.Strategy.Scout(rc,this);
+
 	}
 
 	@Override

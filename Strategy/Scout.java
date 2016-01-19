@@ -9,11 +9,11 @@ import java.util.Vector;
 
 import static battlecode.common.Direction.*;
 
+
 /**
  * Created by ple15 on 15/01/16.
  */
 public class Scout {
-
     private static RobotController rc;
     private static Robot robot;
     private static Flee flee;
@@ -27,9 +27,7 @@ public class Scout {
     public MapLocation turretLoc;
 
 
-
-    MapLocation[] corners = {new MapLocation(9999,9999),new MapLocation(-9999,9999),new MapLocation(9999,-9999),new MapLocation(-9999,-9999)};
-
+    MapLocation[] corners = {new MapLocation(9999, 9999), new MapLocation(-9999, 9999), new MapLocation(9999, -9999), new MapLocation(-9999, -9999)};
 
 
     public Scout(RobotController _rc, Robot _robot) {
@@ -44,17 +42,18 @@ public class Scout {
         enemyArchonLocations = new Vector<RobotInfo>();
 
 
-
     }
 
-    /********************************************STRATEGY METHODS**********************************************
-
-    /*Basic scouting behavior:
-    * pick a random direction to explore
-    * collect information about the map
-    * go within signaling range of archon
-    * broadcast signal*/
-    public void runScoutStrategy1() throws GameActionException{
+    /********************************************
+     * STRATEGY METHODS**********************************************
+     * <p>
+     * /*Basic scouting behavior:
+     * pick a random direction to explore
+     * collect information about the map
+     * go within signaling range of archon
+     * broadcast signal
+     */
+    public void runScoutStrategy1() throws GameActionException {
 
 
     }
@@ -62,7 +61,7 @@ public class Scout {
     /*Redherring strategy
     * find enemies
     * attempt to draw them into the enemy's base*/
-    public void runScoutStrategy2() throws GameActionException{
+    public void runScoutStrategy2() throws GameActionException {
 
 
     }
@@ -71,16 +70,16 @@ public class Scout {
     * don't move
     * scan for enemies
     * pass enemy locations to turret*/
-    public void runScoutStrategy3() throws GameActionException{
+    public void runScoutStrategy3() throws GameActionException {
         sense_map();
-        turretLoc = findClosestRobot(robot.fight.seenAllies,RobotType.TURRET);
+        turretLoc = findClosestRobot(robot.fight.seenAllies, RobotType.TURRET);
         flee.setTarget(turretLoc);
 
-        if(rc.isCoreReady()){
+        if (rc.isCoreReady()) {
             broadcastEnemyInTurretBlindSpot();
         }
 
-        if(rc.isCoreReady()){
+        if (rc.isCoreReady()) {
             rc.move(flee.getNextMove());
         }
 
@@ -89,7 +88,9 @@ public class Scout {
     /**************************************END STRATEGY METHODS**************************************************/
 
 
-    /*************************************CLASS SPECIFIC BEHAVIOR************************************************/
+    /*************************************
+     * CLASS SPECIFIC BEHAVIOR
+     ************************************************/
     private void sense_map() throws GameActionException {
         //Sense map
         robot.fight.spotEnemies();
@@ -105,55 +106,55 @@ public class Scout {
         updateZombieDenLocations();
     }
 
-   private void broadcastEnemyInTurretBlindSpot() throws GameActionException{
+    private void broadcastEnemyInTurretBlindSpot() throws GameActionException {
 
-       if(robot.fight.seenEnemies != null && robot.fight.seenEnemies.length >0){
-           MapLocation loc = enemyInTurretBlindSpot(robot.fight.seenEnemies);
+        if (robot.fight.seenEnemies != null && robot.fight.seenEnemies.length > 0) {
+            MapLocation loc = enemyInTurretBlindSpot(robot.fight.seenEnemies);
 
-           if(loc != null){
-               if(rc.isCoreReady()){
-                   rc.broadcastMessageSignal(loc.x,loc.y,rc.getType().sensorRadiusSquared);
+            if (loc != null) {
+                if (rc.isCoreReady()) {
+                    rc.broadcastMessageSignal(loc.x, loc.y, rc.getType().sensorRadiusSquared);
 
-               }
+                }
 
-           }
+            }
 
-       }
-   }
+        }
+    }
 
-    private void updateArchonLocations(){
-        for(RobotInfo i:robot.fight.seenAllies){
-            if(i.type == RobotType.ARCHON){
-                if(!archonLocations.contains(i)){
+    private void updateArchonLocations() {
+        for (RobotInfo i : robot.fight.seenAllies) {
+            if (i.type == RobotType.ARCHON) {
+                if (!archonLocations.contains(i)) {
                     archonLocations.add(i);
                 }
             }
         }
     }
 
-    private void updateEnemyArchonLocations(){
-        for(RobotInfo i:robot.fight.seenOpponents){
-            if(i.type == RobotType.ARCHON){
-                if(!enemyArchonLocations.contains(i)){
+    private void updateEnemyArchonLocations() {
+        for (RobotInfo i : robot.fight.seenOpponents) {
+            if (i.type == RobotType.ARCHON) {
+                if (!enemyArchonLocations.contains(i)) {
                     enemyArchonLocations.add(i);
                 }
             }
         }
     }
 
-    private void updateZombieDenLocations(){
-        for(RobotInfo i:robot.fight.seenZombies){
-            if(i.type == RobotType.ZOMBIEDEN){
-                if(!zombieDenLocations.contains(i)){
+    private void updateZombieDenLocations() {
+        for (RobotInfo i : robot.fight.seenZombies) {
+            if (i.type == RobotType.ZOMBIEDEN) {
+                if (!zombieDenLocations.contains(i)) {
                     zombieDenLocations.add(i);
                 }
             }
         }
     }
 
-    public void moveAwayFromArchon()throws GameActionException{
-        if(rc.isCoreReady()){
-            if(archonLocations != null && archonLocations.size() > 0){
+    public void moveAwayFromArchon() throws GameActionException {
+        if (rc.isCoreReady()) {
+            if (archonLocations != null && archonLocations.size() > 0) {
                 robot.targetMoveLoc = robot.nav.averageLoc((MapLocation[]) archonLocations.toArray());
                 robot.targetMoveLoc = new MapLocation((2 * rc.getLocation().x) - robot.targetMoveLoc.x, (2 * rc.getLocation().y)
                         - robot.targetMoveLoc.y);
@@ -178,19 +179,22 @@ public class Scout {
         return false;
     }
 */
-    /*********************************END CLASS SPECIFIC BEHAVIOR************************************************/
+
+    /*********************************
+     * END CLASS SPECIFIC BEHAVIOR
+     ************************************************/
 
     //Returns the first enemy in the robots array that is within the turret's blindspot
     public MapLocation enemyInTurretBlindSpot(RobotInfo[] robots) {
 
-        if(robots != null && robots.length>0){
+        if (robots != null && robots.length > 0) {
 
-            if(turretLoc != null){
+            if (turretLoc != null) {
 
-                for(RobotInfo i : robots){
+                for (RobotInfo i : robots) {
                     int dist = i.location.distanceSquaredTo(turretLoc);
 
-                    if(dist < RobotType.TURRET.attackRadiusSquared && dist > RobotType.TURRET.sensorRadiusSquared) {
+                    if (dist < RobotType.TURRET.attackRadiusSquared && dist > RobotType.TURRET.sensorRadiusSquared) {
                         return i.location;
 
                     }
@@ -201,17 +205,16 @@ public class Scout {
         return null;
     }
 
-    public MapLocation findClosestRobot(RobotInfo[] robots, RobotType type){
+
+    public MapLocation findClosestRobot(RobotInfo[] robots, RobotType type) {
         double minDistance = 9999999;
         RobotInfo closestTarget = null;
 
 
-        for(RobotInfo i : robots)
-        {
-            if(i.type == type){
+        for (RobotInfo i : robots) {
+            if (i.type == type) {
                 int sqDist = i.location.distanceSquaredTo(rc.getLocation());
-                if(sqDist  < minDistance)
-                {
+                if (sqDist < minDistance) {
                     minDistance = sqDist;
                     closestTarget = i;
                 }
@@ -219,6 +222,6 @@ public class Scout {
         }
         return closestTarget.location;
     }
-
-
 }
+
+

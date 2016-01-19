@@ -16,7 +16,6 @@ public class Fight {
 	public static RobotInfo[] seenOpponents; //array of all units belonging to the other player
 	public static RobotInfo[] seenAllies;
 	public static RobotInfo[] attackableEnemies;
-
 	
 	public Fight(RobotController _rc, Robot _robot) {
 		rc = _rc;
@@ -32,8 +31,43 @@ public class Fight {
     public static RobotInfo[] spotAllies()
     {
         seenAllies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
-        return seenEnemies;
+        return seenAllies;
     }
+
+    public static RobotInfo[] spotAlliesOfType(RobotType type)
+    {
+        RobotInfo[] allies = spotAllies();
+
+        int nOfType = 0;
+
+        for (RobotInfo r: allies) {
+            if(r.type == type)
+            {
+                nOfType++;
+            }
+        }
+
+        if(nOfType > 0)
+        {
+            RobotInfo[] tAllies = new RobotInfo[nOfType];
+            nOfType = 0;
+            for (RobotInfo r: allies) {
+                if(r.type == type)
+                {
+                    tAllies[nOfType] = r;
+                    nOfType++;
+                }
+            }
+
+            return tAllies;
+        }
+        else
+        {
+            return null;
+        }
+
+    }
+
 
 	public static RobotInfo[] spotZombies()
 	{
@@ -110,6 +144,24 @@ public class Fight {
 		return closestTarget;
 	}
 
+	public MapLocation findClosestMapLocation(MapLocation[] listOfLocations, MapLocation loc)
+	{
+		double minDistance = 9999999;
+		MapLocation closestTarget = null;
+
+
+		for(MapLocation i : listOfLocations)
+		{
+			int sqDist = i.distanceSquaredTo(loc);
+			if(sqDist  < minDistance)
+			{
+				minDistance = sqDist;
+				closestTarget = i;
+			}
+		}
+		return closestTarget;
+	}
+
 	public static RobotInfo findLastTargeted(RobotInfo[] listOfEnemies)
 	{
 		if(lastTargeted == null)
@@ -142,6 +194,22 @@ public class Fight {
 		return bestTarget;
 	}
 
+	public static RobotInfo findLowestHealthEnemyWithDelay(RobotInfo[] listOfEnemies)
+	{
+		double minHealth = 9999999;
+		RobotInfo bestTarget = null;
+
+		for(RobotInfo i : listOfEnemies)
+		{
+			if(i.coreDelay > 0 && i.health < minHealth)
+			{
+				minHealth = i.health;
+				bestTarget = i;
+			}
+		}
+		return bestTarget;
+	}
+
 	public static RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies, RobotType targetType)
 	{
 		double minHealth = 9999999;
@@ -165,5 +233,39 @@ public class Fight {
 		}
 	}
 
+	public static boolean lowestHealthAttack() throws GameActionException {
+		//if(lastTargeted == null) {
+			lastTargeted = findLowestHealthEnemy(attackableEnemies);
+		//}
 
+		if(rc.canAttackLocation(lastTargeted.location))
+		{
+			rc.attackLocation(lastTargeted.location);
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean standardAttack() throws GameActionException {
+		//Default is to always shoot at the last thing we attacked
+		lastTargeted = findLastTargeted(attackableEnemies);
+
+		//Then is to always shoot at Big Zombies if they're available
+		if(lastTargeted == null)
+		{
+			lastTargeted = findLowestHealthEnemy(attackableEnemies, RobotType.BIGZOMBIE);
+		}
+
+		//Otherwise just shoot at the lowest health zombie
+		if(lastTargeted == null) {
+			lastTargeted = findLowestHealthEnemy(attackableEnemies);
+		}
+
+		if(rc.canAttackLocation(lastTargeted.location))
+		{
+			rc.attackLocation(lastTargeted.location);
+			return true;
+		}
+		return false;
+	}
 }

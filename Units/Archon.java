@@ -3,14 +3,13 @@
  */
 package victorious_secret.Units;
 
-import java.util.Random;
-
 import battlecode.common.*;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
+import victorious_secret.Robot;
 import victorious_secret.Strategy.Defend;
+
+import java.util.Random;
 
 
 /**
@@ -32,11 +31,7 @@ public class Archon extends Robot {
 	 * 
 	 */
 	Defend defend;
-	
 
-	//private RobotType[] buildQueue = {RobotType.SOLDIER}; //RobotType.GUARD, 
-
-		
 	public Archon(RobotController _rc) 
 	{
 		
@@ -45,13 +40,11 @@ public class Archon extends Robot {
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 
-
 		//Uncomment as necessary
 		strat = Strategy.DEFEND;
 		defend = new Defend(rc, this);
-
 //		strat = Strategy.ATTACK;
-		strat = Strategy.SCOUT;
+//		strat = Strategy.SCOUT;
 //		strat = Strategy.FLEE;
 
 	}
@@ -59,7 +52,6 @@ public class Archon extends Robot {
 	@Override
 	public void move() throws GameActionException 
 	{
-
 		switch(strat)
 		{
 			case DEFEND:
@@ -71,7 +63,9 @@ public class Archon extends Robot {
 				break;
 
 			case SCOUT:
+
 				//spawn(RobotType.SCOUT);
+
 
 
 				break;
