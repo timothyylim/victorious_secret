@@ -4,14 +4,15 @@
 package victorious_secret.Units;
 
 import java.util.Random;
+
 import battlecode.common.GameActionException;
-import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import victorious_secret.Robot;
-import victorious_secret.Fight.Fight;
-import victorious_secret.Nav.Nav;
+import victorious_secret.Behaviour.Fight;
+import victorious_secret.Behaviour.Nav;
+import victorious_secret.Strategy.Defend;
 
 /**
  * @author APOC
@@ -41,6 +42,7 @@ public class Guard extends Robot {
 	 */
 	
 	RobotInfo archon;
+	Defend defend;
 	
 	
 	public Guard(RobotController _rc) 
@@ -49,6 +51,8 @@ public class Guard extends Robot {
 		rand = new Random(rc.getID());
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
+		strat = Strategy.DEFEND;
+		defend = new Defend(rc, this);
 	}
 
 	private void spot_archon()
@@ -67,35 +71,38 @@ public class Guard extends Robot {
 	@Override
 	public void move() throws GameActionException 
 	{
-		if(archon == null)
-		{
-			spot_archon();
-		}
-
-		if(!fight.fight())
-		{
-			
-			if(archon != null)
-			{
-				spot_archon();
-				nav.guard(archon.location);
-			}
-			else
-			{
-				if(rc.getHealth()<20){
-					nav.flee();
-				}else{
-					nav.move();
-				}		
-			}	
-			
-		}
-	}
-
-	@Override
-	protected void actions() throws GameActionException {
-		// TODO Auto-generated method stub
 		
-	}
+		switch(strat)
+		{
+			case DEFEND:
+				defend.turtle();
+				break;
+			default:
+				break;
 
+		}
+//		if(archon == null)
+//		{
+//			spot_archon();
+//		}
+//
+//		if(!fight.fight())
+//		{
+//
+//			if(archon != null)
+//			{
+//				spot_archon();
+//				nav.guard(archon.location);
+//			}
+//			else
+//			{
+//				if(rc.getHealth()<20){
+//					nav.flee();
+//				}else{
+//					nav.move();
+//				}
+//			}	
+//
+//		}
+	}
 }

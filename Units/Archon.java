@@ -4,10 +4,14 @@
 package victorious_secret.Units;
 
 import java.util.Random;
+
 import battlecode.common.*;
+import battlecode.instrumenter.inject.System;
+import scala.xml.dtd.impl.SyntaxError;
 import victorious_secret.Robot;
-import victorious_secret.Fight.Fight;
-import victorious_secret.Nav.Nav;
+import victorious_secret.Behaviour.Fight;
+import victorious_secret.Behaviour.Nav;
+import victorious_secret.Strategy.Defend;
 
 
 /**
@@ -28,31 +32,73 @@ public class Archon extends Robot {
 	/**
 	 * 
 	 */
+	Defend defend;
 	
-	private RobotType[] buildQueue = {RobotType.SOLDIER}; //RobotType.GUARD, 
+	//private RobotType[] buildQueue = {RobotType.SOLDIER}; //RobotType.GUARD, 
 		
 	public Archon(RobotController _rc) 
 	{
+		
 		rc = _rc;
 		rand = new Random(rc.getID());
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
+
+		//Uncomment as necessary
+		strat = Strategy.DEFEND;
+		defend = new Defend(rc, this);
+//		strat = Strategy.ATTACK;
+//		strat = Strategy.SCOUT;
+//		strat = Strategy.FLEE;
 	}
 
 	@Override
 	public void move() throws GameActionException 
-	{	
-		fight.spotEnemies();
-		if(!spawn(buildQueue[rand.nextInt(buildQueue.length)]))
+	{
+		switch(strat)
 		{
-			nav.flee();
+			case DEFEND:
+				defend.turtle();
+				break;
+
+			case ATTACK:
+				attackPete();
+				break;
+
+			case SCOUT:
+				//TODO:throw exception
+				break;
+			
+			case FLEE:
+				fleeMo();
+			default:
+				break;
+
+
 		}
+		//fight.spotEnemies();
+
+//		if(!spawn(buildQueue[rand.nextInt(buildQueue.length)]))
+//		{
+//			nav.flee();
+//		}
+
 	}
 
-	@Override
-	protected void actions() throws GameActionException {
-		// TODO Auto-generated method stub
-		
+	private void fleeMo() {
+	}
+
+	private void attackPete() {
+	}
+
+	private void turtle() {
+		//TODO: TIM
+	}
+
+	private MapLocation bestArchonLocation()
+	{
+		MapLocation[] aLocs = rc.getInitialArchonLocations(rc.getTeam());
+		return aLocs[0];
 	}
 	
 	private Boolean spawn(RobotType roro) throws GameActionException 

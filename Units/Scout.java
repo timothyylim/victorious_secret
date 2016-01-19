@@ -5,9 +5,9 @@ package victorious_secret.Units;
 
 import java.util.Random;
 import battlecode.common.GameActionException;
+import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
-import victorious_secret.Nav.Nav;
-import victorious_secret.Fight.Fight;
+import victorious_secret.Behaviour.Nav;
 import victorious_secret.Robot;
 
 /**
@@ -31,11 +31,15 @@ public class Scout extends Robot {
 	/**
 	 * 
 	 */
+	MapLocation archonPos;
+	int peteTest;
+
 	public Scout(RobotController _rc) 
 	{
 		rc = _rc;
 		rand = new Random(rc.getID());
 		nav = new Nav(rc, this);
+		strat = Strategy.DEFEND;
 		//fight = new Fight(rc, this); Scouts cannot fight
 	}
 
@@ -44,11 +48,4 @@ public class Scout extends Robot {
 	{
 		nav.move();
 	}
-	@Override
-	protected void actions() throws GameActionException 
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
 }

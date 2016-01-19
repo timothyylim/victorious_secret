@@ -6,9 +6,10 @@ package victorious_secret.Units;
 import java.util.Random;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
+import victorious_secret.Behaviour.Signalling;
 import victorious_secret.Robot;
-import victorious_secret.Fight.Fight;
-import victorious_secret.Nav.Nav;
+import victorious_secret.Behaviour.Fight;
+import victorious_secret.Behaviour.Nav;
 
 /**
  * @author APOC
@@ -41,31 +42,48 @@ public class Soldier extends Robot {
 		rand = new Random(rc.getID());
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
-		
+		strat = Strategy.ATTACK;
+		sig  = new Signalling(rc, this);
+
+		team = rc.getTeam();
+
+		setArchonLocations();
+
 	}
 
 	@Override
 	public void move() throws GameActionException 
 	{
-		if(!fight.fight())
+        //System.out.println();
+		sig.listen();
+
+	//	listen();
+	//	broadcast();
+
+
+		if(rc.getHealth() < 20)
 		{
-			broadcast();
-			listen();
-
-			if(rc.getHealth() < 20){
-				
-				nav.flee();	
-			}else{
-				nav.move();		
-			}
-			
+			strat = Strategy.FLEE;
 		}
-	}
 
-	@Override
-	protected void actions() throws GameActionException {
-		// TODO Auto-generated method stub
-		
-	}
+		switch(strat) {
+            case DEFEND:
+                break;
+            case ATTACK:
+                akk.attack();
+                break;
 
+            case SCOUT:
+                //TODO:throw exception
+                break;
+
+            case FLEE:
+                nav.flee();
+            default:
+                break;
+        }
+
+        //sig.setMessage(Signalling.MessageType.MOVE_EAST);
+        sig.broadcast();
+	}
 }

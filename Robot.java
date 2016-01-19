@@ -3,10 +3,17 @@
  */
 package victorious_secret;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
-import victorious_secret.Nav.Nav;
-import victorious_secret.Fight.Fight;
+
+import victorious_secret.Behaviour.Nav;
+import victorious_secret.Behaviour.Fight;
 import battlecode.common.*;
+import victorious_secret.Behaviour.Signalling;
+import victorious_secret.Strategy.Attack;
+
 /**
  * @author APOC
  * This serves as the root class from which all other robots derive
@@ -18,98 +25,49 @@ public abstract class Robot {
 	public Random rand;
 	public static Nav nav;
 	public static Fight fight;
+    public static Attack akk;
+	public static Signalling sig;
+
+	public static Team team;
+	//public static int readyTurn;
+
 	public MapLocation targetShootLoc;
 	public MapLocation targetMoveLoc;
+	public static Map<Integer, MapLocation> enemyArchonLocations = new HashMap<>();
+    public MapLocation[] zombieDenLocations;
+    public Map<Integer, MapLocation> enemyUnitLocations;
 	
 	public int listeningTo;
 	public Direction messageIn;
-	
-	
+
+	//TODO: put enum into own class
+	public enum Strategy {ATTACK, DEFEND, FLEE, SCOUT}
+	public Strategy strat;
 	
 	public abstract void move() throws GameActionException;
-	
-	protected abstract void actions() throws GameActionException;
-	
-	protected void listen() throws GameActionException
-	{
-		Signal sig = rc.readSignal();;
-		
-		if(sig == null)
-		{
-			messageIn = null;
-			return;
-		}
-		
-		listeningTo = sig.getID();
-		int n = 1;
 
-		do
-		{
-			sig = rc.readSignal();
-			if(sig.getID() == listeningTo)					
-			{
-				n += 1;
+    public static void setArchonLocations()
+    {
+        enemyArchonLocations = new HashMap<>();
+        MapLocation[] initialArchonLocations = rc.getInitialArchonLocations(team.opponent());
+        int i = -1;
+        for(MapLocation m : initialArchonLocations){
+            enemyArchonLocations.put(i, m);
+            i--;
+        }
+
+		enemyArchonLocations.put(0, nav.averageLoc(initialArchonLocations));
+    }
+
+	public static void removeArchonLocation(MapLocation m)
+	{
+		Iterator<Map.Entry<Integer,MapLocation>> iter = enemyArchonLocations.entrySet().iterator();
+		while (iter.hasNext()) {
+			Map.Entry<Integer, MapLocation> entry = iter.next();
+			if(entry.getValue().compareTo(m) == 0) {
+				iter.remove();
 			}
-		}while(sig != null);
-		
-		switch(n)
-		{
-			case 1:
-				messageIn = Direction.NORTH;
-				break;
-			case 2:
-				messageIn = Direction.EAST;
-				break;
-			case 3:
-				messageIn = Direction.SOUTH;
-				break;
-			case 4:
-				messageIn = Direction.WEST;
-				break;
-			default:
-				messageIn = null;
-				break;
 		}
 	}
 
-	
-	protected void broadcast() throws GameActionException
-	{		
-		Direction messageOut;
-		if(fight.seenEnemies != null && fight.seenEnemies.length == 0)
-		{
-			messageOut = rc.getLocation().directionTo(nav.averageEnemyLoc());
-			
-			//start broadcast
-			switch(messageOut)
-			{
-				case NORTH:
-				case NORTH_EAST:
-					rc.broadcastSignal(rc.getType().sensorRadiusSquared);
-					break;
-					
-				case EAST:
-				case SOUTH_EAST:
-					rc.broadcastSignal(rc.getType().sensorRadiusSquared);
-					rc.broadcastSignal(rc.getType().sensorRadiusSquared);
-					break;
-					
-				case SOUTH:
-				case SOUTH_WEST:
-					rc.broadcastSignal(rc.getType().sensorRadiusSquared);
-					rc.broadcastSignal(rc.getType().sensorRadiusSquared);
-					break;
-					
-				case WEST:
-				case NORTH_WEST:
-					rc.broadcastSignal(rc.getType().sensorRadiusSquared);
-					rc.broadcastSignal(rc.getType().sensorRadiusSquared);
-					break;
-				default:
-					break;
-			}	
-		}
-		 
-		
-	}	
 }
