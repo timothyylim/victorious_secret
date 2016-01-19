@@ -1,21 +1,16 @@
 package victorious_secret.Strategy;
 
-<<<<<<< HEAD
-=======
 import battlecode.common.*;
 import victorious_secret.Robot;
 import java.util.Vector;
 
 import static battlecode.common.Direction.*;
 
->>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
+
 /**
  * Created by ple15 on 15/01/16.
  */
 public class Scout {
-<<<<<<< HEAD
-=======
-
     private static RobotController rc;
     private static Robot robot;
 
@@ -149,9 +144,4 @@ public class Scout {
 
         return robot.nav.averageLoc(robot.fight.seenZombies);
     }
-
-
-
-
->>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
 }

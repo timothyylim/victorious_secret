@@ -39,13 +39,7 @@ public class Defend {
 				// ARCHON
 				if(rc.getType() == RobotType.ARCHON){			
 					//If Zombie Rush
-<<<<<<< HEAD
-					//buildGuardRing();
-                    buildSoldierRing();
-=======
 					buildGuardRing();
-                    //buildSoldierRing();
->>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
 				}
 			}
 			//GUARD
@@ -54,10 +48,7 @@ public class Defend {
 			}
 			
 			//************//
-<<<<<<< HEAD
 			//ZOMBIE RUSH!!!
-=======
->>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
 			if(ZombieRush == false){
 				
 				

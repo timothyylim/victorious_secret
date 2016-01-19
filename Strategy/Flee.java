@@ -1,12 +1,11 @@
 package victorious_secret.Strategy;
 
-<<<<<<< HEAD
+import battlecode.common.*;
+import battlecode.common.RobotController;
+
 /**
  * Created by ple15 on 15/01/16.
  */
-public class Flee {
-=======
-import battlecode.common.*;
 
 public class Flee {
 	static RobotController _rc;
@@ -217,6 +216,4 @@ public class Flee {
         }
         return opponentEnemies;
     }
-
->>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
 }
