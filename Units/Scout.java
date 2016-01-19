@@ -7,6 +7,10 @@ import java.util.Random;
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+<<<<<<< HEAD
+=======
+import victorious_secret.Behaviour.Fight;
+>>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
 import victorious_secret.Behaviour.Nav;
 import victorious_secret.Robot;
 
@@ -33,6 +37,10 @@ public class Scout extends Robot {
 	 */
 	MapLocation archonPos;
 	int peteTest;
+<<<<<<< HEAD
+=======
+	victorious_secret.Strategy.Scout scout;
+>>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
 
 	public Scout(RobotController _rc) 
 	{
@@ -40,12 +48,17 @@ public class Scout extends Robot {
 		rand = new Random(rc.getID());
 		nav = new Nav(rc, this);
 		strat = Strategy.DEFEND;
+<<<<<<< HEAD
 		//fight = new Fight(rc, this); Scouts cannot fight
+=======
+		fight = new Fight(rc, this);
+		scout = new victorious_secret.Strategy.Scout(rc,this);
+>>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
 	}
 
 	@Override
 	public void move() throws GameActionException 
 	{
-		nav.move();
+		scout.runScoutStrategy2();
 	}
 }

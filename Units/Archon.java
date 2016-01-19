@@ -6,8 +6,12 @@ package victorious_secret.Units;
 import java.util.Random;
 
 import battlecode.common.*;
+<<<<<<< HEAD
 import battlecode.instrumenter.inject.System;
 import scala.xml.dtd.impl.SyntaxError;
+=======
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+>>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
@@ -34,7 +38,13 @@ public class Archon extends Robot {
 	 */
 	Defend defend;
 	
+<<<<<<< HEAD
 	//private RobotType[] buildQueue = {RobotType.SOLDIER}; //RobotType.GUARD, 
+=======
+
+	//private RobotType[] buildQueue = {RobotType.SOLDIER}; //RobotType.GUARD, 
+
+>>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
 		
 	public Archon(RobotController _rc) 
 	{
@@ -44,17 +54,33 @@ public class Archon extends Robot {
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 
+<<<<<<< HEAD
 		//Uncomment as necessary
 		strat = Strategy.DEFEND;
 		defend = new Defend(rc, this);
 //		strat = Strategy.ATTACK;
 //		strat = Strategy.SCOUT;
 //		strat = Strategy.FLEE;
+=======
+
+		//Uncomment as necessary
+		strat = Strategy.DEFEND;
+		defend = new Defend(rc, this);
+
+//		strat = Strategy.ATTACK;
+		strat = Strategy.SCOUT;
+//		strat = Strategy.FLEE;
+
+>>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
 	}
 
 	@Override
 	public void move() throws GameActionException 
 	{
+<<<<<<< HEAD
+=======
+
+>>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
 		switch(strat)
 		{
 			case DEFEND:
@@ -66,7 +92,12 @@ public class Archon extends Robot {
 				break;
 
 			case SCOUT:
+<<<<<<< HEAD
 				//TODO:throw exception
+=======
+
+
+>>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
 				break;
 			
 			case FLEE:

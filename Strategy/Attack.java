@@ -2,13 +2,8 @@ package victorious_secret.Strategy;
 
 import battlecode.common.*;
 import victorious_secret.Behaviour.Fight;
-import victorious_secret.Behaviour.Signalling;
 import victorious_secret.Robot;
-import victorious_secret.Behaviour.Signalling;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by ple15 on 15/01/16.
@@ -21,7 +16,6 @@ public class Attack extends Fight
     public Attack(RobotController _rc, Robot _robot) {
         super(_rc, _robot);
     }
-
 
     public static void attack() throws GameActionException {
         if(targetArchon == null || locationClear(targetArchon))
@@ -62,6 +56,32 @@ public class Attack extends Fight
             {
                 //standardAttack();
                 lowestHealthAttack();
+                try
+                {
+                    //Default is to always shoot at the last thing we attacked
+                    lastTargeted = findLastTargeted(attackableEnemies);
+
+                    //Then is to always shoot at Big Zombies if they're available
+                    if(lastTargeted == null)
+                    {
+                        lastTargeted = findLowestHealthEnemy(attackableEnemies, RobotType.BIGZOMBIE);
+                    }
+
+                    //Otherwise just shoot at the lowest health zombie
+                    if(lastTargeted == null) {
+                        lastTargeted = findLowestHealthEnemy(attackableEnemies);
+                    }
+
+                    if(rc.canAttackLocation(lastTargeted.location))
+                    {
+                        rc.attackLocation(lastTargeted.location);
+                    }
+                }
+                catch (GameActionException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
                 return true;
             }
             else
@@ -78,14 +98,14 @@ public class Attack extends Fight
         }
         else
         {
-            if(lastTargeted != null)
-            {
+            if(lastTargeted != null){
                 robot.targetMoveLoc = lastTargeted.location;
             }
-            else if(robot.sig.lastMoveSignal != null)
-            {
-
+            else if(robot.sig.lastMoveSignal != null) {
                 robot.targetMoveLoc = rc.getLocation().add(robot.sig.lastMoveSignal);
+            }
+            else{
+                robot.targetMoveLoc = robot.nav.averageLoc(spotAllies());
             }
             robot.nav.move();
         }

@@ -43,23 +43,32 @@ public class Soldier extends Robot {
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 		strat = Strategy.ATTACK;
+<<<<<<< HEAD
 		sig  = new Signalling(rc, this);
 
 		team = rc.getTeam();
 
 		setArchonLocations();
 
+=======
+>>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
 	}
 
 	@Override
 	public void move() throws GameActionException 
 	{
+<<<<<<< HEAD
         //System.out.println();
 		sig.listen();
 
 	//	listen();
 	//	broadcast();
 
+=======
+
+		broadcast();
+		listen();
+>>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
 
 		if(rc.getHealth() < 20)
 		{
@@ -70,7 +79,11 @@ public class Soldier extends Robot {
             case DEFEND:
                 break;
             case ATTACK:
+<<<<<<< HEAD
                 akk.attack();
+=======
+                akk.kiteStratgey();
+>>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
                 break;
 
             case SCOUT:
@@ -82,8 +95,13 @@ public class Soldier extends Robot {
             default:
                 break;
         }
+<<<<<<< HEAD
 
         //sig.setMessage(Signalling.MessageType.MOVE_EAST);
         sig.broadcast();
 	}
 }
+=======
+	}
+}
+>>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0

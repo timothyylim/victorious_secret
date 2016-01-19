@@ -77,7 +77,11 @@ public class Nav {
 	{
 		if(robot.fight.seenEnemies != null && robot.fight.seenEnemies.length > 0)
 		{
+<<<<<<< HEAD
             MapLocation[] locs = {rc.getLocation(), averageLoc(robot.fight.attackableEnemies)};
+=======
+            MapLocation[] locs = {rc.getLocation(), averageLoc(robot.fight.seenEnemies)};
+>>>>>>> 321bfbdb6299f51b1140e2e12dc4fa03819995f0
 
             robot.targetMoveLoc = averageLoc(locs);
 		}
