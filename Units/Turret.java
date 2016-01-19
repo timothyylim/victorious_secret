@@ -9,6 +9,10 @@ import battlecode.common.*;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
+import victorious_secret.Strategy.Defend;
+
+
+
 
 /**
  * @author APOC
@@ -46,32 +50,37 @@ public class Turret extends Robot {
 	/**
 	 * 
 	 */
+
+	Defend defend;
 	MapLocation attackLoc;
 
 	public Turret(RobotController _rc) 
 	{
 		rc = _rc;
-		rand = new Random(rc.getID());
+		//rand = new Random(rc.getID());
+		rand = new Random();
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 		strat = Strategy.DEFEND;
+		defend = new Defend(rc, this);
 	}
 
 	@Override
-	public void move() throws GameActionException 
-	{
+	public void move() throws GameActionException {
 
-		//updateAttackLoc();
-		listenForSignal();
-		if(attackLoc != null){
-
-			if(rc.isCoreReady()){
-				if(rc.canAttackLocation(attackLoc)){
+		switch (strat) {
+			case DEFEND:
+				updateAttackLoc();
+				if(attackLoc != null && rc.isCoreReady() && rc.canAttackLocation(attackLoc)){
 					rc.attackLocation(attackLoc);
 				}
-			}
-		}
 
+				break;
+			default:
+				break;
+
+
+		}
 	}
 
 
@@ -82,26 +91,16 @@ public class Turret extends Robot {
 
 			Signal sig = sigs[sigs.length-1];
 			int[] message = sig.getMessage();
-			if(message != null){
-				System.out.println("signalreceved");
-				attackLoc = new MapLocation(message[0],message[1]);
+			if(message != null) {
+				attackLoc = new MapLocation(message[0], message[1]);
 				return true;
 			}
-			/*
-			int[] loc = sigs[0].getMessage();//.getMessage();
-			if(loc !=null){
-
-			}
-			*/
 		}
 		return false;
 	}
 
 	public void updateAttackLoc(){
-		if(listenForSignal()){
-
-		}else{
-
+		if(!listenForSignal()){
 			fight.targetEnemies();
 			if(fight.attackableEnemies != null && fight.attackableEnemies.length>0){
 

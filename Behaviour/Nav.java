@@ -4,7 +4,6 @@
 package victorious_secret.Behaviour;
 
 import battlecode.common.*;
-import scala.xml.PrettyPrinter;
 import victorious_secret.Robot;
 
 /**

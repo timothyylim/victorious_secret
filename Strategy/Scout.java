@@ -1,14 +1,10 @@
 package victorious_secret.Strategy;
 
 import battlecode.common.*;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
+
 import victorious_secret.Robot;
 
-import java.util.Random;
 import java.util.Vector;
-
-import static battlecode.common.Direction.*;
-
 
 /**
  * Created by ple15 on 15/01/16.
@@ -73,15 +69,17 @@ public class Scout {
     public void runScoutStrategy3() throws GameActionException {
         sense_map();
         turretLoc = findClosestRobot(robot.fight.seenAllies, RobotType.TURRET);
-        flee.setTarget(turretLoc);
 
         if (rc.isCoreReady()) {
             broadcastEnemyInTurretBlindSpot();
         }
 
-        if (rc.isCoreReady()) {
-            rc.move(flee.getNextMove());
-        }
+//        if (rc.isCoreReady()) {
+//            Direction dir = flee.getNextMove();
+//            if(rc.canMove(dir)){
+//                rc.move(flee.getNextMove());
+//            }
+//        }
 
     }
 

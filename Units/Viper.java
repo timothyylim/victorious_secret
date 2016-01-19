@@ -38,7 +38,8 @@ public class Viper extends Robot {
 	public Viper(RobotController _rc) 
 	{
 		rc = _rc;
-		rand = new Random(rc.getID());
+		//rand = new Random(rc.getID());
+		rand = new Random();
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 		strat = Strategy.DEFEND;

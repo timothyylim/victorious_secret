@@ -4,11 +4,8 @@ import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import battlecode.common.Signal;
-import battlecode.instrumenter.inject.System;
-import scala.Int;
 import victorious_secret.Robot;
 
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

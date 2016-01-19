@@ -8,16 +8,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
-import victorious_secret.Behaviour.Nav;
-import victorious_secret.Behaviour.Fight;
 import battlecode.common.*;
-
-
-import victorious_secret.Behaviour.Signalling;
+import victorious_secret.Behaviour.*;
 import victorious_secret.Strategy.Attack;
-import victorious_secret.Strategy.Scout;
-
-
 
 /**
  * @author APOC
