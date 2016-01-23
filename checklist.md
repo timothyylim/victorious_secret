@@ -1,5 +1,11 @@
 #VS
 
+-Flush zombie dens
+
+-Bug nav to gather
+
+-Turret build
+
 
 
 
