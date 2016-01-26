@@ -56,7 +56,7 @@ public class Guard extends Robot {
 		Flee.initialiseFlee(rc);
 
 		team = rc.getTeam();
-		strat = Strategy.DEFEND;
+		strat = Strategy.ATTACK;
 		targetMoveLoc = new MapLocation(449,172);
 
 		setArchonLocations();
@@ -67,9 +67,7 @@ public class Guard extends Robot {
 	{
 		updateOurArchonLocations(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
 
-
-		switch(strat)
-		{
+		switch(strat){
 			case DEFEND:
 				defend.turtle();
 				break;
@@ -83,14 +81,42 @@ public class Guard extends Robot {
 			default:
 				break;
 		}
-
 	}
+
 	private void attackPattern() throws GameActionException{
-		RobotInfo t = fight.findClosestEnemy(fight.spotEnemies());
-		if(t != null && rc.isCoreReady()) {
-			akk.getClose(t);
+		//If there are hostile units that are not Archon, ZombieDens, or Turrets, then they hold position
+		//Unless their turret is in range of enemy turrets
+		//Guards stay in line if their turret is threatened, they can only see Archons or Zombiedens
+
+		RobotInfo[] enemiesInRange = fight.targetEnemies();
+		RobotInfo t = fight.findLowestHealthEnemy(enemiesInRange);
+
+		if(t != null){
+			if(rc.isWeaponReady()){
+				rc.attackLocation(t.location);
+			}
+		}else{
+			RobotInfo[] enemiesInSight = fight.spotEnemies();
+			if(enemiesInSight != null){
+				boolean rush = false;
+				for(RobotInfo r : enemiesInSight){
+					if(r.type == RobotType.ARCHON ||
+							r.type == RobotType.ZOMBIEDEN ||
+							r.type == RobotType.TURRET ||
+							r.type == RobotType.TTM){
+						rush = true;
+					}
+				}
+
+				t = fight.findLowestHealthEnemy(enemiesInSight);
+
+				if(t != null && rush && rc.isCoreReady()) {
+					akk.getClose(t);
+				}
+			}
 		}
 	}
+
 	private void maintainRadius() throws GameActionException {
 		if (rc.isCoreReady()) {
 			MapLocation here = rc.getLocation();
@@ -114,9 +140,8 @@ public class Guard extends Robot {
 				if (radiusToTarget != targetGuardRadius) {
 					//move into position
 					List<MapLocation> allowedTargets = nav.findAllowedLocations(here, targetGuardRadius, targetMoveLoc);
-					if(allowedTargets != null) {
-						nav.moveToFreeLocation(allowedTargets, here, targetMoveLoc);
-					}
+					//System.out.println(allowedTargets);
+					nav.moveToFreeLocation(allowedTargets, here, targetMoveLoc);
 				}
 			} else {
 				//There are no visible turrets! You're lost, go home.

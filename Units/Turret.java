@@ -103,16 +103,15 @@ public class Turret extends Robot {
 	}
 
 	private void attack() throws GameActionException {
-		RobotInfo[] opponentEnemies = rc.senseHostileRobots(rc.getLocation(), RobotType.TURRET.attackRadiusSquared);
-		if (opponentEnemies != null && opponentEnemies.length > 0) {
-			updateCooldown(opponentEnemies);
+		RobotInfo[] enemies = rc.senseHostileRobots(rc.getLocation(), RobotType.TURRET.attackRadiusSquared);
+		if (enemies != null && enemies.length > 0) {
+			updateCooldown(enemies);
 
 			if (rc.getType() == RobotType.TURRET) {
 				updateAttackLoc();
 				if (attackLoc != null && rc.isWeaponReady()) {
 					rc.attackLocation(attackLoc);
 				}
-
 			}else {
 				rc.unpack();
 			}
@@ -123,7 +122,6 @@ public class Turret extends Robot {
 	}
 
 	private void _move() throws GameActionException {
-
 		if(rc.isCoreReady() && targetMoveLoc != null) {
 			if (rc.getType() == RobotType.TTM) {
 				lineUp();

@@ -60,14 +60,12 @@ public abstract class Robot {
 		}
 	}
 
-
-
 	protected static void returnToBase() throws GameActionException {
 		//TODO: if(can see archon){ DEFEND ARCHON }
 		//else{ ... }
 		if(rc.isCoreReady()){
 			MapLocation t = fight.findClosestMapLocation(ourArchonLocations.values(), rc.getLocation());
-			System.out.println("LOST! RETURN TO BASE: " + t);
+			//System.out.println("LOST! RETURN TO BASE: " + t);
 			Flee.setTarget(t);
 			Direction dir = Flee.getNextMove();
 			if(rc.canMove(dir)) {
@@ -87,7 +85,6 @@ public abstract class Robot {
 
     public static void setArchonLocations()
     {
-
 		setEnemyArchonLocations();
 		setOurArchonLocations();
     }
