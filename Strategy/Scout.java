@@ -27,7 +27,7 @@ public class Scout {
     public MapLocation turretLoc;
     
     /*Scout Strategy 5 Variables: Swarm Strategy*/
-    double strength_needed = 200;
+    double strength_needed = 600;
     boolean has_strength = false;
     MapLocation home;
 
@@ -149,7 +149,7 @@ public class Scout {
     	if(can_see_enemy() && !can_see_army()){
     		call_for_help();
     	}if(can_see_enemy() && can_see_army()){
-    		call_for_help();
+    		//call_for_help();
     		//runScoutStrategy3();
     	}
     	
