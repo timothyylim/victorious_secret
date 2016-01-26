@@ -5,6 +5,7 @@ package victorious_secret.Behaviour;
 
 import battlecode.common.*;
 import victorious_secret.Robot;
+import victorious_secret.Strategy.Flee;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -247,5 +248,112 @@ public class Nav {
             i++;
         }while(i < 10);
 
-	}	
+	}
+
+    public static Direction findBestMove(MapLocation here, MapLocation target, List<Direction> allowedDirs) throws GameActionException {
+        int bestDistance = 99999;
+        Direction bestDirection = null;
+        for(Direction d : allowedDirs){
+            MapLocation newLoc = here.add(d);
+            if(rc.onTheMap(newLoc) &&
+                    rc.senseRobotAtLocation(newLoc) == null
+                    &&  newLoc.distanceSquaredTo(target) < bestDistance){
+                bestDirection = d;
+                bestDistance = newLoc.distanceSquaredTo(target);
+                bestDistance += turnsToClear(newLoc) * 3;
+                System.out.println("best = " + bestDistance + " " + bestDirection);
+            }
+        }
+        return bestDirection;
+    }
+
+    public static void moveOrClear(Direction dir) throws GameActionException {
+        //System.out.println("Moving " + dir);
+        if(rc.canMove(dir)){
+            rc.move(dir);
+        }else {
+            rc.clearRubble(dir);
+        }
+    }
+
+    public static void moveAlongRadiusLarger(MapLocation here, MapLocation target, int targetRadius) throws GameActionException {
+        //Implementation of bug nav where units do not move beyond an allowed distance to a location
+        //get the directions we can move
+        List<Direction> allowedDirs = getAllowedDirectionsLarger(here, target, targetRadius);
+        //find the best direction
+        //best is defined by closeness and clearness
+        Direction bestDirection = findBestMove(here, target, allowedDirs);
+
+        //move there
+        if (bestDirection != null) {
+            moveOrClear(bestDirection);
+        }
+    }
+
+    public static void moveAlongRadiusSmaller(MapLocation here, MapLocation target, int targetRadius) throws GameActionException {
+        //Implementation of bug nav where units do not move beyond an allowed distance to a location
+        //get the directions we can move
+        List<Direction> allowedDirs = getAllowedDirectionsSmaller(here, target, targetRadius);
+        //find the best direction
+        //best is defined by closeness and clearness
+        Direction bestDirection = findBestMove(here, target, allowedDirs);
+
+        //move there
+        if (bestDirection != null) {
+            moveOrClear(bestDirection);
+        }
+
+    }
+
+    public static int turnsToClear(MapLocation loc){
+        //Sets an upper bound on the number of turns to clear the rubble
+        double r = rc.senseRubble(loc);
+        //Tile is passable once it is below 50 rubble
+        return (int) Math.max((r - 50) / 10, 0);
+    }
+
+    public static List<Direction> getAllowedDirectionsLarger(MapLocation here, MapLocation target, int targetRadius){
+
+        int upperRadiusSq = (int) (Math.pow(targetRadius + 1, 2) - 1);
+
+        List<Direction> allowedDirs = new ArrayList<>();
+        for(Direction d : Direction.values()){
+			/*int tR = (int)Math.sqrt(here.add(d).distanceSquaredTo(targetMoveLoc));
+			if(tR > targetRadius && d != Direction.OMNI && d != Direction.NONE){
+				allowedDirs.add(d);
+			}*/
+            if(d != Direction.OMNI && d != Direction.NONE && here.add(d).distanceSquaredTo(target) > upperRadiusSq){
+                allowedDirs.add(d);
+            }
+        }
+        return allowedDirs;
+    }
+
+    public static List<Direction> getAllowedDirectionsSmaller(MapLocation here, MapLocation target, int targetRadius){
+        List<Direction> allowedDirs = new ArrayList<>();
+        for(Direction d : Direction.values()){
+            int tR = (int)Math.sqrt(here.add(d).distanceSquaredTo(target));
+            if(tR < targetRadius){
+                allowedDirs.add(d);
+            }
+        }
+        return allowedDirs;
+    }
+
+    public static void moveToFreeLocation(List<MapLocation> allowedTargets, MapLocation here, MapLocation target) throws GameActionException {
+        MapLocation t;
+        if(allowedTargets != null) {
+            //Flee.setTarget(fight.findClosestFreeMapLocation(allowedTargets, here));
+            t = robot.fight.findClosestFreeMapLocation(allowedTargets, here);
+        }else{
+            //Flee.setTarget(targetMoveLoc);
+            t = target;
+        }
+        //System.out.println("   MOVING TO TARGET " + t);
+        Flee.setTarget(t);
+        Direction dir = Flee.getNextMove();
+        if(rc.canMove(dir)) {
+            rc.move(dir);
+        }
+    }
 }

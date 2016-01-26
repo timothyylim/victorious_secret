@@ -14,7 +14,6 @@ public class RobotPlayer
 	public static void run(RobotController _rc)
 	{
 		rc = _rc;
-		
 		try
 		{
 			//Set the unit to the correct class
