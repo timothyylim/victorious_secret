@@ -2,7 +2,6 @@
 package victorious_secret.Strategy;
 
 import battlecode.common.*;
-
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Nav;
 

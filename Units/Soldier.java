@@ -7,12 +7,9 @@ package victorious_secret.Units;
 import java.util.Random;
 
 import battlecode.common.*;
-
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
-
-
 import victorious_secret.Strategy.Attack;
 import victorious_secret.Strategy.Defend;
 import victorious_secret.Strategy.Flee;

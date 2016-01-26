@@ -1,12 +1,9 @@
 package victorious_secret.Strategy;
 import battlecode.common.*;
-
+import victorious_secret.*;
 import victorious_secret.Behaviour.Fight;
-import victorious_secret.Robot;
 
 import java.util.Random;
-
-import victorious_secret.*;
 
 
 /**

@@ -1,7 +1,7 @@
 package victorious_secret;
 
-import victorious_secret.Units.*;
 import battlecode.common.*;
+import victorious_secret.Units.*;
 
 public class RobotPlayer
 {

@@ -4,13 +4,11 @@
 package victorious_secret.Units;
 
 import battlecode.common.*;
-
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
 import victorious_secret.Strategy.Defend;
 import victorious_secret.Strategy.Flee;
-
 
 import java.util.Random;
 
@@ -47,7 +45,7 @@ public class Archon extends Robot {
 
 		defend = new Defend(rc, this);
 		
-		strat = Strategy.ATTACK;
+		strat = Strategy.DEFEND;
 		buildQueue = 0;
 	}
 

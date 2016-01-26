@@ -56,7 +56,7 @@ public class Guard extends Robot {
 		Flee.initialiseFlee(rc);
 
 		team = rc.getTeam();
-		strat = Strategy.ATTACK;
+		strat = Strategy.DEFEND;
 		targetMoveLoc = new MapLocation(449,172);
 
 		setArchonLocations();
@@ -67,8 +67,13 @@ public class Guard extends Robot {
 	{
 		updateOurArchonLocations(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
 
+		if(listenForSignal()){
+			strat = Strategy.ATTACK;
+		}
+		
 		switch(strat){
 			case DEFEND:
+				
 				defend.turtle();
 				break;
 			case RETURN_TO_BASE:
@@ -76,7 +81,6 @@ public class Guard extends Robot {
 				break;
 			case ATTACK:
 				
-				listenForSignal();
 				maintainRadius();
 				attackPattern();
 				break;
@@ -162,7 +166,7 @@ public class Guard extends Robot {
 			Signal sig = sigs[sigs.length-1];
 			int[] message = sig.getMessage();
 			if(message != null && sig.getTeam() == rc.getTeam()) {
-				System.out.println("signal received");
+				//System.out.println("signal received");
 				targetMoveLoc = new MapLocation(message[0], message[1]);
 				//attackLoc = new MapLocation(message[0], message[1]);
 				return true;

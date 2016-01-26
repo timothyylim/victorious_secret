@@ -7,10 +7,9 @@ import java.util.Random;
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
-
+import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
-import victorious_secret.Robot;
 
 /**
  * @author APOC
