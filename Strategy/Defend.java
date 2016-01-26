@@ -1,11 +1,13 @@
 package victorious_secret.Strategy;
 import battlecode.common.*;
+
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Robot;
 
 import java.util.Random;
 
 import victorious_secret.*;
+
 
 /**
  * Created by ple15 on 15/01/16.
@@ -16,6 +18,7 @@ public class Defend {
 	public static Robot robot;
 	static int[] possibleDirections = new int[]{0,1,-1,2,-2,3,-3,4};
 	static Direction movingDirection = Direction.EAST;
+
 
 	private static int ATTACK_X = 15151515;
 	private static int ATTACK_Y = 14141414;
@@ -34,17 +37,20 @@ public class Defend {
     static Random rnd;
 
 	static int PERIMETER = 2;
-	static boolean scout_here = false;
+	static int scout_build = 0;
 	static int map_count = 0;
 
 	static int TTMPATIENCE = 15;
+
 	
 	public Defend(RobotController _rc, Robot _robot){
 		rc = _rc;
 		robot = _robot;
+
 		rnd = new Random(rc.getID());
 		startingLocation = new MapLocation(rc.getLocation().x,rc.getLocation().y);
 		Flee.initialiseFlee(rc);
+
 	}
 
 
@@ -53,6 +59,7 @@ public class Defend {
 
 	public void turtle() throws GameActionException {
         // Look for enemies
+
 
 		if (rc.isCoreReady()) {
 
@@ -81,8 +88,10 @@ public class Defend {
 				moveTTMAway();
 			}
 
+
 		}
     }
+
 
 	private boolean lookForEnemies() throws GameActionException {
 		RobotInfo[] opponentEnemies = rc.senseHostileRobots(rc.getLocation(), rc.getType().attackRadiusSquared);
@@ -114,10 +123,13 @@ public class Defend {
 					}
 				}
 
+
 			}
+
 		}
 		return false;
 	}
+
 
 	private void turretCode() throws GameActionException {
 
@@ -302,13 +314,7 @@ public class Defend {
 				tryToMove(archon_direction.opposite());
 				return;
 			}
-			//Try to move to movingDirection
-//			if(rc.canMove(movingDirection)){
-//				if(Math.sqrt(distance_from_archon) < PERIMETER){
-//
-//					return;
-//				}
-//			}
+
 
 			//Else try to clear rubble
 			if(rc.getType().canClearRubble()){
@@ -354,6 +360,7 @@ public class Defend {
 		}
 
 		return -1;
+
 	}
 
 	private boolean buildUnits() throws GameActionException {
@@ -369,21 +376,13 @@ public class Defend {
 			PERIMETER ++;
 		}
 
-		scout_here = false;
-
-		if(countUnits(nearby,RobotType.SCOUT)>0){
-			scout_here = true;
-		}else{
-			scout_here = false;
-		}
-
 		if(rc.getRoundNum() ==0){
 			robotType = RobotType.SCOUT;
 		}else if(countUnits(far,RobotType.SOLDIER) < 5){
 			robotType = RobotType.SOLDIER;
 		}
 
-		if(robotType == RobotType.SCOUT && scout_here){
+		if(robotType == RobotType.SCOUT && scout_build >= 2){
 			robotType = RobotType.SOLDIER;
 		}
 
@@ -404,6 +403,10 @@ public class Defend {
 			}
 		}
 
+		if(robotType == RobotType.SCOUT){
+			scout_build++;
+		}
+
 		if(current_build >= buildList.length - 1){
 			current_build = 0;
 		}else{
@@ -412,6 +415,7 @@ public class Defend {
 		return true;
 
 	}
+
 
 
     private static Direction randomDirection() {
@@ -433,6 +437,7 @@ public class Defend {
 
 			if(map_count >= 5 && possible !=null){
 				tryToMove(possible);
+
 			}
 		}
 	}
@@ -453,5 +458,6 @@ public class Defend {
 		}
 		return weakestLocation;
 	}
+
 
 }

@@ -1,8 +1,10 @@
+
 package victorious_secret.Strategy;
 
 import battlecode.common.*;
 
 import victorious_secret.Robot;
+import victorious_secret.Behaviour.Nav;
 
 import java.util.Vector;
 
@@ -24,6 +26,10 @@ public class Scout {
 
     /*Scout Strategy 3 Variables: Turrent information*/
     public MapLocation turretLoc;
+    
+    /*Scout Strategy 5 Variables: Swarm Strategy*/
+    double strength_needed = 200;
+    boolean has_strength = false;
 
 
     MapLocation[] corners = {new MapLocation(9999, 9999), new MapLocation(-9999, 9999), new MapLocation(9999, -9999), new MapLocation(-9999, -9999)};
@@ -39,7 +45,8 @@ public class Scout {
         archonLocations = new Vector<RobotInfo>();
         zombieDenLocations = new Vector<RobotInfo>();
         enemyArchonLocations = new Vector<RobotInfo>();
-
+        
+        robot.setArchonLocations();
 
     }
 
@@ -73,18 +80,128 @@ public class Scout {
         sense_map();
         turretLoc = findClosestRobot(robot.fight.seenAllies, RobotType.TURRET);
 
+        if(turretLoc != null){
+        	flee.target = turretLoc;
+        }else{
+        	flee.target = rc.getLocation();
+        }
+        
+        
         if (rc.isCoreReady()) {
             broadcastEnemyInTurretBlindSpot();
         }
 
-//        if (rc.isCoreReady()) {
-//            Direction dir = flee.getNextMove();
-//            if(rc.canMove(dir)){
-//                rc.move(flee.getNextMove());
-//            }
-//        }
+        if (rc.isCoreReady()) {
+            Direction dir = flee.getNextMove();
+            if(rc.canMove(dir)){
+                rc.move(dir);
+            }
+        }
 
     }
+
+    /*Swarm Assist Strategy:
+    * scan for teammates
+    * if enough units are close by, explore the map
+    * if enemy units are seen call soldiers*/
+    public void runScoutStrategy4() throws GameActionException {
+        double attackPowerNeeded = 550;
+        double attackPowerOfSeenAllies;
+        sense_map();
+        attackPowerOfSeenAllies = strengthOfRobotsInArray(robot.fight.seenAllies);
+
+        if(attackPowerOfSeenAllies>attackPowerNeeded){
+            flee.target = rc.getInitialArchonLocations(rc.getTeam().opponent())[1];
+            if (rc.isCoreReady()) {
+                Direction dir = flee.getNextMove();
+                if(rc.canMove(dir)){
+                    rc.move(flee.getNextMove());
+                }
+            }
+
+        }
+        MapLocation loc = rc.getLocation();
+        int broadcastRange = rc.getLocation().distanceSquaredTo(rc.getInitialArchonLocations(rc.getTeam())[0]);
+        rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
+
+
+    }
+    
+    /*Swarm Assist Strategy 2: Improvement on runScoutStrategy4()
+     * */
+    public void runScoutStrategy5() throws GameActionException{
+    	sense_map();
+    	
+    	//If can see friendly archon and doesn't have required strength
+    	if(!has_strength){
+    		check_strength();
+    	}
+    	if(has_strength && !can_see_enemy()){
+    		move_towards_enemy();
+    	}
+    	if(can_see_enemy() && !can_see_army()){
+    		call_for_help();
+    	}if(can_see_enemy() && can_see_army()){
+    		call_for_help();
+    		//runScoutStrategy3();
+    	}
+    	
+    	
+    }
+    
+    /**********************SCOUT STRATEGY 5 HELPER METHODS***********************/
+    private boolean can_see_archon(){
+    	if(can_see_robot_type(RobotType.ARCHON, robot.fight.seenEnemies, rc.getTeam())){
+    		return true;
+    	}else{
+    		return false;
+    	}
+    }
+    
+    private boolean can_see_enemy(){
+    	if(robot.fight.seenEnemies != null && robot.fight.seenEnemies.length>0){
+    		return true;
+    	}else return false;
+    }
+    
+    private boolean can_see_army(){
+    	if(robot.fight.seenAllies != null && robot.fight.seenAllies.length>0){
+    		return true;
+    	}else return false;
+    }
+    
+    private void move_towards_enemy() throws GameActionException{
+    	
+    	MapLocation loc = robot.fight.findClosestMapLocation(robot.enemyArchonLocations.values(), rc.getLocation());
+    	Flee.setTarget(loc);
+    	if (rc.isCoreReady()) {
+            Direction dir = flee.getNextMove();
+            if(rc.canMove(dir)){
+                rc.move(flee.getNextMove());
+            }
+        }
+        locationClear(loc);
+    }
+    
+    private void call_for_help() throws GameActionException{
+    	MapLocation loc = robot.fight.findLowestHealthEnemy(robot.fight.seenEnemies).location;
+    	//MapLocation loc = rc.getLocation();
+        int broadcastRange = rc.getLocation().distanceSquaredTo(rc.getInitialArchonLocations(rc.getTeam())[0]);
+        rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
+    }
+    
+    private boolean locationClear(MapLocation m)
+    {
+        if(rc.canSense(m) && robot.fight.spotEnemies().length == 0)
+        {
+            //Then the location is clear, remove the location from our list of target Archon Locations
+            robot.removeArchonLocation(m);
+            return true;
+        }
+        return false;
+    }
+    
+   
 
     /**************************************END STRATEGY METHODS**************************************************/
 
@@ -98,6 +215,10 @@ public class Scout {
         robot.fight.spotOpponents();
         robot.fight.spotZombies();
         robot.fight.spotAllies();
+        
+        
+        robot.updateEnemyArchonLocations(robot.fight.seenEnemies);
+        
 
         //Sense terrain
 
@@ -106,10 +227,12 @@ public class Scout {
         updateEnemyArchonLocations();
         updateZombieDenLocations();
     }
+    
+
 
     private void broadcastEnemyInTurretBlindSpot() throws GameActionException {
 
-        if (robot.fight.seenEnemies != null && robot.fight.seenEnemies.length > 0) {
+        if (turretLoc != null && robot.fight.seenEnemies != null && robot.fight.seenEnemies.length > 0) {
             MapLocation loc = enemyInTurretBlindSpot(robot.fight.seenEnemies);
 
             if (loc != null) {
@@ -165,21 +288,6 @@ public class Scout {
         }
     }
 
-    /*
-    public boolean isAttractingZombies() throws GameActionException {
-
-        if(robot.fight.seenZombies != null && robot.fight.seenZombies.length>0){
-
-            int distance = rc.getLocation().distanceSquaredTo(averageZombieLoc());
-            if(distance < 10){
-                return true;
-            }else {
-                return false;
-            }
-        }
-        return false;
-    }
-*/
 
     /*********************************
      * END CLASS SPECIFIC BEHAVIOR
@@ -211,21 +319,66 @@ public class Scout {
         double minDistance = 9999999;
         RobotInfo closestTarget = null;
 
-
-        for (RobotInfo i : robots) {
-            if (i.type == type) {
-                int sqDist = i.location.distanceSquaredTo(rc.getLocation());
-                if (sqDist < minDistance) {
-                    minDistance = sqDist;
-                    closestTarget = i;
+        if(robots != null && robots.length>0){
+            for (RobotInfo i : robots) {
+                if (i.type == type) {
+                    int sqDist = i.location.distanceSquaredTo(rc.getLocation());
+                    if (sqDist < minDistance) {
+                        minDistance = sqDist;
+                        closestTarget = i;
+                    }
                 }
             }
+
         }
+
         if(closestTarget!=null){
             return closestTarget.location;
         }
         return null;
+
     }
+
+    //returns dps/health of the swarm
+    public double strengthOfRobotsInArray(RobotInfo[] robots){
+        if (robots!=null && robots.length>0) {
+            double dps = 0;
+            double health = 0;
+            for(RobotInfo i : robots){
+                double attack = i.type.attackPower;
+                double turnDelay = i.type.cooldownDelay;
+                dps+=(attack/turnDelay);
+                health+=i.health;
+            }
+            return dps*health/100;
+        }else{
+            return -1;
+        }
+    }
+    
+    public boolean check_strength(){
+    	if(robot.fight.seenAllies != null && robot.fight.seenAllies.length>0){
+    		double str = strengthOfRobotsInArray(robot.fight.seenAllies);
+    		if(strength_needed < str){
+    			has_strength = true;
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+
+
+    
+    public boolean can_see_robot_type(RobotType type, RobotInfo[] robots, Team team){
+    	if(robot.fight.seenEnemies != null && robot.fight.seenEnemies.length > 0){
+    		for(RobotInfo i : robots){
+    			if(i.type == type && i.team == team){
+    				return true;
+    			}
+    		}
+    	}
+    	return false;
+    }
+    
+    
 }
-
-

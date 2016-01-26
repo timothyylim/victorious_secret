@@ -14,7 +14,6 @@ public class RobotPlayer
 	public static void run(RobotController _rc)
 	{
 		rc = _rc;
-		
 		try
 		{
 			//Set the unit to the correct class
@@ -24,7 +23,7 @@ public class RobotPlayer
 			case GUARD: robot = new Guard(rc); break;
 			case SCOUT: robot = new Scout(rc); break;
 			case SOLDIER:robot = new Soldier(rc); break;
-			case TURRET: robot = new Turret(rc); break;
+			case TURRET: case TTM: robot = new Turret(rc); break;
 			case VIPER: robot = new Viper(rc); break;
 			default: 
 				throw new GameActionException(GameActionExceptionType.CANT_DO_THAT, 

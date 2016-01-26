@@ -4,8 +4,10 @@
 package victorious_secret.Units;
 
 import java.util.Random;
+import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
@@ -48,9 +50,27 @@ public class Viper extends Robot {
 	@Override
 	public void move() throws GameActionException 
 	{
-//		if(!fight.fight())
-//		{
-//			nav.move();
-//		}
+
+	// Look for enemies
+		RobotInfo[] opponentEnemies = rc.senseHostileRobots(rc.getLocation(), rc.getType().attackRadiusSquared);
+
+		if (opponentEnemies != null && opponentEnemies.length > 0 && rc.getType().canAttack()) {
+			RobotInfo target = fight.findLowestHealthUninfectedEnemy(opponentEnemies);
+			if(target == null){
+				target = fight.findLowestHealthEnemy(opponentEnemies);
+			}
+			if(target != null && rc.isWeaponReady()) {
+				rc.attackLocation(target.location);
+				return;
+			}
+		}
+
+		if(rc.isCoreReady() && rc.canMove(Direction.WEST)) {
+			System.out.println("Moving " + Direction.WEST);
+			rc.move(Direction.WEST);
+			return;
+		}
+
+
 	}
 }

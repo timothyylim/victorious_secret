@@ -5,6 +5,7 @@ import victorious_secret.Behaviour.Fight;
 import victorious_secret.Robot;
 
 
+
 /**
  * Created by ple15 on 15/01/16.
  */
@@ -192,14 +193,17 @@ public class Attack extends Fight
         return true;
     }
 
-    private static void getClose(RobotInfo target) throws GameActionException {
+    public static void getClose(RobotInfo target) throws GameActionException {
         if(rc.getLocation().isAdjacentTo(target.location))
         {
             return;
         }
 
-        robot.targetMoveLoc = target.location;
-        robot.nav.move();
+        Flee.setTarget(target.location);
+        Direction dir = Flee.getNextMove();
+        if(rc.canMove(dir)) {
+            rc.move(dir);
+        }
     }
 
     private static void setTargetArchon()
@@ -213,7 +217,6 @@ public class Attack extends Fight
         }
         targetArchon = robot.fight.findClosestMapLocation(archonLocs, rc.getLocation());
     }
-
 
     private static void setLeader() throws GameActionException {
         if(targetArchon != null) {

@@ -34,6 +34,10 @@ public class Archon extends Robot {
 	 * 
 	 */
 	Defend defend;
+	
+	
+	int buildQueue;
+	
 
 	public Archon(RobotController _rc) 
 	{
@@ -44,24 +48,31 @@ public class Archon extends Robot {
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 
-		//Uncomment as necessary
-		strat = Strategy.DEFEND;
 		defend = new Defend(rc, this);
-//		strat = Strategy.ATTACK;
-//		strat = Strategy.SCOUT;
-
+		
 		strat = Strategy.DEFEND;
+		buildQueue = 0;
 
-//		strat = Strategy.FLEE;
 
 	}
 
 	@Override
 	public void move() throws GameActionException 
 	{
-		if(rc.getHealth()<300){
+
+		RobotInfo[] hostiles = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
+		RobotInfo[] allies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
+		
+		if(rc.getHealth()<650 && hostiles.length != 0){
 			strat=Strategy.FLEE;
 		}
+		else if(rc.getHealth()<900 && hostiles.length != 0 && allies.length < 5){
+			strat=Strategy.FLEE;
+		}
+		else if (strat == Strategy.FLEE && hostiles.length == 0 && allies.length > 5){
+			strat=Strategy.DEFEND;
+		}
+
 
 		switch(strat)
 		{
@@ -86,19 +97,29 @@ public class Archon extends Robot {
 
 
 		}
-		//fight.spotEnemies();
 
-//		if(!spawn(buildQueue[rand.nextInt(buildQueue.length)]))
-//		{
-//			nav.flee();
-//		}
 
 	}
-
-	private void fleeMo() {
-	}
-
-	private void attackPete() {
+	
+	private void attackPete() throws GameActionException {
+		switch(buildQueue){
+		case 0:
+			spawn(RobotType.SCOUT);
+			buildQueue++;
+			break;
+		case 1:
+			spawn(RobotType.TURRET);
+			buildQueue++;
+			break;
+		case 2:
+			spawn(RobotType.GUARD);
+			buildQueue--;
+			break;
+			
+		}
+		spawn(RobotType.TURRET);
+		
+		
 	}
 
 	private void turtle() {

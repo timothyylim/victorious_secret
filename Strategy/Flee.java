@@ -1,7 +1,6 @@
 package victorious_secret.Strategy;
-
 import battlecode.common.*;
-import battlecode.common.RobotController;
+
 
 public class Flee{
     static RobotController _rc;
@@ -21,9 +20,10 @@ public class Flee{
     //static MapLocation lastLocation;
     //static int counter;
 
-    static RobotInfo[] zombie;
-    static RobotInfo[] enermies;
+
     static RobotInfo[] hostiles;
+    static RobotInfo[] neutrals;
+    static MapLocation[] parts;
 
     public static void flee() throws GameActionException{
 
@@ -31,9 +31,11 @@ public class Flee{
             target=_rc.getLocation();
         }
 
-        zombie = _rc.senseNearbyRobots(_rc.getType().sensorRadiusSquared, Team.ZOMBIE);
-        enermies= _rc.senseNearbyRobots(_rc.getType().sensorRadiusSquared, _rc.getTeam().opponent());
-        hostiles = joinRobotInfo(zombie,enermies);
+
+        hostiles = _rc.senseHostileRobots(_rc.getLocation(), _rc.getType().sensorRadiusSquared);
+        neutrals = _rc.senseNearbyRobots(_rc.getLocation(), 1, Team.NEUTRAL);
+        parts = _rc.sensePartLocations(1);
+
 
         temp = averageLoc(hostiles);
         mine = _rc.getLocation();
@@ -54,7 +56,16 @@ public class Flee{
                 if(!_rc.onTheMap(target)){
                     target = new MapLocation(mine.x+dx,mine.y-dy);
                 }
+
+                if(!_rc.onTheMap(target)){
+                    target = new MapLocation(mine.x-dx,mine.y+dy);
+                }
+                if(!_rc.onTheMap(target)){
+                    target = new MapLocation(mine.x+2*dx,mine.y+2*dy);
+                }
             }
+            _rc.setIndicatorString(0, target.toString());
+
         }
 
         // if we arrived near target and realised target is not on map
@@ -82,29 +93,39 @@ public class Flee{
     public static void runFlee(RobotController rc) {
         initialiseFlee(rc);
         try {
-            while (true) {
-                flee();
-                Direction nextMove =getNextMove();
-                System.out.println("FLEEING -> " + rc.getRoundNum());
 
-                if(temp == null){
-                    for(Direction dir:Direction.values()){
-                        if(_rc.isCoreReady()&&_rc.canBuild(dir, RobotType.GUARD)){
-                            _rc.build(dir, RobotType.GUARD);
-                        }else if(_rc.senseRubble(_rc.getLocation().add(dir))>GameConstants.RUBBLE_OBSTRUCTION_THRESH){
-                            if(_rc.isCoreReady()){
-                                _rc.clearRubble(dir);
-                                //counter=0;
-                            }
+            flee();
+            Direction nextMove =getNextMove();
+
+            if(neutrals.length != 0 && _rc.getLocation().distanceSquaredTo(neutrals[0].location) == 1){
+                if(_rc.isCoreReady()){
+                    _rc.activate(neutrals[0].location);
+                }
+            }else if(temp == null){
+                for(Direction dir:Direction.values()){
+                    if(_rc.isCoreReady()&&_rc.canBuild(dir, RobotType.GUARD)){
+                        _rc.build(dir, RobotType.GUARD);
+                    }else if(_rc.senseRubble(_rc.getLocation().add(dir))>GameConstants.RUBBLE_OBSTRUCTION_THRESH){
+                        if(_rc.isCoreReady()){
+                            _rc.clearRubble(dir);
                         }
                     }
+                }
 
-                }else if(_rc.getRoundNum()%25!=0&&_rc.getRoundNum()!=0){
-                    if(_rc.isCoreReady()&&_rc.canMove(nextMove)){
+            }else if(_rc.getRoundNum()%25!=0&&_rc.getRoundNum()!=0){
+                if(_rc.isCoreReady()&&_rc.canMove(nextMove)){
+                    if(parts.length != 0 && _rc.senseRubble(parts[0]) < GameConstants.RUBBLE_SLOW_THRESH){
+                        _rc.move(_rc.getLocation().directionTo(parts[0]));
+                        moved = _rc.getLocation().directionTo(parts[0]);
+                        System.out.println("PARTS");
+                    }else{
+                        System.out.println("NORMAL MOVEMENT");
                         _rc.move(nextMove);
                         moved=nextMove;
-//    					System.out.println(_rc.getRoundNum());
                     }
+//    					System.out.println(_rc.getRoundNum());
+                }
+
 //    				else if(_rc.isCoreReady()&&!_rc.canMove(nextMove)&&counter>1){
 //    					for(Direction d:Direction.values()){
 //    						if(_rc.senseRubble(_rc.getLocation().add(d))>GameConstants.RUBBLE_OBSTRUCTION_THRESH){
@@ -115,13 +136,15 @@ public class Flee{
 //    						}
 //    					}
 //    				}
-                }else{
-                    if(temp!=null){
-                        if(_rc.isCoreReady()&&_rc.canBuild(_rc.getLocation().directionTo(temp), RobotType.GUARD)){
-                            _rc.build(_rc.getLocation().directionTo(temp), RobotType.GUARD);
-                        }
+
+            }else{
+                if(temp!=null){
+                    if(_rc.isCoreReady()&&_rc.canBuild(_rc.getLocation().directionTo(temp), RobotType.GUARD)){
+                        _rc.build(_rc.getLocation().directionTo(temp), RobotType.GUARD);
                     }
                 }
+            }
+
 
 //    			if(lastLocation ==_rc.getLocation()){
 //    				counter++;
@@ -131,8 +154,10 @@ public class Flee{
 //
 //    			lastLocation = _rc.getLocation();
 
-                Clock.yield();
-            }
+
+//                Clock.yield();
+//            }
+
         } catch (GameActionException e) {
             e.printStackTrace();
         }
@@ -270,20 +295,7 @@ public class Flee{
 
         return new MapLocation(x,  y);
 
-    }
 
-    public static RobotInfo[] joinRobotInfo(RobotInfo[] zombieEnemies, RobotInfo[] normalEnemies) {
-        RobotInfo[] opponentEnemies = new RobotInfo[zombieEnemies.length+normalEnemies.length];
-        int index = 0;
-        for(RobotInfo i:zombieEnemies){
-            opponentEnemies[index]=i;
-            index++;
-        }
-        for(RobotInfo i:normalEnemies){
-            opponentEnemies[index]=i;
-            index++;
-        }
-        return opponentEnemies;
     }
 
     public static void initialiseFlee(RobotController rc){
@@ -309,4 +321,9 @@ public class Flee{
             }
         }
     }
+
+    public static void setTarget(MapLocation _target){
+        target = _target;
+    }
+
 }
