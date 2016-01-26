@@ -57,6 +57,7 @@ public class Guard extends Robot {
 
 		team = rc.getTeam();
 		strat = Strategy.DEFEND;
+		strat = Strategy.ATTACK;
 		targetMoveLoc = new MapLocation(449,172);
 
 		setArchonLocations();

@@ -33,6 +33,10 @@ public class Archon extends Robot {
 	 * 
 	 */
 	Defend defend;
+	
+	
+	int buildQueue;
+	
 
 	public Archon(RobotController _rc) 
 	{
@@ -46,10 +50,15 @@ public class Archon extends Robot {
 		//Uncomment as necessary
 		strat = Strategy.DEFEND;
 		defend = new Defend(rc, this);
-//		strat = Strategy.ATTACK;
+		
+		strat = Strategy.ATTACK;
+		buildQueue = 0;
+		
+		
+	
 //		strat = Strategy.SCOUT;
 
-		strat = Strategy.DEFEND;
+//		strat = Strategy.DEFEND;
 
 //		strat = Strategy.FLEE;
 
@@ -102,8 +111,26 @@ public class Archon extends Robot {
 //		}
 
 	}
-
-	private void attackPete() {
+	
+	private void attackPete() throws GameActionException {
+		switch(buildQueue){
+		case 0:
+			spawn(RobotType.SCOUT);
+			buildQueue++;
+			break;
+		case 1:
+			spawn(RobotType.TURRET);
+			buildQueue++;
+			break;
+		case 2:
+			spawn(RobotType.GUARD);
+			buildQueue--;
+			break;
+			
+		}
+		spawn(RobotType.TURRET);
+		
+		
 	}
 
 	private void turtle() {

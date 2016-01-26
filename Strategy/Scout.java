@@ -24,7 +24,7 @@ public class Scout {
     public MapLocation turretLoc;
     
     /*Scout Strategy 5 Variables: Swarm Strategy*/
-    double strength_needed = 500;
+    double strength_needed = 200;
     boolean has_strength = false;
 
 
@@ -232,7 +232,7 @@ public class Scout {
 
             if (loc != null) {
                 if (rc.isCoreReady()) {
-                    rc.broadcastMessageSignal(loc.x+2000, loc.y+2000, rc.getType().sensorRadiusSquared);
+                    rc.broadcastMessageSignal(loc.x, loc.y, rc.getType().sensorRadiusSquared);
 
                 }
 
