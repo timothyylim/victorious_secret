@@ -261,11 +261,7 @@ public class Nav {
                 bestDirection = d;
                 bestDistance = newLoc.distanceSquaredTo(target);
                 bestDistance += turnsToClear(newLoc) * 3;
-<<<<<<< HEAD
-               // System.out.println("best = " + bestDistance + " " + bestDirection);
-=======
-                //System.out.println("best = " + bestDistance + " " + bestDirection);
->>>>>>> 00182c070c28bf7dc44ad9758c1de8808af869b2
+
             }
         }
         return bestDirection;
