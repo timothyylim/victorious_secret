@@ -66,7 +66,7 @@ public class Guard extends Robot {
 	public void move() throws GameActionException 
 	{
 		updateOurArchonLocations(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
-		listenForSignal();
+		
 
 		if(listenForSignal()){
 			strat = Strategy.ATTACK;
@@ -81,10 +81,7 @@ public class Guard extends Robot {
 				returnToBase();
 				break;
 			case ATTACK:
-<<<<<<< HEAD
-				
-=======
->>>>>>> 5147982bd6816efff3f2bfd2aaefff121cf45167
+
 				maintainRadius();
 				attackPattern();
 				break;

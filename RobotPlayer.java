@@ -22,7 +22,7 @@ public class RobotPlayer
 			case ARCHON: robot = new Archon(rc); break;
 			case GUARD: robot = new Guard(rc); break;
 			case SCOUT: robot = new Scout(rc); break;
-			case SOLDIER:robot = new Soldier(rc); break;
+			case SOLDIER:robot = new Guard(rc); break; //sSoldier(rc); break;
 			case TURRET: case TTM: robot = new Turret(rc); break;
 			case VIPER: robot = new Viper(rc); break;
 			default: 

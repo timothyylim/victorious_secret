@@ -344,6 +344,9 @@ public class Nav {
         if(allowedTargets != null  && allowedTargets.size() > 0) {
             //Flee.setTarget(fight.findClosestFreeMapLocation(allowedTargets, here));
             t = robot.fight.findClosestFreeMapLocation(allowedTargets, here);
+            if(t!=null && here.isAdjacentTo(t)){
+            	moveOrClear(here.directionTo(t));
+            }
         }
 
         if(t == null){
@@ -354,7 +357,7 @@ public class Nav {
         //System.out.println("   MOVING TO TARGET " + t);
         Flee.setTarget(t);
         Direction dir = Flee.getNextMove();
-        if(rc.canMove(dir)) {
+        if(rc.canMove(dir) && rc.isCoreReady()) {
             rc.move(dir);
         }
     }

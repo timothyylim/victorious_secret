@@ -369,14 +369,14 @@ public class Defend {
 		RobotInfo[] nearby = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
 		RobotType robotType;
 		if(nearby == null || nearby.length < 5){
-			robotType = RobotType.GUARD;
+			robotType = RobotType.SOLDIER;
 		}else{
 			int nGuards = 0;
 			int nTurrets = 0;
 
 			for(RobotInfo r : nearby){
 				switch (r.type){
-					case GUARD:
+					case SOLDIER:
 						nGuards++;
 						break;
 					case TURRET:
@@ -391,7 +391,7 @@ public class Defend {
 			}else if(nGuards > nTurrets){
 				robotType = RobotType.TURRET;
 			}else {
-				robotType = RobotType.GUARD;
+				robotType = RobotType.SOLDIER;
 			}
 		}
 
