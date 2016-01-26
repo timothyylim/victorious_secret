@@ -69,7 +69,7 @@ public class Scout extends Robot {
 	public void move() throws GameActionException
 	{
 
-		scout.runScoutStrategy3();
+		scout.runScoutStrategy5();
 
 	}
 }

@@ -47,7 +47,7 @@ public class Archon extends Robot {
 
 		defend = new Defend(rc, this);
 		
-		strat = Strategy.DEFEND;
+		strat = Strategy.ATTACK;
 		buildQueue = 0;
 	}
 

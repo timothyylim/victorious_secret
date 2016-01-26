@@ -181,18 +181,30 @@ public class Scout {
     private void move_towards_enemy() throws GameActionException{
     	
     	MapLocation loc = robot.fight.findClosestMapLocation(robot.enemyArchonLocations.values(), rc.getLocation());
-    	Flee.setTarget(loc);
-    	if (rc.isCoreReady()) {
-            Direction dir = flee.getNextMove();
-            if(rc.canMove(dir)){
-                rc.move(flee.getNextMove());
+    	if(loc != null){
+    		Flee.setTarget(loc);
+        	if (rc.isCoreReady()) {
+                Direction dir = flee.getNextMove();
+                if(rc.canMove(dir)){
+                    rc.move(flee.getNextMove());
+                }
             }
-        }
-        locationClear(loc);
+        	
+        	locationClear(loc);
+    	}
+    	
+    	
+        
     }
     
     private void call_for_help() throws GameActionException{
-    	MapLocation loc = robot.fight.findLowestHealthEnemy(robot.fight.seenEnemies).location;
+    	MapLocation loc = rc.getLocation();
+    	RobotInfo i = robot.fight.findLowestHealthEnemy(robot.fight.seenEnemies);
+    	if(i != null){
+    		loc = i.location;
+    	}
+    	
+    	
     	//MapLocation loc = rc.getLocation();
     	if(home != null){
     		int broadcastRange = rc.getLocation().distanceSquaredTo(home) + 15;
