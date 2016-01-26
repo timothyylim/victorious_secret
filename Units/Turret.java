@@ -240,9 +240,6 @@ public class Turret extends Robot {
 
 
 	public void updateAttackLoc() throws GameActionException {
-
-
-
 		if(!listenForSignal()){
 			fight.targetEnemies();
 			if(fight.attackableEnemies != null && fight.attackableEnemies.length>0){

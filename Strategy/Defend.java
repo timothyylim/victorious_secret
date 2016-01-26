@@ -33,6 +33,8 @@ public class Defend {
 	static int current_build = 0;
     static Random rnd;
 
+	static int nUnitsBuilt = 0;
+
 	static int PERIMETER = 2;
 	static int scout_build = 0;
 	static int map_count = 0;
@@ -384,7 +386,7 @@ public class Defend {
 				}
 			}
 
-			if(((nGuards + nTurrets) % 16) == 0){
+			if(nUnitsBuilt % 14 == 0){
 				robotType = RobotType.SCOUT;
 			}else if(nGuards > nTurrets){
 				robotType = RobotType.TURRET;
@@ -401,6 +403,7 @@ public class Defend {
 
 			for(int i = 0; i <= 10; i++){
 				if(rc.canBuild(randomDir, robotType)) {
+					nUnitsBuilt++;
 					rc.build(randomDir, robotType);
 					return true;
 				}
