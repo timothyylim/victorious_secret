@@ -146,11 +146,8 @@ public class Scout {
     	if(has_strength && !can_see_enemy()){
     		move_towards_enemy();
     	}
-    	if(can_see_enemy() && !can_see_army()){
+    	if(can_see_enemy()){
     		call_for_help();
-    	}if(can_see_enemy() && can_see_army()){
-    		call_for_help();
-    		//runScoutStrategy3();
     	}
     	
     	
@@ -197,19 +194,21 @@ public class Scout {
     }
     
     private void call_for_help() throws GameActionException{
-    	MapLocation loc = rc.getLocation();
-    	RobotInfo i = robot.fight.findLowestHealthEnemy(robot.fight.seenEnemies);
+    	MapLocation loc = null; //= rc.getLocation();
+    	RobotInfo i = robot.fight.findLowestHealthEnemyNoAttack(robot.fight.seenEnemies);
     	if(i != null){
     		loc = i.location;
     	}
-    	
-    	
-    	//MapLocation loc = rc.getLocation();
-    	if(home != null){
-    		int broadcastRange = rc.getLocation().distanceSquaredTo(home) + 15;
-    		rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
-    	}
-       
+        //MapLocation loc = rc.getLocation();
+    	if(loc != null && home != null){
+
+
+            int broadcastRange = rc.getLocation().distanceSquaredTo(home) + 50;
+            rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
+
+
+        }
+
     }
     
     private boolean locationClear(MapLocation m)

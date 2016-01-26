@@ -10,6 +10,7 @@ import victorious_secret.Behaviour.Nav;
 import victorious_secret.Strategy.Defend;
 import victorious_secret.Strategy.Flee;
 
+import java.util.List;
 import java.util.Random;
 
 
@@ -42,9 +43,10 @@ public class Archon extends Robot {
 		rand = new Random();
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
-
 		defend = new Defend(rc, this);
-		
+
+		Flee.initialiseFlee(rc);
+
 		strat = Strategy.DEFEND;
 		buildQueue = 0;
 	}
@@ -52,6 +54,9 @@ public class Archon extends Robot {
 	@Override
 	public void move() throws GameActionException 
 	{
+		if(listenForSignal()){
+			strat = Strategy.ATTACK;
+		}
 
 		RobotInfo[] hostiles = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
 		RobotInfo[] allies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
@@ -95,55 +100,70 @@ public class Archon extends Robot {
 	}
 	
 	private void attackPete() throws GameActionException {
-		switch(buildQueue){
-		case 0:
-			spawn(RobotType.SCOUT);
-			buildQueue++;
-			break;
-		case 1:
-			if(spawn(RobotType.TURRET)){
-				buildQueue++;
-			}
+		//Move to signal
+		maintainRadius();
+		//then call defend code
+		defend.turtle();
+	}
 
-			break;
-		case 2:
-			if(spawn(RobotType.GUARD)){
-				buildQueue = 1;
+	private void _move() throws GameActionException {
+		if(rc.isCoreReady() && targetMoveLoc != null) {
+			Flee.setTarget(targetMoveLoc);
+			Direction dir = Flee.getNextMove();
+			if(dir != null && rc.canMove(dir)) {
+				rc.move(dir);
 			}
-			break;
-		
-			
 		}
-		
-		
-		
 	}
 
-	private void turtle() {
-		//TODO: TIM
-	}
+	private void maintainRadius() throws GameActionException {
+		if (rc.isCoreReady()) {
+			MapLocation here = rc.getLocation();
 
-	private MapLocation bestArchonLocation()
-	{
-		MapLocation[] aLocs = rc.getInitialArchonLocations(rc.getTeam());
-		return aLocs[0];
-	}
-	
-	private Boolean spawn(RobotType roro) throws GameActionException 
-	{
-		if(rc.isCoreReady() && rc.hasBuildRequirements(roro))
-		{
-			int i = 0;
-			do
-			{
-				Direction buildDir = Direction.values()[rand.nextInt(8)];
-				if(rc.canBuild(buildDir, roro))
-				{
-					rc.build(buildDir, roro);
-					return true;
+			RobotInfo[] nearbyTurrets = fight.spotNearbyTurrets();
+
+			int distanceToTarget = here.distanceSquaredTo(targetMoveLoc);
+			int radiusToTarget = (int) Math.sqrt(distanceToTarget);
+			int radiusToWall = 9999;
+
+			if (nearbyTurrets != null) {
+				for (RobotInfo t : nearbyTurrets) {
+					int dt = (int) Math.sqrt(t.location.distanceSquaredTo(targetMoveLoc));
+					if (dt < radiusToWall) {
+						radiusToWall = dt;
+					}
 				}
-				i++;
-			}while(i > 5);
+
+				int targetGuardRadius = Math.max(radiusToWall + 2, 1);
+
+				if (radiusToTarget != targetGuardRadius) {
+					//move into position
+					List<MapLocation> allowedTargets = nav.findAllowedLocations(here, targetGuardRadius, targetMoveLoc);
+					//System.out.println(allowedTargets);
+					nav.moveToFreeLocation(allowedTargets, here, targetMoveLoc);
+				}
+			} else {
+				//There are no visible turrets! You're lost, go home.
+				//strat = Strategy.RETURN_TO_BASE;
+				//returnToBase();
+
+				_move();
+			}
+		}
+	}
+
+	public boolean listenForSignal(){
+		Signal[] sigs = rc.emptySignalQueue();
+		if(sigs != null && sigs.length > 0){
+
+			Signal sig = sigs[sigs.length-1];
+			int[] message = sig.getMessage();
+
+			if(message != null && sig.getTeam() == rc.getTeam()) {
+				//	System.out.println("signal received");
+				targetMoveLoc = new MapLocation(message[0], message[1]);
+				return true;
+			}
 		}
 		return false;
 	}

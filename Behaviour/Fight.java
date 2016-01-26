@@ -288,6 +288,22 @@ public class Fight {
 		return bestTarget;
 	}
 
+	public static RobotInfo findLowestHealthEnemyNoAttack(RobotInfo[] listOfEnemies)
+	{
+		double minHealth = 9999999;
+		RobotInfo bestTarget = null;
+
+		for(RobotInfo i : listOfEnemies)
+		{
+			if(i.health < minHealth)
+			{
+				minHealth = i.health;
+				bestTarget = i;
+			}
+		}
+		return bestTarget;
+	}
+
 	public static RobotInfo findLowestHealthEnemyWithDelay(RobotInfo[] listOfEnemies)
 	{
 		double minHealth = 9999999;
