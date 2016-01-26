@@ -203,7 +203,7 @@ public class Defend {
 
 			double distance = thisLocation.distanceSquaredTo(leaderLocation);
 
-            if(distance > 8 && !leader){
+            if(distance > 4 && !leader){
 				Flee.target = leaderLocation;
 				dir = Flee.getNextMove();
 				tryToMove(dir);

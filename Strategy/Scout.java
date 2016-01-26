@@ -27,9 +27,11 @@ public class Scout {
     public MapLocation turretLoc;
     
     /*Scout Strategy 5 Variables: Swarm Strategy*/
-    double strength_needed = 600;
+    double strength_needed = 800;
     boolean has_strength = false;
     MapLocation home;
+    int locationCounter = 0;
+    int offset = 5;
 
 
     MapLocation[] corners = {new MapLocation(9999, 9999), new MapLocation(-9999, 9999), new MapLocation(9999, -9999), new MapLocation(-9999, -9999)};
@@ -144,13 +146,13 @@ public class Scout {
     		check_strength();
     	}
     	if(has_strength && !can_see_enemy()){
-    		move_towards_enemy();
+    		//move_towards_enemy();
+    		move_zombie_den();
     	}
-    	if(can_see_enemy() && !can_see_army()){
-    		call_for_help();
-    	}if(can_see_enemy() && can_see_army()){
+    	if(can_see_enemy()){
     		//call_for_help();
-    		//runScoutStrategy3();
+    		alert_zombie_den();
+
     	}
     	
     	
@@ -191,25 +193,80 @@ public class Scout {
         	
         	locationClear(loc);
     	}
-    	
-    	
         
     }
     
-    private void call_for_help() throws GameActionException{
-    	MapLocation loc = rc.getLocation();
-    	RobotInfo i = robot.fight.findLowestHealthEnemy(robot.fight.seenEnemies);
+    private void move_zombie_den() throws GameActionException{
+    	MapLocation loc = null;
+    	switch(locationCounter){
+    	case 0:
+    		loc = new MapLocation(home.x+offset, home.y);
+    		break;
+    	case 1:
+    		loc = new MapLocation(home.x, home.y-offset);
+    		break;
+    	case 2:
+    		loc = new MapLocation(home.x-offset, home.y);
+    		break;
+    	case 3:
+    		loc = new MapLocation(home.x, home.y+offset);
+    		break;
+    	}
+    	
+    	if(loc != null && rc.canSense(loc)){
+    		locationCounter++;
+    		offset+=5;
+    	}
+    	
+    	if(locationCounter > 3){
+    		locationCounter = 0;
+    	}
+    	
+    	Flee.setTarget(loc);
+    	if (rc.isCoreReady()) {
+            Direction dir = flee.getNextMove();
+            if(rc.canMove(dir)){
+                rc.move(flee.getNextMove());
+            }
+        }
+    	
+    	
+    	
+    	
+    }
+    
+    private void alert_zombie_den() throws GameActionException {
+    	MapLocation loc = null; //= rc.getLocation();
+    	RobotInfo i = robot.fight.findClosestEnemy(robot.fight.seenZombies);
     	if(i != null){
     		loc = i.location;
     	}
-    	
-    	
-    	//MapLocation loc = rc.getLocation();
-    	if(home != null){
-    		int broadcastRange = rc.getLocation().distanceSquaredTo(home) + 15;
-    		rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
+        //MapLocation loc = rc.getLocation();
+    	if(loc != null && home != null){
+            int broadcastRange = rc.getLocation().distanceSquaredTo(home) + 50;
+            rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
+
+
+        }
+
+    }
+    
+    private void call_for_help() throws GameActionException{
+    	MapLocation loc = null; //= rc.getLocation();
+    	RobotInfo i = robot.fight.findLowestHealthEnemyNoAttack(robot.fight.seenEnemies);
+    	if(i != null){
+    		loc = i.location;
     	}
-       
+        //MapLocation loc = rc.getLocation();
+    	if(loc != null && home != null){
+
+
+            int broadcastRange = rc.getLocation().distanceSquaredTo(home) + 50;
+            rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
+
+
+        }
+
     }
     
     private boolean locationClear(MapLocation m)
@@ -413,5 +470,5 @@ public class Scout {
     	return null;
     }
     
-    
+
 }
