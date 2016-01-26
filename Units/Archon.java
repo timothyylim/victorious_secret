@@ -95,10 +95,17 @@ public class Archon extends Robot {
 
 
 		}
-
-
 	}
-	
+
+	private void call_for_help() throws GameActionException{
+		MapLocation loc = null; //= rc.getLocation();
+		RobotInfo i = fight.findLowestHealthEnemyNoAttack(fight.seenEnemies);
+		if(i == null) {
+			int broadcastRange = 150;
+			rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
+		}
+	}
+
 	private void attackPete() throws GameActionException {
 		//Move to signal
 		maintainRadius();

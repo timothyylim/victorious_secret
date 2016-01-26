@@ -150,7 +150,6 @@ public class Fight {
 	}
 
 	public static RobotInfo findClosestEnemy(RobotInfo[] listOfEnemies)
-
 	{
 		return findClosestEnemy(listOfEnemies, rc.getLocation());
 	}

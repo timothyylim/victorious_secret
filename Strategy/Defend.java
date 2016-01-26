@@ -185,7 +185,35 @@ public class Defend {
 			get_outta_here();
 		}
 
-		MapLocation leaderLocation = rc.getInitialArchonLocations(rc.getTeam())[0];
+
+		MapLocation InitialArchons[] = rc.getInitialArchonLocations(rc.getTeam());
+
+		MapLocation InitialEnemyArchons[] = rc.getInitialArchonLocations(rc.getTeam().opponent());
+
+		MapLocation averageEnermyLoc = Flee.averageLoc(InitialEnemyArchons);
+
+		int dx =0;
+		int dy=0;
+
+		int hypo=0;
+
+		int max=0;
+		int maxi=0;
+
+		for (int i = 0; i < InitialArchons.length; i++){
+			dx=InitialArchons[i].x-averageEnermyLoc.x;
+			dy=InitialArchons[i].y-averageEnermyLoc.y;
+
+			hypo = dx*dx+dy*dy;
+
+			if(hypo>max){
+				max=hypo;
+				maxi=i;
+			}
+
+		}
+
+		MapLocation leaderLocation = rc.getInitialArchonLocations(rc.getTeam())[maxi];
 
 		MapLocation thisLocation = rc.getLocation();
 
@@ -193,8 +221,7 @@ public class Defend {
 			leader = true;
 		}
 
-
-        if (rc.isCoreReady()) {
+		if (rc.isCoreReady()) {
 
 //			// Get the distance between the archon and the leader
 //            MapLocation target = new MapLocation(targetX, targetY);
@@ -366,9 +393,11 @@ public class Defend {
 		//Our build order is to build 5 guards, then 1 scout, then try to maintain guards and
 		//scouts in equal proportion, with another scout every 16 units
 
-		RobotInfo[] nearby = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
+		RobotInfo[] nearby =  rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
+		RobotInfo[] nearbyEnemies =  rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam().opponent());
+
 		RobotType robotType;
-		if(nearby == null || nearby.length < 5){
+		if(nearby == null || nearby.length < 5 || nearbyEnemies.length > 0){
 			robotType = RobotType.SOLDIER;
 		}else{
 			int nGuards = 0;
