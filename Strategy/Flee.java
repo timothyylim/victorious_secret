@@ -1,6 +1,7 @@
 package victorious_secret.Strategy;
 import battlecode.common.*;
 
+
 public class Flee{
     static RobotController _rc;
     static public enum STATE {BUGGING, FLOCKING};
@@ -19,18 +20,22 @@ public class Flee{
     //static MapLocation lastLocation;
     //static int counter;
 
+
     static RobotInfo[] hostiles;
     static RobotInfo[] neutrals;
     static MapLocation[] parts;
 
     public static void flee() throws GameActionException{
+
         if(_rc.getRoundNum()==0){
             target=_rc.getLocation();
         }
 
+
         hostiles = _rc.senseHostileRobots(_rc.getLocation(), _rc.getType().sensorRadiusSquared);
         neutrals = _rc.senseNearbyRobots(_rc.getLocation(), 1, Team.NEUTRAL);
         parts = _rc.sensePartLocations(1);
+
 
         temp = averageLoc(hostiles);
         mine = _rc.getLocation();
@@ -39,6 +44,7 @@ public class Flee{
 
         //when there are enemies
         if(temp!=null){
+
             //set target location opposite to where the enemies is
 
             dx = temp.x-mine.x;
@@ -50,6 +56,7 @@ public class Flee{
                 if(!_rc.onTheMap(target)){
                     target = new MapLocation(mine.x+dx,mine.y-dy);
                 }
+
                 if(!_rc.onTheMap(target)){
                     target = new MapLocation(mine.x-dx,mine.y+dy);
                 }
@@ -58,6 +65,7 @@ public class Flee{
                 }
             }
             _rc.setIndicatorString(0, target.toString());
+
         }
 
         // if we arrived near target and realised target is not on map
@@ -85,6 +93,7 @@ public class Flee{
     public static void runFlee(RobotController rc) {
         initialiseFlee(rc);
         try {
+
             flee();
             Direction nextMove =getNextMove();
 
@@ -116,6 +125,7 @@ public class Flee{
                     }
 //    					System.out.println(_rc.getRoundNum());
                 }
+
 //    				else if(_rc.isCoreReady()&&!_rc.canMove(nextMove)&&counter>1){
 //    					for(Direction d:Direction.values()){
 //    						if(_rc.senseRubble(_rc.getLocation().add(d))>GameConstants.RUBBLE_OBSTRUCTION_THRESH){
@@ -126,6 +136,7 @@ public class Flee{
 //    						}
 //    					}
 //    				}
+
             }else{
                 if(temp!=null){
                     if(_rc.isCoreReady()&&_rc.canBuild(_rc.getLocation().directionTo(temp), RobotType.GUARD)){
@@ -133,6 +144,7 @@ public class Flee{
                     }
                 }
             }
+
 
 //    			if(lastLocation ==_rc.getLocation()){
 //    				counter++;
@@ -142,8 +154,10 @@ public class Flee{
 //
 //    			lastLocation = _rc.getLocation();
 
+
 //                Clock.yield();
 //            }
+
         } catch (GameActionException e) {
             e.printStackTrace();
         }
@@ -281,6 +295,7 @@ public class Flee{
 
         return new MapLocation(x,  y);
 
+
     }
 
     public static void initialiseFlee(RobotController rc){
@@ -310,4 +325,5 @@ public class Flee{
     public static void setTarget(MapLocation _target){
         target = _target;
     }
+
 }

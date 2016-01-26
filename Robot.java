@@ -11,9 +11,11 @@ import java.util.Random;
 
 import battlecode.common.*;
 
+
 import victorious_secret.Behaviour.*;
 import victorious_secret.Strategy.Attack;
 import victorious_secret.Strategy.Flee;
+
 
 /**
  * @author APOC
@@ -60,8 +62,6 @@ public abstract class Robot {
 		}
 	}
 
-
-
 	protected static void returnToBase() throws GameActionException {
 		//TODO: if(can see archon){ DEFEND ARCHON }
 		//else{ ... }
@@ -87,7 +87,6 @@ public abstract class Robot {
 
     public static void setArchonLocations()
     {
-
 		setEnemyArchonLocations();
 		setOurArchonLocations();
     }

@@ -11,6 +11,7 @@ import victorious_secret.Behaviour.Nav;
 import victorious_secret.Strategy.Defend;
 import victorious_secret.Strategy.Flee;
 
+
 import java.util.Random;
 
 
@@ -47,26 +48,18 @@ public class Archon extends Robot {
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 
-		//Uncomment as necessary
-		strat = Strategy.DEFEND;
 		defend = new Defend(rc, this);
 		
-		strat = Strategy.ATTACK;
+		strat = Strategy.DEFEND;
 		buildQueue = 0;
-		
-		
-	
-//		strat = Strategy.SCOUT;
 
-//		strat = Strategy.DEFEND;
-
-//		strat = Strategy.FLEE;
 
 	}
 
 	@Override
 	public void move() throws GameActionException 
 	{
+
 		RobotInfo[] hostiles = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
 		RobotInfo[] allies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
 		
@@ -79,6 +72,7 @@ public class Archon extends Robot {
 		else if (strat == Strategy.FLEE && hostiles.length == 0 && allies.length > 5){
 			strat=Strategy.DEFEND;
 		}
+
 
 		switch(strat)
 		{
@@ -103,12 +97,7 @@ public class Archon extends Robot {
 
 
 		}
-		//fight.spotEnemies();
 
-//		if(!spawn(buildQueue[rand.nextInt(buildQueue.length)]))
-//		{
-//			nav.flee();
-//		}
 
 	}
 	

@@ -12,7 +12,9 @@ import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
 import victorious_secret.Strategy.Defend;
+
 import victorious_secret.Strategy.Flee;
+
 
 /**
  * @author APOC
@@ -77,6 +79,7 @@ public class Turret extends Robot {
 
 		setArchonLocations();
 
+
 	}
 
 	@Override
@@ -84,11 +87,12 @@ public class Turret extends Robot {
 		
 		
 
+
 		updateOurArchonLocations(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
 		switch (strat) {
 			case DEFEND:
 				//Turrets move if they can't see an enemy
-				attack();
+				defend.turtle();
 				break;
 			case ATTACK:
 				//_move();
@@ -107,16 +111,15 @@ public class Turret extends Robot {
 	
 
 	private void attack() throws GameActionException {
-		RobotInfo[] opponentEnemies = rc.senseHostileRobots(rc.getLocation(), RobotType.TURRET.attackRadiusSquared);
-		if (opponentEnemies != null && opponentEnemies.length > 0) {
-			updateCooldown(opponentEnemies);
+		RobotInfo[] enemies = rc.senseHostileRobots(rc.getLocation(), RobotType.TURRET.attackRadiusSquared);
+		if (enemies != null && enemies.length > 0) {
+			updateCooldown(enemies);
 
 			if (rc.getType() == RobotType.TURRET) {
 				updateAttackLoc();
 				if (attackLoc != null && rc.isWeaponReady()) {
 					rc.attackLocation(attackLoc);
 				}
-
 			}else {
 				rc.unpack();
 			}
@@ -127,13 +130,13 @@ public class Turret extends Robot {
 	}
 
 	private void _move() throws GameActionException {
-
 		if(rc.isCoreReady() && targetMoveLoc != null) {
 			if (rc.getType() == RobotType.TTM) {
 				lineUp();
 			} else if(cooldown <= 0) {
 				rc.pack();
 			}
+
 		}
 	}
 
@@ -221,6 +224,7 @@ public class Turret extends Robot {
 
 			Signal sig = sigs[sigs.length-1];
 			int[] message = sig.getMessage();
+
 			if(message != null && sig.getTeam() == rc.getTeam()) {
 			//	System.out.println("signal received");
 				targetMoveLoc = new MapLocation(message[0], message[1]);
@@ -231,13 +235,20 @@ public class Turret extends Robot {
 		return false;
 	}
 
+
 	public void updateAttackLoc() throws GameActionException {
-		//System.out.println("update attack loc called");
+
+
+
 		if(!listenForSignal()){
 			fight.targetEnemies();
 			if(fight.attackableEnemies != null && fight.attackableEnemies.length>0){
 				RobotInfo i = fight.findLowestHealthEnemy(fight.attackableEnemies);
-				attackLoc = i.location;
+				if(i != null) {
+					attackLoc = i.location;
+				}else{
+					attackLoc = null;
+				}
 			}else{
 				attackLoc = null;
 			}

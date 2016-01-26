@@ -121,12 +121,6 @@ public class Fight {
 		return inRangeOf(spotEnemies(), rc.getLocation());
 	}
 
-	public boolean locationUnderThreat(RobotInfo[] listOfEnemies, MapLocation loc)
-	{
-		return inRangeOf(listOfEnemies, loc) != null;
-
-	}
-
 	public RobotInfo[] inRangeOf(RobotInfo[] listOfEnemies, MapLocation loc)
 	{
 		List<RobotInfo> inRange = new ArrayList<>();
@@ -149,12 +143,19 @@ public class Fight {
 		}
 	}
 
-	public RobotInfo findClosestEnemy(RobotInfo[] listOfEnemies)
+	public boolean locationUnderThreat(RobotInfo[] listOfEnemies, MapLocation loc)
+	{
+		return inRangeOf(listOfEnemies, loc) != null;
+
+	}
+
+	public static RobotInfo findClosestEnemy(RobotInfo[] listOfEnemies)
+
 	{
 		return findClosestEnemy(listOfEnemies, rc.getLocation());
 	}
 
-	public RobotInfo findClosestEnemy(RobotInfo[] listOfEnemies, MapLocation loc)
+	public static RobotInfo findClosestEnemy(RobotInfo[] listOfEnemies, MapLocation loc)
 	{
 		double minDistance = 9999999;
 		RobotInfo closestTarget = null;
@@ -247,7 +248,7 @@ public class Fight {
 		}
 		for(RobotInfo i : listOfEnemies)
 		{
-			if(i.ID == lastTargeted.ID)
+			if(i.ID == lastTargeted.ID && rc.canAttackLocation(i.location))
 			{
 				return i;
 			}
@@ -262,7 +263,7 @@ public class Fight {
 
 		for(RobotInfo i : listOfEnemies)
 		{
-			if(i.health < minHealth)
+			if(i.health < minHealth && rc.canAttackLocation(i.location))
 			{
 				minHealth = i.health;
 				bestTarget = i;
@@ -327,7 +328,7 @@ public class Fight {
 
 		for(RobotInfo i : listOfEnemies)
 		{
-			if(i.type == targetType && i.health < minHealth)
+			if(i.type == targetType && i.health < minHealth && rc.canAttackLocation(i.location))
 			{
 				minHealth = i.health;
 				bestTarget = i;

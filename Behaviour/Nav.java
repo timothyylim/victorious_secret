@@ -261,7 +261,11 @@ public class Nav {
                 bestDirection = d;
                 bestDistance = newLoc.distanceSquaredTo(target);
                 bestDistance += turnsToClear(newLoc) * 3;
+<<<<<<< HEAD
                // System.out.println("best = " + bestDistance + " " + bestDirection);
+=======
+                //System.out.println("best = " + bestDistance + " " + bestDirection);
+>>>>>>> 00182c070c28bf7dc44ad9758c1de8808af869b2
             }
         }
         return bestDirection;
@@ -271,7 +275,7 @@ public class Nav {
         //System.out.println("Moving " + dir);
         if(rc.canMove(dir)){
             rc.move(dir);
-        }else {
+        }else if(rc.getType() != RobotType.TTM){
             rc.clearRubble(dir);
         }
     }
@@ -341,14 +345,17 @@ public class Nav {
     }
 
     public static void moveToFreeLocation(List<MapLocation> allowedTargets, MapLocation here, MapLocation target) throws GameActionException {
-        MapLocation t;
-        if(allowedTargets != null) {
+        MapLocation t = null;
+        if(allowedTargets != null  && allowedTargets.size() > 0) {
             //Flee.setTarget(fight.findClosestFreeMapLocation(allowedTargets, here));
             t = robot.fight.findClosestFreeMapLocation(allowedTargets, here);
-        }else{
+        }
+
+        if(t == null){
             //Flee.setTarget(targetMoveLoc);
             t = target;
         }
+        //System.out.println("-->" + t);
         //System.out.println("   MOVING TO TARGET " + t);
         Flee.setTarget(t);
         Direction dir = Flee.getNextMove();
