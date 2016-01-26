@@ -72,11 +72,15 @@ public class Turret extends Robot {
 		fight = new Fight(rc, this);
 		strat = Strategy.DEFEND;
 		defend = new Defend(rc, this);
+		team = rc.getTeam();
 		Flee.initialiseFlee(rc);
 
 		strat = Strategy.ATTACK;
 
 		targetMoveLoc = new MapLocation(449,172);
+
+		setArchonLocations();
+
 	}
 
 	@Override
@@ -93,6 +97,8 @@ public class Turret extends Robot {
 				attack();
 				_move();
 				break;
+			case RETURN_TO_BASE:
+				returnToBase();
 			default:
 				break;
 
@@ -173,7 +179,12 @@ public class Turret extends Robot {
 
 			if(nTurretsInFront == 0){
 				//If there are no turrets that are nearer, then this is the leading edge
-				if(nTurretsAsClose == 0){
+				if(nTurretsAsClose == 0 && nTurretsBehind == 0){
+					//This turret is lost and alone
+					strat = Strategy.RETURN_TO_BASE;
+					returnToBase();
+				}
+				else if(nTurretsAsClose == 0){
 					//if there is no-one else as close then this has moved too far forward and needs to retreat
 					System.out.println("TOO FAR FORWARD!");
 					//dir = dirToTarget.opposite();
@@ -217,6 +228,8 @@ public class Turret extends Robot {
 
 		}
 	}
+
+
 
 	/*public boolean listenForSignal() throws GameActionException {
 
