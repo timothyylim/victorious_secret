@@ -30,6 +30,7 @@ public class Scout {
     /*Scout Strategy 5 Variables: Swarm Strategy*/
     double strength_needed = 200;
     boolean has_strength = false;
+    MapLocation home;
 
 
     MapLocation[] corners = {new MapLocation(9999, 9999), new MapLocation(-9999, 9999), new MapLocation(9999, -9999), new MapLocation(-9999, -9999)};
@@ -47,7 +48,7 @@ public class Scout {
         enemyArchonLocations = new Vector<RobotInfo>();
         
         robot.setArchonLocations();
-
+        
     }
 
     /********************************************
@@ -132,6 +133,13 @@ public class Scout {
     public void runScoutStrategy5() throws GameActionException{
     	sense_map();
     	
+    	if(home == null){
+    		if(robot.fight.seenAllies != null && robot.fight.seenAllies.length>0){
+    			home = closest_robot_type(RobotType.ARCHON, robot.fight.seenAllies, rc.getTeam()).location;
+    		}
+    		
+    	}
+    	
     	//If can see friendly archon and doesn't have required strength
     	if(!has_strength){
     		check_strength();
@@ -186,8 +194,11 @@ public class Scout {
     private void call_for_help() throws GameActionException{
     	MapLocation loc = robot.fight.findLowestHealthEnemy(robot.fight.seenEnemies).location;
     	//MapLocation loc = rc.getLocation();
-        int broadcastRange = rc.getLocation().distanceSquaredTo(rc.getInitialArchonLocations(rc.getTeam())[0]);
-        rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
+    	if(home != null){
+    		int broadcastRange = rc.getLocation().distanceSquaredTo(home) + 15;
+    		rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
+    	}
+       
     }
     
     private boolean locationClear(MapLocation m)
@@ -370,7 +381,7 @@ public class Scout {
 
     
     public boolean can_see_robot_type(RobotType type, RobotInfo[] robots, Team team){
-    	if(robot.fight.seenEnemies != null && robot.fight.seenEnemies.length > 0){
+    	if(robots != null && robots.length > 0){
     		for(RobotInfo i : robots){
     			if(i.type == type && i.team == team){
     				return true;
@@ -378,6 +389,17 @@ public class Scout {
     		}
     	}
     	return false;
+    }
+    
+    public RobotInfo closest_robot_type(RobotType type, RobotInfo[] robots, Team team){
+    	if(robots != null && robots.length > 0){
+    		for(RobotInfo i : robots){
+    			if(i.type == type && i.team == team){
+    				return i;
+    			}
+    		}
+    	}
+    	return null;
     }
     
     
