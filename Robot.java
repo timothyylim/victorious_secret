@@ -60,9 +60,7 @@ public abstract class Robot {
 		}
 	}
 
-	public static void updateEnemyArchonLocations(RobotInfo[] enemies){
-		updateUnitLocations(enemyArchonLocations, enemies, RobotType.ARCHON);
-	}
+
 
 	protected static void returnToBase() throws GameActionException {
 		//TODO: if(can see archon){ DEFEND ARCHON }
@@ -78,6 +76,10 @@ public abstract class Robot {
 
 	public static void updateOurArchonLocations(RobotInfo[] allies){
 		updateUnitLocations(ourArchonLocations, allies, RobotType.ARCHON);
+	}
+
+	public static void updateEnemyArchonLocations(RobotInfo[] enemies){
+		updateUnitLocations(enemyArchonLocations, enemies, RobotType.ARCHON);
 	}
 
     public static void setArchonLocations()

@@ -375,22 +375,4 @@ public class Turret extends Robot {
 		}
 		return allowedDirs;
 	}
-
-	private void returnToBase() throws GameActionException {
-		//find the nearest known archon location and flee to there
-
-		if(ourArchonLocations.size() > 0) {
-			MapLocation target = fight.findClosestMapLocation(ourArchonLocations.values(), rc.getLocation());
-			Flee.setTarget(target);
-			Direction dir = Flee.getNextMove();
-			if(rc.canMove(dir)) {
-				rc.move(dir);
-			}
-		}else{
-			//we've no idea where our Archons are
-		}
-
-
-
-	}
 }
