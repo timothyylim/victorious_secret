@@ -5,10 +5,13 @@
 package victorious_secret.Units;
 
 import java.util.Random;
+
 import battlecode.common.*;
+
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
+
 
 import victorious_secret.Strategy.Attack;
 import victorious_secret.Strategy.Defend;
@@ -44,6 +47,7 @@ public class Soldier extends Robot {
 	 *
 	 */
 	Defend defend;
+
 	public static Flee flee;
 
 	public Soldier(RobotController _rc){
@@ -52,18 +56,21 @@ public class Soldier extends Robot {
 		rand = new Random();
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
-		strat = Strategy.ATTACK;
+
+		strat = Strategy.DEFEND;
 		defend = new Defend(rc, this);
 
 		/*TESTING*/
 		Flee.initialiseFlee(rc);
 		Flee.setTarget(rc.getLocation());
 		akk = new Attack(rc, this);
+
 	}
 
 	@Override
 	public void move() throws GameActionException 
 	{
+
 		if(rc.getHealth() < 20)
 		{
 			//strat = Strategy.FLEE;
@@ -110,6 +117,7 @@ public class Soldier extends Robot {
 		}
 
 
+
 		//sig.setMessage(Signalling.MessageType.MOVE_EAST);
 		//sig.broadcast();
 	}
@@ -125,11 +133,13 @@ public class Soldier extends Robot {
 				MapLocation loc = new MapLocation(message[0],message[1]);
 				Flee.setTarget(loc);
 
+
 				return true;
 			}
 		}
 		//flee.setTarget(rc.getLocation());
 		return false;
+
 	}
 
 

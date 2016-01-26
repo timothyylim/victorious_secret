@@ -45,11 +45,15 @@ public class Scout extends Robot {
 <<<<<<< HEAD
 	 *
 	 */
+
 	victorious_secret.Strategy.Scout scout;
 
 
 
-	public Scout(RobotController _rc){
+
+	public Scout(RobotController _rc) 
+	{
+
 		rc = _rc;
 		//rand = new Random(rc.getID());
 		rand = new Random();
@@ -57,12 +61,15 @@ public class Scout extends Robot {
 		strat = Strategy.DEFEND;
 		fight = new Fight(rc, this);
 
+
 		scout = new victorious_secret.Strategy.Scout(rc,this);
 	}
 
 	@Override
 	public void move() throws GameActionException
 	{
-		scout.runScoutStrategy5();
+
+		scout.runScoutStrategy3();
+
 	}
 }

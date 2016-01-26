@@ -2,6 +2,7 @@
 package victorious_secret.Strategy;
 
 import battlecode.common.*;
+
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Nav;
 
@@ -15,6 +16,9 @@ public class Scout {
     private static Robot robot;
     private static Flee flee;
 
+    private static int ATTACK_X = 15151515;
+    private static int ATTACK_Y = 14141414;
+
 
     public Vector<RobotInfo> archonLocations;
     public Vector<RobotInfo> zombieDenLocations;
@@ -24,7 +28,7 @@ public class Scout {
     public MapLocation turretLoc;
     
     /*Scout Strategy 5 Variables: Swarm Strategy*/
-    double strength_needed = 500;
+    double strength_needed = 200;
     boolean has_strength = false;
 
 
@@ -90,7 +94,7 @@ public class Scout {
         if (rc.isCoreReady()) {
             Direction dir = flee.getNextMove();
             if(rc.canMove(dir)){
-                rc.move(flee.getNextMove());
+                rc.move(dir);
             }
         }
 
@@ -119,6 +123,7 @@ public class Scout {
         MapLocation loc = rc.getLocation();
         int broadcastRange = rc.getLocation().distanceSquaredTo(rc.getInitialArchonLocations(rc.getTeam())[0]);
         rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
+
 
     }
     
@@ -232,8 +237,8 @@ public class Scout {
 
             if (loc != null) {
                 if (rc.isCoreReady()) {
-                    rc.broadcastMessageSignal(loc.x+2000, loc.y+2000, rc.getType().sensorRadiusSquared);
-
+                    rc.broadcastMessageSignal(ATTACK_X, loc.x, rc.getType().sensorRadiusSquared);
+                    rc.broadcastMessageSignal(ATTACK_Y, loc.y, rc.getType().sensorRadiusSquared);
                 }
 
             }
@@ -326,11 +331,12 @@ public class Scout {
             }
 
         }
-        if(closestTarget != null){
+
+        if(closestTarget!=null){
             return closestTarget.location;
-        }else{
-            return rc.getLocation();
         }
+        return null;
+
     }
 
     //returns dps/health of the swarm

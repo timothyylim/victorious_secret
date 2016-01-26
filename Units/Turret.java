@@ -12,7 +12,9 @@ import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
 import victorious_secret.Strategy.Defend;
+
 import victorious_secret.Strategy.Flee;
+
 
 /**
  * @author APOC
@@ -71,22 +73,24 @@ public class Turret extends Robot {
 		team = rc.getTeam();
 		Flee.initialiseFlee(rc);
 
-		strat = Strategy.ATTACK;
+		strat = Strategy.DEFEND;
 
 		targetMoveLoc = new MapLocation(449,172);
 
 		setArchonLocations();
+
 
 	}
 
 	@Override
 	public void move() throws GameActionException {
 
+
 		updateOurArchonLocations(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
 		switch (strat) {
 			case DEFEND:
 				//Turrets move if they can't see an enemy
-				attack();
+				defend.turtle();
 				break;
 			case ATTACK:
 				//_move();
@@ -128,6 +132,7 @@ public class Turret extends Robot {
 			} else if(cooldown <= 0) {
 				rc.pack();
 			}
+
 		}
 	}
 
@@ -223,7 +228,9 @@ public class Turret extends Robot {
 		return false;
 	}
 
+
 	public void updateAttackLoc() throws GameActionException {
+
 		if(!listenForSignal()){
 			fight.targetEnemies();
 			if(fight.attackableEnemies != null && fight.attackableEnemies.length>0){
