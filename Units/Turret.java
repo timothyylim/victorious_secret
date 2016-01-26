@@ -175,7 +175,7 @@ public class Turret extends Robot {
 				//If there are no turrets that are nearer, then this is the leading edge
 				if(nTurretsAsClose == 0){
 					//if there is no-one else as close then this has moved too far forward and needs to retreat
-					System.out.println("TOO FAR FORWARD!");
+					//System.out.println("TOO FAR FORWARD!");
 					//dir = dirToTarget.opposite();
 					//moveAlongRadiusLarger(here, radius - 1);
 					//moveAlongRadiusLarger(here, radius);
@@ -183,19 +183,19 @@ public class Turret extends Robot {
 					//There is no-one behind us so we can march forward
 					//dir = dirToTarget;
 					//marching = true;
-					System.out.println("MARCHING TO TARGET!");
+					//System.out.println("MARCHING TO TARGET!");
 					//moveAlongRadiusSmaller(here, radius + 1);
 					moveAlongRadiusSmaller(here, radiusToTarget);
 				}
 				else{
 					//there are other people on the line and we can hold position whilst we wait for people to catch up
-					System.out.println("HOLDING THE LINE!");
+					//System.out.println("HOLDING THE LINE!");
 					//dir = Direction.NONE;
 				}
 
 			}else {
 				//There are turrets ahead of us, so we need to move into position with them
-				System.out.println("MOVING TO POSITION!");
+			//	System.out.println("MOVING TO POSITION!");
 				List<MapLocation> allowedTargets = nav.findAllowedLocations(here, radiusToWall, targetMoveLoc);
 
 				//System.out.println("   FOUND ALLOWED TARGETS!");
@@ -284,7 +284,7 @@ public class Turret extends Robot {
 				bestDirection = d;
 				bestDistance = newLoc.distanceSquaredTo(targetMoveLoc);
 				bestDistance += turnsToClear(newLoc) * 3;
-				System.out.println("best = " + bestDistance + " " + bestDirection);
+				//System.out.println("best = " + bestDistance + " " + bestDirection);
 			}
 		}
 		return bestDirection;

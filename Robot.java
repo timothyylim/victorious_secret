@@ -70,7 +70,7 @@ public abstract class Robot {
     public static void setArchonLocations()
     {
         enemyArchonLocations = new HashMap<>();
-        MapLocation[] initialArchonLocations = rc.getInitialArchonLocations(team.opponent());
+        MapLocation[] initialArchonLocations = rc.getInitialArchonLocations(rc.getTeam().opponent());
         int i = -1;
         for(MapLocation m : initialArchonLocations){
             enemyArchonLocations.put(i, m);

@@ -87,15 +87,15 @@ public class Soldier extends Robot {
 						}
 					}
 				}
-				if(listenForSignal()){
-
-					if (rc.isCoreReady()) {
-						Direction dir = flee.getNextMove();
-						if(rc.canMove(dir)){
-							rc.move(flee.getNextMove());
-						}
+				
+				listenForSignal();
+				if (rc.isCoreReady()) {
+					Direction dir = flee.getNextMove();
+					if(rc.canMove(dir)){
+						rc.move(flee.getNextMove());
 					}
 				}
+				//System.out.println(flee.getNextMove());
 
 				break;
 
@@ -121,13 +121,14 @@ public class Soldier extends Robot {
 
 			Signal sig = sigs[sigs.length-1];
 			int[] message = sig.getMessage();
-			if(message != null) {
+			if(message != null && sig.getTeam() == rc.getTeam()) {
 				MapLocation loc = new MapLocation(message[0],message[1]);
-				flee.setTarget(loc);
+				Flee.setTarget(loc);
 
 				return true;
 			}
 		}
+		//flee.setTarget(rc.getLocation());
 		return false;
 	}
 
