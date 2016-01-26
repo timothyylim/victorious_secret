@@ -364,10 +364,55 @@ public class Defend {
 	}
 
 	private boolean buildUnits() throws GameActionException {
+		//Our build order is to build 5 guards, then 1 scout, then try to maintain guards and
+		//scouts in equal proportion, with another scout every 16 units
 
+		RobotInfo[] nearby = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
+		RobotType robotType;
+		if(nearby == null || nearby.length < 5){
+			robotType = RobotType.GUARD;
+		}else{
+			int nGuards = 0;
+			int nTurrets = 0;
+
+			for(RobotInfo r : nearby){
+				switch (r.type){
+					case GUARD:
+						nGuards++;
+						break;
+					case TURRET:
+					case TTM:
+						nTurrets++;
+						break;
+				}
+			}
+
+			if(((nGuards + nTurrets) % 16) == 0){
+				robotType = RobotType.SCOUT;
+			}else if(nGuards > nTurrets){
+				robotType = RobotType.TURRET;
+			}else {
+				robotType = RobotType.GUARD;
+			}
+		}
+
+		Direction randomDir = randomDirection();
+
+		if(rc.getTeamParts() < robotType.partCost){
+			return false;
+		}else{
+
+			for(int i = 0; i <= 10; i++){
+				if(rc.canBuild(randomDir, robotType)) {
+					rc.build(randomDir, robotType);
+					return true;
+				}
+			}
+			return false;
+		}
+
+		/*
 		RobotType robotType = buildList[current_build];
-
-		RobotInfo[] nearby = rc.senseNearbyRobots((int)Math.pow(PERIMETER,2), rc.getTeam());
 
 		RobotInfo[] far = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
 		rc.setIndicatorString(1,""+PERIMETER);
@@ -413,7 +458,7 @@ public class Defend {
 			current_build ++;
 		}
 		return true;
-
+*/
 	}
 
 

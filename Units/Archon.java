@@ -34,10 +34,7 @@ public class Archon extends Robot {
 	 * 
 	 */
 	Defend defend;
-	
-	
 	int buildQueue;
-	
 
 	public Archon(RobotController _rc) 
 	{
@@ -52,8 +49,6 @@ public class Archon extends Robot {
 		
 		strat = Strategy.ATTACK;
 		buildQueue = 0;
-
-
 	}
 
 	@Override
