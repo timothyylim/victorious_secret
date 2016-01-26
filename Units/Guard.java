@@ -4,16 +4,15 @@
 
 package victorious_secret.Units;
 
+import java.util.List;
 import java.util.Random;
 
-import battlecode.common.GameActionException;
-import battlecode.common.RobotController;
-import battlecode.common.RobotInfo;
-import battlecode.common.RobotType;
+import battlecode.common.*;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
 import victorious_secret.Strategy.Defend;
+import victorious_secret.Strategy.Flee;
 
 /**
  * @author APOC
@@ -53,58 +52,78 @@ public class Guard extends Robot {
 		rand = new Random();
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
-		strat = Strategy.DEFEND;
 		defend = new Defend(rc, this);
-	}
+		Flee.initialiseFlee(rc);
 
-	private void spot_archon()
-	{
-		RobotInfo[] team = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
-		for(RobotInfo i : team)
-		{
-			if(i.type == RobotType.GUARD) //was Archon
-			{
-				archon = i;
-				return;
-			}
-		}
+		team = rc.getTeam();
+		strat = Strategy.DEFEND;
+		targetMoveLoc = new MapLocation(449,172);
+
+		setArchonLocations();
 	}
 
 	@Override
 	public void move() throws GameActionException 
 	{
-		
+		updateOurArchonLocations(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
+
+
 		switch(strat)
 		{
 			case DEFEND:
 				defend.turtle();
 				break;
+			case RETURN_TO_BASE:
+				returnToBase();
+				break
+			case ATTACK:
+				maintainRadius();
+				attackPattern();
+				break;
 			default:
 				break;
-
 		}
-//		if(archon == null)
-//		{
-//			spot_archon();
-//		}
-//
-//		if(!fight.fight())
-//		{
-//
-//			if(archon != null)
-//			{
-//				spot_archon();
-//				nav.guard(archon.location);
-//			}
-//			else
-//			{
-//				if(rc.getHealth()<20){
-//					nav.flee();
-//				}else{
-//					nav.move();
-//				}
-//			}	
-//
-//		}
+
+	}
+	private void attackPattern() throws GameActionException{
+		RobotInfo t = fight.findClosestEnemy(fight.spotEnemies());
+		if(t != null && rc.isCoreReady()) {
+			akk.getClose(t);
+		}
+	}
+	private void maintainRadius() throws GameActionException {
+		if (rc.isCoreReady()) {
+			MapLocation here = rc.getLocation();
+
+			RobotInfo[] nearbyTurrets = fight.spotNearbyTurrets();
+
+			int distanceToTarget = here.distanceSquaredTo(targetMoveLoc);
+			int radiusToTarget = (int) Math.sqrt(distanceToTarget);
+			int radiusToWall = 9999;
+
+			if (nearbyTurrets != null) {
+				for (RobotInfo t : nearbyTurrets) {
+					int dt = (int) Math.sqrt(t.location.distanceSquaredTo(targetMoveLoc));
+					if (dt < radiusToWall) {
+						radiusToWall = dt;
+					}
+				}
+
+				int targetGuardRadius = Math.max(radiusToWall - 2, 1);
+
+				if (radiusToTarget != targetGuardRadius) {
+					//move into position
+					List<MapLocation> allowedTargets = nav.findAllowedLocations(here, targetGuardRadius, targetMoveLoc);
+					if(allowedTargets != null) {
+						nav.moveToFreeLocation(allowedTargets, here, targetMoveLoc);
+					}
+				}
+			} else {
+				//There are no visible turrets! You're lost, go home.
+				strat = Strategy.RETURN_TO_BASE;
+				returnToBase();
+			}
+		}
 	}
 }
+

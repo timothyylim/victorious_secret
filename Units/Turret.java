@@ -70,7 +70,6 @@ public class Turret extends Robot {
 		rand = new Random();
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
-		strat = Strategy.DEFEND;
 		defend = new Defend(rc, this);
 		team = rc.getTeam();
 		Flee.initialiseFlee(rc);
@@ -142,7 +141,6 @@ public class Turret extends Robot {
 		if (rc.isCoreReady() && here != targetMoveLoc) {
 			RobotInfo[] nearbyTurrets = fight.spotNearbyTurrets();
 
-
 			int distanceToTarget = here.distanceSquaredTo(targetMoveLoc);
 			int radiusToTarget = (int)Math.sqrt(distanceToTarget);
 			int radiusToWall = radiusToTarget;
@@ -186,7 +184,7 @@ public class Turret extends Robot {
 				}
 				else if(nTurretsAsClose == 0){
 					//if there is no-one else as close then this has moved too far forward and needs to retreat
-					System.out.println("TOO FAR FORWARD!");
+					//System.out.println("TOO FAR FORWARD!");
 					//dir = dirToTarget.opposite();
 					//moveAlongRadiusLarger(here, radius - 1);
 					//moveAlongRadiusLarger(here, radius);
@@ -194,60 +192,25 @@ public class Turret extends Robot {
 					//There is no-one behind us so we can march forward
 					//dir = dirToTarget;
 					//marching = true;
-					System.out.println("MARCHING TO TARGET!");
+					//System.out.println("MARCHING TO TARGET!");
 					//moveAlongRadiusSmaller(here, radius + 1);
-					moveAlongRadiusSmaller(here, radiusToTarget);
+					nav.moveAlongRadiusSmaller(here, targetMoveLoc, radiusToTarget);
 				}
 				else{
 					//there are other people on the line and we can hold position whilst we wait for people to catch up
-					System.out.println("HOLDING THE LINE!");
+					//System.out.println("HOLDING THE LINE!");
 					//dir = Direction.NONE;
 				}
 
 			}else {
 				//There are turrets ahead of us, so we need to move into position with them
-				System.out.println("MOVING TO POSITION!");
+				//System.out.println("MOVING TO POSITION!");
 				List<MapLocation> allowedTargets = nav.findAllowedLocations(here, radiusToWall, targetMoveLoc);
-
-				//System.out.println("   FOUND ALLOWED TARGETS!");
-				MapLocation t;
-				if(allowedTargets != null) {
-					//Flee.setTarget(fight.findClosestFreeMapLocation(allowedTargets, here));
-					t = fight.findClosestFreeMapLocation(allowedTargets, here);
-				}else{
-					//Flee.setTarget(targetMoveLoc);
-					t = targetMoveLoc;
-				}
-				//System.out.println("   MOVING TO TARGET " + t);
-				Flee.setTarget(t);
-				Direction dir = Flee.getNextMove();
-				if(rc.canMove(dir)) {
-					rc.move(dir);
-				}
+				nav.moveToFreeLocation(allowedTargets, here, targetMoveLoc);
 			}
 
 		}
 	}
-
-
-
-	/*public boolean listenForSignal() throws GameActionException {
-
-		switch (strat) {
-			case DEFEND:
-				updateAttackLoc();
-				if(attackLoc != null && rc.isCoreReady() && rc.canAttackLocation(attackLoc)){
-					rc.attackLocation(attackLoc);
-				}
-
-				break;
-			default:
-				break;
-
-
-		}
-	}
-*/
 
 	public boolean listenForSignal(){
 		Signal[] sigs = rc.emptySignalQueue();
@@ -286,93 +249,5 @@ public class Turret extends Robot {
 		}
 	}
 
-	private Direction findBestMove(MapLocation here, List<Direction> allowedDirs) throws GameActionException {
-		int bestDistance = 99999;
-		Direction bestDirection = null;
-		for(Direction d : allowedDirs){
-			MapLocation newLoc = here.add(d);
-			if(rc.onTheMap(newLoc) &&
-					rc.senseRobotAtLocation(newLoc) == null
-					&&  newLoc.distanceSquaredTo(targetMoveLoc) < bestDistance){
-				bestDirection = d;
-				bestDistance = newLoc.distanceSquaredTo(targetMoveLoc);
-				bestDistance += turnsToClear(newLoc) * 3;
-				System.out.println("best = " + bestDistance + " " + bestDirection);
-			}
-		}
-		return bestDirection;
-	}
 
-	private void moveOrClear(Direction dir) throws GameActionException {
-		//System.out.println("Moving " + dir);
-		if(rc.canMove(dir)){
-			rc.move(dir);
-		}else {
-			rc.clearRubble(dir);
-		}
-	}
-
-	private void moveAlongRadiusLarger(MapLocation here, int targetRadius) throws GameActionException {
-		//Implementation of bug nav where units do not move beyond an allowed distance to a location
-		//get the directions we can move
-		List<Direction> allowedDirs = getAllowedDirectionsLarger(here, targetRadius);
-		//find the best direction
-		//best is defined by closeness and clearness
-		Direction bestDirection = findBestMove(here, allowedDirs);
-
-		//move there
-		if (bestDirection != null) {
-			moveOrClear(bestDirection);
-		}
-	}
-
-	private void moveAlongRadiusSmaller(MapLocation here, int targetRadius) throws GameActionException {
-		//Implementation of bug nav where units do not move beyond an allowed distance to a location
-		//get the directions we can move
-		List<Direction> allowedDirs = getAllowedDirectionsSmaller(here, targetRadius);
-		//find the best direction
-		//best is defined by closeness and clearness
-		Direction bestDirection = findBestMove(here, allowedDirs);
-
-		//move there
-		if (bestDirection != null) {
-			moveOrClear(bestDirection);
-		}
-
-	}
-
-	private int turnsToClear(MapLocation loc){
-		//Sets an upper bound on the number of turns to clear the rubble
-		double r = rc.senseRubble(loc);
-		//Tile is passable once it is below 50 rubble
-		return (int) Math.max((r - 50) / 10, 0);
-	}
-
-	private  List<Direction> getAllowedDirectionsLarger(MapLocation here, int targetRadius){
-
-		int upperRadiusSq = (int) (Math.pow(targetRadius + 1, 2) - 1);
-
-		List<Direction> allowedDirs = new ArrayList<>();
-		for(Direction d : Direction.values()){
-			/*int tR = (int)Math.sqrt(here.add(d).distanceSquaredTo(targetMoveLoc));
-			if(tR > targetRadius && d != Direction.OMNI && d != Direction.NONE){
-				allowedDirs.add(d);
-			}*/
-			if(d != Direction.OMNI && d != Direction.NONE && here.add(d).distanceSquaredTo(targetMoveLoc) > upperRadiusSq){
-				allowedDirs.add(d);
-			}
-		}
-		return allowedDirs;
-	}
-
-	private  List<Direction> getAllowedDirectionsSmaller(MapLocation here, int targetRadius){
-		List<Direction> allowedDirs = new ArrayList<>();
-		for(Direction d : Direction.values()){
-			int tR = (int)Math.sqrt(here.add(d).distanceSquaredTo(targetMoveLoc));
-			if(tR < targetRadius){
-				allowedDirs.add(d);
-			}
-		}
-		return allowedDirs;
-	}
 }
