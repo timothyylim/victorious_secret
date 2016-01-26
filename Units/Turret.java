@@ -104,8 +104,6 @@ public class Turret extends Robot {
 				returnToBase();
 			default:
 				break;
-
-
 		}
 	}
 	
@@ -132,12 +130,14 @@ public class Turret extends Robot {
 	private void _move() throws GameActionException {
 		if(rc.isCoreReady() && targetMoveLoc != null) {
 			if (rc.getType() == RobotType.TTM) {
-				//lineUp();
+				lineUp();
+				/*
 				Flee.setTarget(targetMoveLoc);
 				Direction dir = Flee.getNextMove();
 				if(dir != null && rc.canMove(dir)){
 					rc.move(dir);
 				}
+				*/
 			} else if(cooldown <= 0) {
 				rc.pack();
 			}

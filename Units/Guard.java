@@ -81,10 +81,9 @@ public class Guard extends Robot {
 				returnToBase();
 				break;
 			case ATTACK:
-
-				//maintainRadius();
+				maintainRadius();
 				attackPattern();
-				_move();
+				//_move();
 				break;
 			default:
 				break;
@@ -169,8 +168,10 @@ public class Guard extends Robot {
 				}
 			} else {
 				//There are no visible turrets! You're lost, go home.
-				strat = Strategy.RETURN_TO_BASE;
-				returnToBase();
+				//strat = Strategy.RETURN_TO_BASE;
+				//returnToBase();
+
+				_move();
 			}
 		}
 	}
