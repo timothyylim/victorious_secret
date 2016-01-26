@@ -24,7 +24,7 @@ public class Scout {
     public MapLocation turretLoc;
     
     /*Scout Strategy 5 Variables: Swarm Strategy*/
-    double strength_needed = 0;
+    double strength_needed = 500;
     boolean has_strength = false;
 
 
