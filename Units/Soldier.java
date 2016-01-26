@@ -1,10 +1,10 @@
 /**
+<<<<<<< HEAD
  *
  */
 package victorious_secret.Units;
 
 import java.util.Random;
-
 import battlecode.common.*;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
@@ -14,10 +14,13 @@ import victorious_secret.Strategy.Attack;
 import victorious_secret.Strategy.Defend;
 import victorious_secret.Strategy.Flee;
 
-
 /**
  * @author APOC
+<<<<<<< HEAD
  *
+=======
+ * 
+>>>>>>> 45b64142e44a0dd44af44b58ab8e8ebf56678b6c
  * http://s3.amazonaws.com/battlecode-releases-2016/releases/javadoc/battlecode/common/RobotType.html#SOLDIER
 An all-around ranged unit.
 canAttack(): true
@@ -43,8 +46,7 @@ public class Soldier extends Robot {
 	Defend defend;
 	public static Flee flee;
 
-	public Soldier(RobotController _rc)
-	{
+	public Soldier(RobotController _rc){
 		rc = _rc;
 		//rand = new Random(rc.getID());
 		rand = new Random();
@@ -54,21 +56,14 @@ public class Soldier extends Robot {
 		defend = new Defend(rc, this);
 
 		/*TESTING*/
-		flee = new Flee();
-		flee.initialiseFlee(rc);
-		flee.setTarget(rc.getLocation());
+		Flee.initialiseFlee(rc);
+		Flee.setTarget(rc.getLocation());
 		akk = new Attack(rc, this);
 	}
 
 	@Override
-	public void move() throws GameActionException
+	public void move() throws GameActionException 
 	{
-		//System.out.println();
-		//sig.listen();
-
-		//	listen();
-		//	broadcast();
-
 		if(rc.getHealth() < 20)
 		{
 			//strat = Strategy.FLEE;

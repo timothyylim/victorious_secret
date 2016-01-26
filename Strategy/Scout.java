@@ -1,9 +1,8 @@
+
 package victorious_secret.Strategy;
 
 import battlecode.common.*;
-
 import victorious_secret.Robot;
-
 import java.util.Vector;
 
 /**
@@ -32,7 +31,6 @@ public class Scout {
 
         flee = new Flee();
         flee.initialiseFlee(rc);
-
 
         archonLocations = new Vector<RobotInfo>();
         zombieDenLocations = new Vector<RobotInfo>();

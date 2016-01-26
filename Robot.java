@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package victorious_secret;
 
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.Random;
 
 import battlecode.common.*;
+
 import victorious_secret.Behaviour.*;
 import victorious_secret.Strategy.Attack;
 
@@ -43,8 +45,6 @@ public abstract class Robot {
 	public Strategy strat;
 	
 	public abstract void move() throws GameActionException;
-
-
 
 	private static void updateUnitLocations(Map<Integer, MapLocation> locationMap, RobotInfo[] units,
 											RobotType rType){

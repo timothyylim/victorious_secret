@@ -1,5 +1,4 @@
 package victorious_secret.Behaviour;
-
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;

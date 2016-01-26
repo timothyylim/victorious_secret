@@ -1,4 +1,5 @@
 /**
+<<<<<<< HEAD
  *
  */
 package victorious_secret.Units;
@@ -13,10 +14,13 @@ import victorious_secret.Behaviour.Nav;
 import victorious_secret.Strategy.Defend;
 import victorious_secret.Strategy.Flee;
 
-
 /**
  * @author APOC
+<<<<<<< HEAD
  *
+=======
+ * 
+>>>>>>> 45b64142e44a0dd44af44b58ab8e8ebf56678b6c
  * http://s3.amazonaws.com/battlecode-releases-2016/releases/javadoc/battlecode/common/RobotType.html#TURRET
 An immobile unit designed to reinforce an area; transforms into a TTM in order to move.
 canAttack(): true
@@ -48,15 +52,19 @@ turnsInto: RANGEDZOMBIE
 public class Turret extends Robot {
 
 	/**
+<<<<<<< HEAD
 	 *
+=======
+	 * 
+>>>>>>> 45b64142e44a0dd44af44b58ab8e8ebf56678b6c
 	 */
 
 	Defend defend;
 	MapLocation attackLoc;
+
 	int cooldown = 0;
 
-	public Turret(RobotController _rc)
-	{
+	public Turret(RobotController _rc){
 		rc = _rc;
 		//rand = new Random(rc.getID());
 		rand = new Random();
@@ -64,7 +72,6 @@ public class Turret extends Robot {
 		fight = new Fight(rc, this);
 		strat = Strategy.DEFEND;
 		defend = new Defend(rc, this);
-
 		Flee.initialiseFlee(rc);
 
 		strat = Strategy.ATTACK;
@@ -74,6 +81,7 @@ public class Turret extends Robot {
 
 	@Override
 	public void move() throws GameActionException {
+
 		updateOurArchonLocations(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
 		switch (strat) {
 			case DEFEND:
@@ -210,6 +218,24 @@ public class Turret extends Robot {
 		}
 	}
 
+	/*public boolean listenForSignal() throws GameActionException {
+
+		switch (strat) {
+			case DEFEND:
+				updateAttackLoc();
+				if(attackLoc != null && rc.isCoreReady() && rc.canAttackLocation(attackLoc)){
+					rc.attackLocation(attackLoc);
+				}
+
+				break;
+			default:
+				break;
+
+
+		}
+	}
+*/
+
 	public boolean listenForSignal(){
 		Signal[] sigs = rc.emptySignalQueue();
 		if(sigs != null && sigs.length > 0){
@@ -224,7 +250,7 @@ public class Turret extends Robot {
 		return false;
 	}
 
-	public void updateAttackLoc(){
+	public void updateAttackLoc() throws GameActionException {
 		if(!listenForSignal()){
 			fight.targetEnemies();
 			if(fight.attackableEnemies != null && fight.attackableEnemies.length>0){

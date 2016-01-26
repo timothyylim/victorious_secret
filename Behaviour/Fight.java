@@ -1,3 +1,4 @@
+
 package victorious_secret.Behaviour;
 
 import battlecode.common.*;
@@ -8,7 +9,6 @@ import java.util.Collection;
 import java.util.List;
 
 public class Fight {
-
 	protected static RobotController rc;
 	protected static Robot robot;
 	protected static RobotInfo lastTargeted;
@@ -239,7 +239,6 @@ public class Fight {
 		return closestTarget;
 	}
 
-
 	public static RobotInfo findLastTargeted(RobotInfo[] listOfEnemies)
 	{
 		if(lastTargeted == null)
@@ -345,9 +344,7 @@ public class Fight {
 	}
 
 	public static boolean lowestHealthAttack() throws GameActionException {
-		//if(lastTargeted == null) {
 		lastTargeted = findLowestHealthEnemy(attackableEnemies);
-		//}
 
 		if(rc.canAttackLocation(lastTargeted.location))
 		{

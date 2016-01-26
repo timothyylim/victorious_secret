@@ -4,7 +4,6 @@
 package victorious_secret.Units;
 
 import java.util.Random;
-
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
@@ -51,7 +50,8 @@ public class Viper extends Robot {
 	@Override
 	public void move() throws GameActionException 
 	{
-// Look for enemies
+
+	// Look for enemies
 		RobotInfo[] opponentEnemies = rc.senseHostileRobots(rc.getLocation(), rc.getType().attackRadiusSquared);
 
 		if (opponentEnemies != null && opponentEnemies.length > 0 && rc.getType().canAttack()) {
@@ -70,6 +70,7 @@ public class Viper extends Robot {
 			rc.move(Direction.WEST);
 			return;
 		}
+
 
 	}
 }

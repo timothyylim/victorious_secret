@@ -234,8 +234,7 @@ public class Nav {
         return onRadius;
     }
 
-    public static void randMove() throws GameActionException
-	{
+    public static void randMove() throws GameActionException {
         int i = 0;
         do
         {

@@ -19,3 +19,4 @@ List of Strategy Reports -
 3. https://pcattori.github.io/assets/battlecode-strategy-report.pdf
 
 Intro to AI - (Lecture 2-5 on DFS, BFS , A*) - https://www.youtube.com/watch?v=eLbMPyrw4rw&list=PL6EE0CD02910E57B8
+
