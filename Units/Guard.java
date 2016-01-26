@@ -82,11 +82,22 @@ public class Guard extends Robot {
 				break;
 			case ATTACK:
 
-				maintainRadius();
+				//maintainRadius();
 				attackPattern();
+				_move();
 				break;
 			default:
 				break;
+		}
+	}
+
+	private void _move() throws GameActionException {
+		if(rc.isCoreReady() && targetMoveLoc != null) {
+			Flee.setTarget(targetMoveLoc);
+			Direction dir = Flee.getNextMove();
+			if(dir != null && rc.canMove(dir)) {
+				rc.move(dir);
+			}
 		}
 	}
 

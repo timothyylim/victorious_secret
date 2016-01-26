@@ -83,9 +83,6 @@ public class Turret extends Robot {
 
 	@Override
 	public void move() throws GameActionException {
-		
-		
-
 
 		updateOurArchonLocations(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
 		if(listenForSignal()){
@@ -135,7 +132,12 @@ public class Turret extends Robot {
 	private void _move() throws GameActionException {
 		if(rc.isCoreReady() && targetMoveLoc != null) {
 			if (rc.getType() == RobotType.TTM) {
-				lineUp();
+				//lineUp();
+				Flee.setTarget(targetMoveLoc);
+				Direction dir = Flee.getNextMove();
+				if(dir != null && rc.canMove(dir)){
+					rc.move(dir);
+				}
 			} else if(cooldown <= 0) {
 				rc.pack();
 			}
@@ -187,14 +189,7 @@ public class Turret extends Robot {
 				if(nTurretsAsClose == 0 && nTurretsBehind == 0){
 					//This turret is lost and alone
 					//strat = Strategy.RETURN_TO_BASE;
-					//returnToBase();
-				}
-				else if(nTurretsAsClose == 0){
-					//if there is no-one else as close then this has moved too far forward and needs to retreat
-					//System.out.println("TOO FAR FORWARD!");
-					//dir = dirToTarget.opposite();
-					//moveAlongRadiusLarger(here, radius - 1);
-					//moveAlongRadiusLarger(here, radius);
+					returnToBase();
 				}else if(nTurretsBehind == 0 && allOnLineReadyToGo) {
 					//There is no-one behind us so we can march forward
 					//dir = dirToTarget;
@@ -207,6 +202,14 @@ public class Turret extends Robot {
 					//there are other people on the line and we can hold position whilst we wait for people to catch up
 					//System.out.println("HOLDING THE LINE!");
 					//dir = Direction.NONE;
+					List<MapLocation> allowedTargets = nav.findAllowedLocations(here, radiusToWall, targetMoveLoc);
+					if(!fight.hasClearMapLocation(allowedTargets, targetMoveLoc)){
+						Flee.setTarget(targetMoveLoc);
+						Direction dir = Flee.getNextMove();
+						if(dir != null && rc.canMove(dir)){
+							rc.move(dir);
+						}
+					}
 				}
 
 			}else {
@@ -217,7 +220,6 @@ public class Turret extends Robot {
 				List<MapLocation> allowedTargets = nav.findAllowedLocations(here, radiusToWall, targetMoveLoc);
 				nav.moveToFreeLocation(allowedTargets, here, targetMoveLoc);
 			}
-
 		}
 	}
 

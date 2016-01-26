@@ -231,7 +231,7 @@ public class Fight {
 		for(MapLocation i : listOfLocations)
 		{
 			int sqDist = i.distanceSquaredTo(loc);
-			if(sqDist  < minDistance && rc.senseRobotAtLocation(i) == null)
+			if(sqDist < minDistance && rc.senseRobotAtLocation(i) == null)
 			{
 				minDistance = sqDist;
 				closestTarget = i;
@@ -239,6 +239,22 @@ public class Fight {
 		}
 		return closestTarget;
 	}
+
+	public boolean hasClearMapLocation(List<MapLocation> listOfLocations, MapLocation loc) throws GameActionException {
+		double minDistance = 9999999;
+		MapLocation closestTarget = null;
+
+		for(MapLocation i : listOfLocations)
+		{
+			int sqDist = i.distanceSquaredTo(loc);
+			if(sqDist  < minDistance && rc.senseRobotAtLocation(i) == null && rc.senseRubble(i) < 100)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 
 	public static RobotInfo findLastTargeted(RobotInfo[] listOfEnemies)
 	{
