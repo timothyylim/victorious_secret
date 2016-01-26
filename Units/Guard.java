@@ -56,7 +56,7 @@ public class Guard extends Robot {
 		Flee.initialiseFlee(rc);
 
 		team = rc.getTeam();
-		strat = Strategy.ATTACK;
+		strat = Strategy.DEFEND;
 		targetMoveLoc = new MapLocation(449,172);
 
 		setArchonLocations();
@@ -66,6 +66,7 @@ public class Guard extends Robot {
 	public void move() throws GameActionException 
 	{
 		updateOurArchonLocations(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
+		listenForSignal();
 
 		switch(strat){
 			case DEFEND:
@@ -75,8 +76,6 @@ public class Guard extends Robot {
 				returnToBase();
 				break;
 			case ATTACK:
-				
-				listenForSignal();
 				maintainRadius();
 				attackPattern();
 				break;
@@ -95,19 +94,23 @@ public class Guard extends Robot {
 		RobotInfo t = null;
 		if (enemiesInRange == null || enemiesInRange.length == 0) {
 			RobotInfo[] enemiesInSight = fight.spotEnemies();
-			if(enemiesInSight != null){
 
-				for(RobotInfo r : enemiesInSight){
-					if(r.type == RobotType.ARCHON ||
-							r.type == RobotType.ZOMBIEDEN ||
-							r.type == RobotType.TURRET ||
-							r.type == RobotType.TTM){
-						if(t == null || r.health < t.health) {
-							t = r;
+			if(enemiesInSight != null){
+				RobotInfo[] nearbyTurrets = fight.spotNearbyTurrets();
+				if(nearbyTurrets == null || nearbyTurrets.length == 0){
+					t = fight.findClosestEnemy(enemiesInSight);
+				}else {
+					for (RobotInfo r : enemiesInSight) {
+						if (r.type == RobotType.ARCHON ||
+								r.type == RobotType.ZOMBIEDEN ||
+								r.type == RobotType.TURRET ||
+								r.type == RobotType.TTM) {
+							if (t == null || r.health < t.health) {
+								t = r;
+							}
 						}
 					}
 				}
-
 				if(t != null && rc.isCoreReady()) {
 					akk.getClose(t);
 				}

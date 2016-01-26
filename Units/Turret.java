@@ -73,7 +73,7 @@ public class Turret extends Robot {
 		team = rc.getTeam();
 		Flee.initialiseFlee(rc);
 
-		strat = Strategy.ATTACK;
+		strat = Strategy.DEFEND;
 
 		//targetMoveLoc = new MapLocation(449,172);
 
@@ -237,9 +237,6 @@ public class Turret extends Robot {
 
 
 	public void updateAttackLoc() throws GameActionException {
-
-
-
 		if(!listenForSignal()){
 			fight.targetEnemies();
 			if(fight.attackableEnemies != null && fight.attackableEnemies.length>0){
