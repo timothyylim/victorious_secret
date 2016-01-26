@@ -73,7 +73,7 @@ public class Turret extends Robot {
 
 		strat = Strategy.ATTACK;
 
-		targetMoveLoc = new MapLocation(449,172);
+		//targetMoveLoc = new MapLocation(449,172);
 
 		setArchonLocations();
 
@@ -81,6 +81,8 @@ public class Turret extends Robot {
 
 	@Override
 	public void move() throws GameActionException {
+		
+		
 
 		updateOurArchonLocations(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
 		switch (strat) {
@@ -90,6 +92,7 @@ public class Turret extends Robot {
 				break;
 			case ATTACK:
 				//_move();
+				updateAttackLoc();
 				attack();
 				_move();
 				break;
@@ -101,6 +104,7 @@ public class Turret extends Robot {
 
 		}
 	}
+	
 
 	private void attack() throws GameActionException {
 		RobotInfo[] opponentEnemies = rc.senseHostileRobots(rc.getLocation(), RobotType.TURRET.attackRadiusSquared);
@@ -176,8 +180,8 @@ public class Turret extends Robot {
 				//If there are no turrets that are nearer, then this is the leading edge
 				if(nTurretsAsClose == 0 && nTurretsBehind == 0){
 					//This turret is lost and alone
-					strat = Strategy.RETURN_TO_BASE;
-					returnToBase();
+					//strat = Strategy.RETURN_TO_BASE;
+					//returnToBase();
 				}
 				else if(nTurretsAsClose == 0){
 					//if there is no-one else as close then this has moved too far forward and needs to retreat
@@ -217,7 +221,9 @@ public class Turret extends Robot {
 
 			Signal sig = sigs[sigs.length-1];
 			int[] message = sig.getMessage();
-			if(message != null) {
+			if(message != null && sig.getTeam() == rc.getTeam()) {
+			//	System.out.println("signal received");
+				targetMoveLoc = new MapLocation(message[0], message[1]);
 				attackLoc = new MapLocation(message[0], message[1]);
 				return true;
 			}
@@ -226,6 +232,7 @@ public class Turret extends Robot {
 	}
 
 	public void updateAttackLoc() throws GameActionException {
+		//System.out.println("update attack loc called");
 		if(!listenForSignal()){
 			fight.targetEnemies();
 			if(fight.attackableEnemies != null && fight.attackableEnemies.length>0){

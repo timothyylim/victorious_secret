@@ -119,16 +119,20 @@ public class Archon extends Robot {
 			buildQueue++;
 			break;
 		case 1:
-			spawn(RobotType.TURRET);
-			buildQueue++;
+			if(spawn(RobotType.TURRET)){
+				buildQueue++;
+			}
+
 			break;
 		case 2:
-			spawn(RobotType.GUARD);
-			buildQueue--;
+			if(spawn(RobotType.GUARD)){
+				buildQueue = 1;
+			}
 			break;
+		
 			
 		}
-		spawn(RobotType.TURRET);
+		
 		
 		
 	}

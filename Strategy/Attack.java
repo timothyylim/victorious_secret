@@ -236,7 +236,7 @@ public class Attack extends Fight
                 alliesAndI[allies.length] = rc.senseRobot(rc.getID());// RobotInfo();//rc.getID(), rc.getTeam(), rc.getType(), rc.getLocation(), rc.getCoreDelay(), rc.getWeaponDelay(), rc.getType().attackPower, rc.getHealth(), rc.getType().maxHealth, );
             }
             leader = robot.fight.findClosestEnemy(alliesAndI, targetArchon);
-            System.out.println("Leader = " + leader.toString());
+           // System.out.println("Leader = " + leader.toString());
         }
     }
 

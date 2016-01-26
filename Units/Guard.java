@@ -78,6 +78,8 @@ public class Guard extends Robot {
 				returnToBase();
 				break;
 			case ATTACK:
+				
+				listenForSignal();
 				maintainRadius();
 				attackPattern();
 				break;
@@ -89,7 +91,12 @@ public class Guard extends Robot {
 	private void attackPattern() throws GameActionException{
 		RobotInfo t = fight.findClosestEnemy(fight.spotEnemies());
 		if(t != null && rc.isCoreReady()) {
-			akk.getClose(t);
+			if(rc.canAttackLocation(t.location)){
+				rc.attackLocation(t.location);
+							
+			}
+			
+//			akk.getClose(t);
 		}
 	}
 	private void maintainRadius() throws GameActionException {
@@ -123,6 +130,35 @@ public class Guard extends Robot {
 				//There are no visible turrets! You're lost, go home.
 				strat = Strategy.RETURN_TO_BASE;
 				returnToBase();
+			}
+		}
+	}
+	
+	public boolean listenForSignal(){
+		Signal[] sigs = rc.emptySignalQueue();
+		if(sigs != null && sigs.length > 0){
+
+			Signal sig = sigs[sigs.length-1];
+			int[] message = sig.getMessage();
+			if(message != null && sig.getTeam() == rc.getTeam()) {
+				System.out.println("signal received");
+				targetMoveLoc = new MapLocation(message[0], message[1]);
+				//attackLoc = new MapLocation(message[0], message[1]);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void updateAttackLoc() throws GameActionException {
+		//System.out.println("update attack loc called");
+		if(!listenForSignal()){
+			fight.targetEnemies();
+			if(fight.attackableEnemies != null && fight.attackableEnemies.length>0){
+				RobotInfo i = fight.findLowestHealthEnemy(fight.attackableEnemies);
+			//	attackLoc = i.location;
+			}else{
+			//	attackLoc = null;
 			}
 		}
 	}

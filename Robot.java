@@ -67,7 +67,7 @@ public abstract class Robot {
 		//else{ ... }
 		if(rc.isCoreReady()){
 			MapLocation t = fight.findClosestMapLocation(ourArchonLocations.values(), rc.getLocation());
-			System.out.println("LOST! RETURN TO BASE: " + t);
+			//System.out.println("LOST! RETURN TO BASE: " + t);
 			Flee.setTarget(t);
 			Direction dir = Flee.getNextMove();
 			if(rc.canMove(dir)) {
