@@ -143,17 +143,14 @@ public class Fight {
 		}
 	}
 
-<<<<<<< HEAD
 	public boolean locationUnderThreat(RobotInfo[] listOfEnemies, MapLocation loc)
 	{
 		return inRangeOf(listOfEnemies, loc) != null;
 
 	}
 
-	public RobotInfo findClosestEnemy(RobotInfo[] listOfEnemies)
-=======
 	public static RobotInfo findClosestEnemy(RobotInfo[] listOfEnemies)
->>>>>>> a6479ac3f884feedcdf5e19653af5733c15b7009
+
 	{
 		return findClosestEnemy(listOfEnemies, rc.getLocation());
 	}

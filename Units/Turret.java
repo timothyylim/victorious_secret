@@ -73,7 +73,7 @@ public class Turret extends Robot {
 		team = rc.getTeam();
 		Flee.initialiseFlee(rc);
 
-		strat = Strategy.DEFEND;
+		strat = Strategy.ATTACK;
 
 		targetMoveLoc = new MapLocation(449,172);
 
@@ -220,7 +220,7 @@ public class Turret extends Robot {
 
 			Signal sig = sigs[sigs.length-1];
 			int[] message = sig.getMessage();
-			if(message != null) {
+			if(message != null && sig.getTeam().compareTo(rc.getTeam()) == 0) {
 				attackLoc = new MapLocation(message[0], message[1]);
 				return true;
 			}
@@ -235,7 +235,11 @@ public class Turret extends Robot {
 			fight.targetEnemies();
 			if(fight.attackableEnemies != null && fight.attackableEnemies.length>0){
 				RobotInfo i = fight.findLowestHealthEnemy(fight.attackableEnemies);
-				attackLoc = i.location;
+				if(i != null) {
+					attackLoc = i.location;
+				}else{
+					attackLoc = null;
+				}
 			}else{
 				attackLoc = null;
 			}

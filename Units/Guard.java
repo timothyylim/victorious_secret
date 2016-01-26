@@ -89,30 +89,30 @@ public class Guard extends Robot {
 		//Guards stay in line if their turret is threatened, they can only see Archons or Zombiedens
 
 		RobotInfo[] enemiesInRange = fight.targetEnemies();
-		RobotInfo t = fight.findLowestHealthEnemy(enemiesInRange);
-
-		if(t != null){
-			if(rc.isWeaponReady()){
-				rc.attackLocation(t.location);
-			}
-		}else{
+		RobotInfo t = null;
+		if (enemiesInRange == null || enemiesInRange.length == 0) {
 			RobotInfo[] enemiesInSight = fight.spotEnemies();
 			if(enemiesInSight != null){
-				boolean rush = false;
+
 				for(RobotInfo r : enemiesInSight){
 					if(r.type == RobotType.ARCHON ||
 							r.type == RobotType.ZOMBIEDEN ||
 							r.type == RobotType.TURRET ||
 							r.type == RobotType.TTM){
-						rush = true;
+						if(t == null || r.health < t.health) {
+							t = r;
+						}
 					}
 				}
 
-				t = fight.findLowestHealthEnemy(enemiesInSight);
-
-				if(t != null && rush && rc.isCoreReady()) {
+				if(t != null && rc.isCoreReady()) {
 					akk.getClose(t);
 				}
+			}
+		} else {
+			t = fight.findLowestHealthEnemy(enemiesInRange);
+			if(rc.isWeaponReady()){
+				rc.attackLocation(t.location);
 			}
 		}
 	}
