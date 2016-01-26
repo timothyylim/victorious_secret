@@ -1,10 +1,10 @@
 /**
  *
  */
-package victorious_secret.Behaviour;
+package team099.Behaviour;
 
 import battlecode.common.*;
-import victorious_secret.Robot;
+import team099.Robot;
 
 /**
  * @author APOC

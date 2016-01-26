@@ -1,8 +1,8 @@
-package victorious_secret.Strategy;
+package team099.Strategy;
 
 import battlecode.common.*;
-import victorious_secret.Behaviour.Fight;
-import victorious_secret.Robot;
+import team099.Robot;
+import team099.Behaviour.Fight;
 
 
 /**

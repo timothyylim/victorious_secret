@@ -1,8 +1,7 @@
-package victorious_secret.Strategy;
+package team099.Strategy;
 
 import battlecode.common.*;
-
-import victorious_secret.Robot;
+import team099.Robot;
 
 import java.util.Vector;
 

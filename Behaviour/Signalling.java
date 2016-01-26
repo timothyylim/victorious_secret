@@ -1,10 +1,10 @@
-package victorious_secret.Behaviour;
+package team099.Behaviour;
 
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import battlecode.common.Signal;
-import victorious_secret.Robot;
+import team099.Robot;
 
 import java.util.HashMap;
 import java.util.Iterator;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package victorious_secret;
+package team099;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Random;
 
 import battlecode.common.*;
-import victorious_secret.Behaviour.*;
-import victorious_secret.Strategy.Attack;
+import team099.Behaviour.*;
+import team099.Strategy.Attack;
 
 /**
  * @author APOC

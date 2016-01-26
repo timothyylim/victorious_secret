@@ -1,14 +1,14 @@
 /**
  * 
  */
-package victorious_secret.Units;
+package team099.Units;
 
 import java.util.Random;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
-import victorious_secret.Robot;
-import victorious_secret.Behaviour.Fight;
-import victorious_secret.Behaviour.Nav;
+import team099.Robot;
+import team099.Behaviour.Fight;
+import team099.Behaviour.Nav;
 
 /**
  * @author APOC
