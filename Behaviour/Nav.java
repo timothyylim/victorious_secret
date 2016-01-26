@@ -1,10 +1,10 @@
 /**
  *
  */
-package victorious_secret_defense.Behaviour;
+package victorious_secret.Behaviour;
 
 import battlecode.common.*;
-import victorious_secret_defense.Robot;
+import victorious_secret.Robot;
 
 /**
  * @author APOC

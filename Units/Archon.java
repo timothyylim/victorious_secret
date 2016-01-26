@@ -1,15 +1,18 @@
 /**
  * 
  */
-package victorious_secret_defense.Units;
-
-import java.util.Random;
+package victorious_secret.Units;
 
 import battlecode.common.*;
-import victorious_secret_defense.Robot;
-import victorious_secret_defense.Behaviour.Fight;
-import victorious_secret_defense.Behaviour.Nav;
-import victorious_secret_defense.Strategy.Defend;
+
+import victorious_secret.Robot;
+import victorious_secret.Behaviour.Fight;
+import victorious_secret.Behaviour.Nav;
+import victorious_secret.Strategy.Defend;
+import victorious_secret.Strategy.Flee;
+
+
+import java.util.Random;
 
 
 /**
@@ -31,27 +34,24 @@ public class Archon extends Robot {
 	 * 
 	 */
 	Defend defend;
-	
 
-	//private RobotType[] buildQueue = {RobotType.SOLDIER}; //RobotType.GUARD, 
-
-		
 	public Archon(RobotController _rc) 
 	{
 		
 		rc = _rc;
-		rand = new Random(rc.getID());
+		//rand = new Random(rc.getID());
+		rand = new Random();
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
-
 
 		//Uncomment as necessary
 		strat = Strategy.DEFEND;
 		defend = new Defend(rc, this);
-
 //		strat = Strategy.ATTACK;
 //		strat = Strategy.SCOUT;
+
 		strat = Strategy.DEFEND;
+
 //		strat = Strategy.FLEE;
 
 	}
@@ -59,6 +59,9 @@ public class Archon extends Robot {
 	@Override
 	public void move() throws GameActionException 
 	{
+		if(rc.getHealth()<300){
+			strat=Strategy.FLEE;
+		}
 
 		switch(strat)
 		{
@@ -72,11 +75,12 @@ public class Archon extends Robot {
 
 			case SCOUT:
 
-
+				//spawn(RobotType.SCOUT);
 				break;
 			
 			case FLEE:
-				fleeMo();
+				Flee.runFlee(rc);
+				break;
 			default:
 				break;
 

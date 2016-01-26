@@ -1,15 +1,15 @@
 /**
  * 
  */
-package victorious_secret_defense.Units;
+package victorious_secret.Units;
 
 import java.util.Random;
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
-import victorious_secret_defense.Behaviour.Fight;
-import victorious_secret_defense.Behaviour.Nav;
-import victorious_secret_defense.Robot;
+import victorious_secret.Behaviour.Fight;
+import victorious_secret.Behaviour.Nav;
+import victorious_secret.Robot;
 
 /**
  * @author APOC
@@ -34,21 +34,27 @@ public class Scout extends Robot {
 	 */
 	MapLocation archonPos;
 	int peteTest;
-	victorious_secret_defense.Strategy.Scout scout;
+	victorious_secret.Strategy.Scout scout;
+
+
 
 	public Scout(RobotController _rc) 
 	{
 		rc = _rc;
-		rand = new Random(rc.getID());
+		//rand = new Random(rc.getID());
+		rand = new Random();
 		nav = new Nav(rc, this);
 		strat = Strategy.DEFEND;
 		fight = new Fight(rc, this);
-		scout = new victorious_secret_defense.Strategy.Scout(rc,this);
+
+		scout = new victorious_secret.Strategy.Scout(rc,this);
+
 	}
 
 	@Override
 	public void move() throws GameActionException 
 	{
-		scout.runScoutStrategy2();
+
+		scout.runScoutStrategy3();
 	}
 }

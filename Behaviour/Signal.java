@@ -1,4 +1,4 @@
-package victorious_secret_defense.Behaviour;
+package victorious_secret.Behaviour;
 
 /**
  * Created by ple15 on 15/01/16.

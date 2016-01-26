@@ -1,15 +1,18 @@
 /**
  * 
  */
-package victorious_secret_defense.Units;
+package victorious_secret.Units;
 
 import java.util.Random;
-import battlecode.common.GameActionException;
-import battlecode.common.RobotController;
-import victorious_secret_defense.Robot;
-import victorious_secret_defense.Behaviour.Fight;
-import victorious_secret_defense.Behaviour.Nav;
-import victorious_secret_defense.Strategy.Defend;
+
+import battlecode.common.*;
+import victorious_secret.Robot;
+import victorious_secret.Behaviour.Fight;
+import victorious_secret.Behaviour.Nav;
+import victorious_secret.Strategy.Defend;
+
+
+
 
 /**
  * @author APOC
@@ -47,11 +50,15 @@ public class Turret extends Robot {
 	/**
 	 * 
 	 */
+
 	Defend defend;
+	MapLocation attackLoc;
+
 	public Turret(RobotController _rc) 
 	{
 		rc = _rc;
-		rand = new Random(rc.getID());
+		//rand = new Random(rc.getID());
+		rand = new Random();
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 		strat = Strategy.DEFEND;
@@ -59,16 +66,52 @@ public class Turret extends Robot {
 	}
 
 	@Override
-	public void move() throws GameActionException 
-	{
-		switch(strat)
-		{
+	public void move() throws GameActionException {
+
+		switch (strat) {
 			case DEFEND:
+//				updateAttackLoc();
+//				if(attackLoc != null && rc.isCoreReady() && rc.canAttackLocation(attackLoc)){
+//					rc.attackLocation(attackLoc);
+//				}
+
 				defend.turtle();
+
 				break;
 			default:
 				break;
 
+
+		}
+	}
+
+
+	public boolean listenForSignal(){
+
+		Signal[] sigs = rc.emptySignalQueue();
+		if(sigs != null && sigs.length > 0){
+
+			Signal sig = sigs[sigs.length-1];
+			int[] message = sig.getMessage();
+			if(message != null) {
+				attackLoc = new MapLocation(message[0], message[1]);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void updateAttackLoc(){
+		if(!listenForSignal()){
+			fight.targetEnemies();
+			if(fight.attackableEnemies != null && fight.attackableEnemies.length>0){
+
+				RobotInfo i = fight.findClosestEnemy(fight.attackableEnemies);
+				attackLoc = i.location;
+//						fight.findLowestHealthEnemy(fight.attackableEnemies).location;
+			}else{
+				attackLoc = null;
+			}
 		}
 	}
 }

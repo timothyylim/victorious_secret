@@ -1,16 +1,17 @@
 /**
  * 
  */
-package victorious_secret_defense.Units;
+package victorious_secret.Units;
 
 import java.util.Random;
 import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
-import victorious_secret_defense.Robot;
-import victorious_secret_defense.Behaviour.Fight;
-import victorious_secret_defense.Behaviour.Nav;
+import victorious_secret.Robot;
+import victorious_secret.Behaviour.Fight;
+import victorious_secret.Behaviour.Nav;
 
-import victorious_secret_defense.Strategy.Defend;
+import victorious_secret.Strategy.Defend;
+
 
 /**
  * @author APOC
@@ -42,7 +43,8 @@ public class Soldier extends Robot {
 	public Soldier(RobotController _rc) 
 	{
 		rc = _rc;
-		rand = new Random(rc.getID());
+		//rand = new Random(rc.getID());
+		rand = new Random();
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 		strat = Strategy.DEFEND;
@@ -53,20 +55,12 @@ public class Soldier extends Robot {
 	public void move() throws GameActionException 
 	{
 
-		broadcast();
-		listen();
-
-		if(rc.getHealth() < 20)
-		{
-			//strat = Strategy.FLEE;
-		}
-
 		switch(strat) {
             case DEFEND:
 				defend.turtle();
                 break;
             case ATTACK:
-                akk.kiteStratgey();
+           //     akk.kiteStratgey();
                 break;
 
             case SCOUT:
@@ -74,9 +68,13 @@ public class Soldier extends Robot {
                 break;
 
             case FLEE:
-                nav.flee();
+            //    nav.flee();
             default:
                 break;
         }
+
+
+        //sig.setMessage(Signalling.MessageType.MOVE_EAST);
+        //sig.broadcast();
 	}
 }

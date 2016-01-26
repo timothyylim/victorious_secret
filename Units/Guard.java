@@ -1,7 +1,7 @@
 /**
  * 
  */
-package victorious_secret_defense.Units;
+package victorious_secret.Units;
 
 import java.util.Random;
 
@@ -9,10 +9,10 @@ import battlecode.common.GameActionException;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
-import victorious_secret_defense.Robot;
-import victorious_secret_defense.Behaviour.Fight;
-import victorious_secret_defense.Behaviour.Nav;
-import victorious_secret_defense.Strategy.Defend;
+import victorious_secret.Robot;
+import victorious_secret.Behaviour.Fight;
+import victorious_secret.Behaviour.Nav;
+import victorious_secret.Strategy.Defend;
 
 /**
  * @author APOC
@@ -48,7 +48,8 @@ public class Guard extends Robot {
 	public Guard(RobotController _rc) 
 	{
 		rc = _rc;
-		rand = new Random(rc.getID());
+		//rand = new Random(rc.getID());
+		rand = new Random();
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 		strat = Strategy.DEFEND;

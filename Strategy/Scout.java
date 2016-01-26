@@ -1,46 +1,58 @@
-package victorious_secret_defense.Strategy;
+package victorious_secret.Strategy;
 
 import battlecode.common.*;
-import victorious_secret_defense.Robot;
+
+import victorious_secret.Robot;
+
 import java.util.Vector;
 
 /**
  * Created by ple15 on 15/01/16.
  */
 public class Scout {
-
     private static RobotController rc;
     private static Robot robot;
+    private static Flee flee;
 
-    public RobotInfo[] seenTeammates;
-    public RobotInfo[] seenOpponents;
-    public RobotInfo[] seenZombies;
+    private static int ATTACK_X = 15151515;
+    private static int ATTACK_Y = 14141414;
+
 
     public Vector<RobotInfo> archonLocations;
     public Vector<RobotInfo> zombieDenLocations;
     public Vector<RobotInfo> enemyArchonLocations;
 
-    private Direction currentVector;
+    /*Scout Strategy 3 Variables: Turrent information*/
+    public MapLocation turretLoc;
+
+
+    MapLocation[] corners = {new MapLocation(9999, 9999), new MapLocation(-9999, 9999), new MapLocation(9999, -9999), new MapLocation(-9999, -9999)};
+
 
     public Scout(RobotController _rc, Robot _robot) {
         rc = _rc;
         robot = _robot;
 
+        flee = new Flee();
+        flee.initialiseFlee(rc);
+
         archonLocations = new Vector<RobotInfo>();
         zombieDenLocations = new Vector<RobotInfo>();
         enemyArchonLocations = new Vector<RobotInfo>();
+
+
     }
 
-    /********************************************STRATEGY METHODS**********************************************
-
-    /*Basic scouting behavior:
-    * pick a random direction to explore
-    * collect information about the map
-    * go within signaling range of archon
-    * broadcast signal*/
-    public void runScoutStrategy1() throws GameActionException{
-        sense_map();
-        moveInRandomVector();
+    /********************************************
+     * STRATEGY METHODS**********************************************
+     * <p>
+     * /*Basic scouting behavior:
+     * pick a random direction to explore
+     * collect information about the map
+     * go within signaling range of archon
+     * broadcast signal
+     */
+    public void runScoutStrategy1() throws GameActionException {
 
 
     }
@@ -48,110 +60,115 @@ public class Scout {
     /*Redherring strategy
     * find enemies
     * attempt to draw them into the enemy's base*/
-    public void runScoutStrategy2() throws GameActionException{
+    public void runScoutStrategy2() throws GameActionException {
+
+
+    }
+
+    /*Turret Strategy
+    * don't move
+    * scan for enemies
+    * pass enemy locations to turret*/
+    public void runScoutStrategy3() throws GameActionException {
         sense_map();
-        if(isAttractingZombies()){
+        turretLoc = findClosestRobot(robot.fight.seenAllies, RobotType.TURRET);
 
-            if(seenOpponents != null && seenOpponents.length > 0){
-                robot.targetMoveLoc = averageOpponentLoc();
-                robot.move();
-            }else if(seenTeammates != null && seenTeammates.length > 0){
-                moveAwayFromTeam();
-            }else{
-                moveAwayFromArchon();
-            }
-
-        }else{
-            if(seenZombies != null && seenZombies.length > 0){
-                robot.targetMoveLoc = averageZombieLoc();
-                robot.nav.move();
-            }else{
-                moveAwayFromArchon();
-            }
+        if (rc.isCoreReady()) {
+            broadcastEnemyInTurretBlindSpot();
         }
 
+//        if (rc.isCoreReady()) {
+//            Direction dir = flee.getNextMove();
+//            if(rc.canMove(dir)){
+//                rc.move(flee.getNextMove());
+//            }
+//        }
 
     }
 
     /**************************************END STRATEGY METHODS**************************************************/
 
 
-    /*************************************CLASS SPECIFIC BEHAVIOR************************************************/
+    /*************************************
+     * CLASS SPECIFIC BEHAVIOR
+     ************************************************/
     private void sense_map() throws GameActionException {
         //Sense map
         robot.fight.spotEnemies();
-        spotTeammates();
-        spotOpponent();
-        spotZombies();
+        robot.fight.spotOpponents();
+        robot.fight.spotZombies();
+        robot.fight.spotAllies();
+
+        //Sense terrain
+
         //Update knowledge
         updateArchonLocations();
         updateEnemyArchonLocations();
         updateZombieDenLocations();
     }
 
-    private void updateArchonLocations(){
-        for(RobotInfo i:seenTeammates){
-            if(i.type == RobotType.ARCHON){
-                if(!archonLocations.contains(i)){
+    private void broadcastEnemyInTurretBlindSpot() throws GameActionException {
+
+        if (robot.fight.seenEnemies != null && robot.fight.seenEnemies.length > 0) {
+            MapLocation loc = enemyInTurretBlindSpot(robot.fight.seenEnemies);
+
+            if (loc != null) {
+                if (rc.isCoreReady()) {
+                    rc.broadcastMessageSignal(ATTACK_X, loc.x, rc.getType().sensorRadiusSquared);
+                    rc.broadcastMessageSignal(ATTACK_Y, loc.y, rc.getType().sensorRadiusSquared);
+                }
+
+            }
+
+        }
+    }
+
+    private void updateArchonLocations() {
+        for (RobotInfo i : robot.fight.seenAllies) {
+            if (i.type == RobotType.ARCHON) {
+                if (!archonLocations.contains(i)) {
                     archonLocations.add(i);
                 }
             }
         }
     }
 
-    private void updateEnemyArchonLocations(){
-        for(RobotInfo i:seenOpponents){
-            if(i.type == RobotType.ARCHON){
-                if(!enemyArchonLocations.contains(i)){
+    private void updateEnemyArchonLocations() {
+        for (RobotInfo i : robot.fight.seenOpponents) {
+            if (i.type == RobotType.ARCHON) {
+                if (!enemyArchonLocations.contains(i)) {
                     enemyArchonLocations.add(i);
                 }
             }
         }
     }
 
-    private void updateZombieDenLocations(){
-        for(RobotInfo i:seenZombies){
-            if(i.type == RobotType.ZOMBIEDEN){
-                if(!zombieDenLocations.contains(i)){
+    private void updateZombieDenLocations() {
+        for (RobotInfo i : robot.fight.seenZombies) {
+            if (i.type == RobotType.ZOMBIEDEN) {
+                if (!zombieDenLocations.contains(i)) {
                     zombieDenLocations.add(i);
                 }
             }
         }
-
     }
 
-    public MapLocation averageArchonLoc() throws GameActionException{
-        if(archonLocations.size() > 0 && archonLocations != null){
-            int x = 0;
-            int y = 0;
-            for(RobotInfo i: archonLocations){
-                x+=i.location.x;
-                y+=i.location.y;
-            }
-            Math.round(x/=archonLocations.size());
-            Math.round(y/=archonLocations.size());
-            return new MapLocation(x,y);
-        }else{
-            return rc.getLocation();
-        }
-    }
-
-    public void moveAwayFromArchon()throws GameActionException{
-        if(rc.isCoreReady()){
-            if(archonLocations != null && archonLocations.size() > 0){
-                robot.targetMoveLoc = averageArchonLoc();
+    public void moveAwayFromArchon() throws GameActionException {
+        if (rc.isCoreReady()) {
+            if (archonLocations != null && archonLocations.size() > 0) {
+                robot.targetMoveLoc = robot.nav.averageLoc((MapLocation[]) archonLocations.toArray());
                 robot.targetMoveLoc = new MapLocation((2 * rc.getLocation().x) - robot.targetMoveLoc.x, (2 * rc.getLocation().y)
                         - robot.targetMoveLoc.y);
 
                 robot.nav.move();
             }
-
         }
     }
 
+    /*
     public boolean isAttractingZombies() throws GameActionException {
 
-        if(seenZombies != null && seenZombies.length>0){
+        if(robot.fight.seenZombies != null && robot.fight.seenZombies.length>0){
 
             int distance = rc.getLocation().distanceSquaredTo(averageZombieLoc());
             if(distance < 10){
@@ -162,105 +179,53 @@ public class Scout {
         }
         return false;
     }
+*/
 
-    /*********************************END CLASS SPECIFIC BEHAVIOR************************************************/
+    /*********************************
+     * END CLASS SPECIFIC BEHAVIOR
+     ************************************************/
 
-    /***********************************TO MERGE INTO BEHAVIOR MODULES*******************************************/
+    //Returns the first enemy in the robots array that is within the turret's blindspot
+    public MapLocation enemyInTurretBlindSpot(RobotInfo[] robots) {
 
-    /**********NAV BEHAVIOR*********/
+        if (robots != null && robots.length > 0) {
 
-    private void moveInRandomVector() throws GameActionException {
-        if(currentVector == null){
-            currentVector = Direction.values()[robot.rand.nextInt(8)];
-        }
-        if(rc.isCoreReady()){
-            if(rc.canMove(currentVector)){
-                rc.move(currentVector);
-            }else{
-                robot.nav.randMove();
+            if (turretLoc != null) {
+
+                for (RobotInfo i : robots) {
+                    int dist = i.location.distanceSquaredTo(turretLoc);
+
+                    if (dist < RobotType.TURRET.attackRadiusSquared && dist > RobotType.TURRET.sensorRadiusSquared) {
+                        return i.location;
+
+                    }
+                }
+
             }
         }
+        return null;
     }
 
-    public void moveAwayFromTeam()throws GameActionException{
-        if(rc.isCoreReady()){
-            if(seenTeammates != null && seenTeammates.length > 0){
-                robot.targetMoveLoc = averageTeammateLoc();
-                robot.targetMoveLoc = new MapLocation((2 * rc.getLocation().x) - robot.targetMoveLoc.x, (2 * rc.getLocation().y)
-                        - robot.targetMoveLoc.y);
 
-                robot.nav.moveToTarget(robot.targetMoveLoc);
+    public MapLocation findClosestRobot(RobotInfo[] robots, RobotType type) {
+        double minDistance = 9999999;
+        RobotInfo closestTarget = null;
+
+
+        for (RobotInfo i : robots) {
+            if (i.type == type) {
+                int sqDist = i.location.distanceSquaredTo(rc.getLocation());
+                if (sqDist < minDistance) {
+                    minDistance = sqDist;
+                    closestTarget = i;
+                }
             }
-
         }
-    }
-
-    /**********FIGHT BEHAVIOR*********/
-
-    public void spotTeammates() throws GameActionException{
-        seenTeammates = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared,rc.getTeam());
-    }
-
-    public void spotOpponent() throws GameActionException{
-        seenOpponents = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared,rc.getTeam().opponent());
-    }
-
-    public void spotZombies() throws GameActionException{
-        seenZombies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared,Team.ZOMBIE);
-    }
-
-    public MapLocation averageTeammateLoc() throws GameActionException{
-
-        if(seenTeammates.length == 0 || seenTeammates == null){
-            return rc.getLocation();
-        }else{
-            int x = 0;
-            int y = 0;
-            for(RobotInfo i:seenTeammates){
-                x+=i.location.x;
-                y+=i.location.y;
-            }
-            Math.round(x/=seenTeammates.length);
-            Math.round(y/=seenTeammates.length);
-            return new MapLocation(x,y);
+        if(closestTarget!=null){
+            return closestTarget.location;
         }
+        return null;
     }
-
-    public MapLocation averageOpponentLoc() throws GameActionException{
-
-        if(seenOpponents.length == 0 || seenOpponents == null){
-            return rc.getLocation();
-        }else{
-            int x = 0;
-            int y = 0;
-            for(RobotInfo i:seenOpponents){
-                x+=i.location.x;
-                y+=i.location.y;
-            }
-            Math.round(x/=seenOpponents.length);
-            Math.round(y/=seenOpponents.length);
-            return new MapLocation(x,y);
-        }
-    }
-
-    public MapLocation averageZombieLoc() throws GameActionException{
-
-        if(seenZombies.length == 0 || seenZombies == null){
-            return rc.getLocation();
-        }else{
-            int x = 0;
-            int y = 0;
-            for(RobotInfo i:seenZombies){
-                x+=i.location.x;
-                y+=i.location.y;
-            }
-            Math.round(x/=seenZombies.length);
-            Math.round(y/=seenZombies.length);
-            return new MapLocation(x,y);
-        }
-    }
-
-
-
-
 }
+
+
