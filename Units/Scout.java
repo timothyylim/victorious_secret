@@ -40,14 +40,8 @@ turnsInto: FASTZOMBIE
  */
 public class Scout extends Robot {
 
-	/**
-<<<<<<< HEAD
-	 *
-	 */
 
 	victorious_secret.Strategy.Scout scout;
-
-
 
 
 	public Scout(RobotController _rc) 

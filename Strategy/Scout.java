@@ -11,6 +11,8 @@ import java.util.Vector;
  * Created by ple15 on 15/01/16.
  */
 public class Scout {
+
+
     private static RobotController rc;
     private static Robot robot;
     private static Flee flee;
@@ -19,65 +21,61 @@ public class Scout {
     private static int ATTACK_Y = 14141414;
 
 
-    public Vector<RobotInfo> archonLocations;
-    public Vector<RobotInfo> zombieDenLocations;
-    public Vector<RobotInfo> enemyArchonLocations;
 
     /*Scout Strategy 3 Variables: Turrent information*/
     public MapLocation turretLoc;
-    
-    /*Scout Strategy 5 Variables: Swarm Strategy*/
-    double strength_needed = 800;
-    boolean has_strength = false;
-    MapLocation home;
-    int locationCounter = 0;
-    int offset = 5;
 
 
-    MapLocation[] corners = {new MapLocation(9999, 9999), new MapLocation(-9999, 9999), new MapLocation(9999, -9999), new MapLocation(-9999, -9999)};
 
-
+    /**
+     * The Scout is constructed from a RobotController and a Robot.
+     * Key variables are assigned.
+     * @param _rc The RobotController
+     * @param _robot The Robot
+     */
     public Scout(RobotController _rc, Robot _robot) {
         rc = _rc;
         robot = _robot;
 
         flee = new Flee();
         flee.initialiseFlee(rc);
-
-        archonLocations = new Vector<RobotInfo>();
-        zombieDenLocations = new Vector<RobotInfo>();
-        enemyArchonLocations = new Vector<RobotInfo>();
-        
         robot.setArchonLocations();
         
     }
 
-    /********************************************
-     * STRATEGY METHODS**********************************************
-     * <p>
-     * /*Basic scouting behavior:
-     * pick a random direction to explore
-     * collect information about the map
-     * go within signaling range of archon
-     * broadcast signal
+
+    /**
+     * Strategy Method Stub: Originally this was intended to be a basic scout strategy.
+     * The scout would explore the map and collect information about the layout of the
+     * map and the locations of relevent game pieces. The scout would then attempt to
+     * communicate this information to the other units.
+     * After several buggy attempts, this method was left unimplemented.
+     * @throws GameActionException
      */
     public void runScoutStrategy1() throws GameActionException {
 
 
     }
 
-    /*Redherring strategy
-    * find enemies
-    * attempt to draw them into the enemy's base*/
+
+    /**
+     * Strategy Method Stub: Originally this was intended to be a redhearing strategy.
+     * The scout would attempt to find enemies and draw them into the enemy base.
+     * After several buggy attempts, this method was left unimplemented.
+     * @throws GameActionException
+     */
     public void runScoutStrategy2() throws GameActionException {
 
 
     }
 
-    /*Turret Strategy
-    * don't move
-    * scan for enemies
-    * pass enemy locations to turret*/
+    /**
+     * Runs a turret strategy. In this strategy a scout moves according to the flee.target behavior
+     * until it finds a turret. Once a turret is found, the scout will circle that turrent and
+     * scan for nearby enemies in the turret's blindspot. If one such enemy appears, the scout sends
+     * a signal containing the location of that enemy to the close by turret.
+     * @throws GameActionException
+     */
     public void runScoutStrategy3() throws GameActionException {
         sense_map();
         turretLoc = findClosestRobot(robot.fight.seenAllies, RobotType.TURRET);
@@ -102,10 +100,16 @@ public class Scout {
 
     }
 
-    /*Swarm Assist Strategy:
-    * scan for teammates
-    * if enough units are close by, explore the map
-    * if enemy units are seen call soldiers*/
+
+    /**
+     * Runs a swarm assist strategy. In this strategy a scout waits at it's spawning location and
+     * waits for an appropriate army strength to form around the scout. Once it senses the
+     * threshold level of army strength is present, the scout moves towards the enemy archon.
+     * The scout will signal its location constantly.
+     * <b>Note:</b> This method needs to be refined to contain a more sensible way of finding
+     * enemy archons and broadcasting its location
+     * @throws GameActionException
+     */
     public void runScoutStrategy4() throws GameActionException {
         double attackPowerNeeded = 550;
         double attackPowerOfSeenAllies;
@@ -113,6 +117,7 @@ public class Scout {
         attackPowerOfSeenAllies = strengthOfRobotsInArray(robot.fight.seenAllies);
 
         if(attackPowerOfSeenAllies>attackPowerNeeded){
+            //Need to create a more sensible way to find opponent archons
             flee.target = rc.getInitialArchonLocations(rc.getTeam().opponent())[1];
             if (rc.isCoreReady()) {
                 Direction dir = flee.getNextMove();
@@ -123,277 +128,47 @@ public class Scout {
 
         }
         MapLocation loc = rc.getLocation();
+        //Need to find a more sensible way of broadcasting a message
         int broadcastRange = rc.getLocation().distanceSquaredTo(rc.getInitialArchonLocations(rc.getTeam())[0]);
         rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
 
-
     }
-    
-    /*Swarm Assist Strategy 2: Improvement on runScoutStrategy4()
-     * */
+
+    /**
+     * Strategy Method Stub: Attempts to run an altered swarm assist strategy. In this strategy
+     * runScoutStrategy4() is implemented except the scout attempts to find zombie dens instead of enemy archons.
+     * <b>Note:</b> This strategy was originally implemented but was buggy and not very effective. This method
+     * has therefore been cleared for a new design.
+     * @throws GameActionException
+     */
     public void runScoutStrategy5() throws GameActionException{
-    	sense_map();
-    	
-    	if(home == null){
-    		if(robot.fight.seenAllies != null && robot.fight.seenAllies.length>0){
-    			home = closest_robot_type(RobotType.ARCHON, robot.fight.seenAllies, rc.getTeam()).location;
-    		}
-    		
-    	}
-    	
-    	//If can see friendly archon and doesn't have required strength
-    	if(!has_strength){
-    		check_strength();
-    	}
-    	if(has_strength && !can_see_enemy()){
-    		//move_towards_enemy();
-    		move_zombie_den();
-    	}
-    	if(can_see_enemy()){
-    		//call_for_help();
-    		alert_zombie_den();
-
-    	}
-    	
-    	
-    }
-    
-    /**********************SCOUT STRATEGY 5 HELPER METHODS***********************/
-    private boolean can_see_archon(){
-    	if(can_see_robot_type(RobotType.ARCHON, robot.fight.seenEnemies, rc.getTeam())){
-    		return true;
-    	}else{
-    		return false;
-    	}
-    }
-    
-    private boolean can_see_enemy(){
-    	if(robot.fight.seenEnemies != null && robot.fight.seenEnemies.length>0){
-    		return true;
-    	}else return false;
-    }
-    
-    private boolean can_see_army(){
-    	if(robot.fight.seenAllies != null && robot.fight.seenAllies.length>0){
-    		return true;
-    	}else return false;
-    }
-    
-    private void move_towards_enemy() throws GameActionException{
-    	
-    	MapLocation loc = robot.fight.findClosestMapLocation(robot.enemyArchonLocations.values(), rc.getLocation());
-    	if(loc != null){
-    		Flee.setTarget(loc);
-        	if (rc.isCoreReady()) {
-                Direction dir = flee.getNextMove();
-                if(rc.canMove(dir)){
-                    rc.move(flee.getNextMove());
-                }
-            }
-        	
-        	locationClear(loc);
-    	}
-        
-    }
-    
-    private void move_zombie_den() throws GameActionException{
-    	MapLocation loc = null;
-    	switch(locationCounter){
-    	case 0:
-    		loc = new MapLocation(home.x+offset, home.y);
-    		break;
-    	case 1:
-    		loc = new MapLocation(home.x, home.y-offset);
-    		break;
-    	case 2:
-    		loc = new MapLocation(home.x-offset, home.y);
-    		break;
-    	case 3:
-    		loc = new MapLocation(home.x, home.y+offset);
-    		break;
-    	}
-    	
-    	if(loc != null && rc.canSense(loc)){
-    		locationCounter++;
-    		offset+=5;
-    	}
-    	
-    	if(locationCounter > 3){
-    		locationCounter = 0;
-    	}
-    	
-    	Flee.setTarget(loc);
-    	if (rc.isCoreReady()) {
-            Direction dir = flee.getNextMove();
-            if(rc.canMove(dir)){
-                rc.move(flee.getNextMove());
-            }
-        }
-    	
-    	
-    	
-    	
-    }
-    
-    private void alert_zombie_den() throws GameActionException {
-    	MapLocation loc = null; //= rc.getLocation();
-    	RobotInfo i = robot.fight.findClosestEnemy(robot.fight.seenZombies);
-    	if(i != null){
-    		loc = i.location;
-    	}
-        //MapLocation loc = rc.getLocation();
-    	if(loc != null && home != null){
-            int broadcastRange = rc.getLocation().distanceSquaredTo(home) + 50;
-            rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
-
-
-        }
 
     }
-    
-    private void call_for_help() throws GameActionException{
-    	MapLocation loc = null; //= rc.getLocation();
-    	RobotInfo i = robot.fight.findLowestHealthEnemyNoAttack(robot.fight.seenEnemies);
-    	if(i != null){
-    		loc = i.location;
-    	}
-        //MapLocation loc = rc.getLocation();
-    	if(loc != null && home != null){
 
 
-            int broadcastRange = rc.getLocation().distanceSquaredTo(home) + 50;
-            rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
+    /**
+     * This method calls all relevant robot.fight methods that spot units on the map.
+     * This method should be called at the beginning of each scout move to ensure
+     * that the scout has up to date information of all hostile and friendly enemies close by.
+     * @throws GameActionException
+     */
 
-
-        }
-
-    }
-    
-    private boolean locationClear(MapLocation m)
-    {
-        if(rc.canSense(m) && robot.fight.spotEnemies().length == 0)
-        {
-            //Then the location is clear, remove the location from our list of target Archon Locations
-            robot.removeArchonLocation(m);
-            return true;
-        }
-        return false;
-    }
-    
-   
-
-    /**************************************END STRATEGY METHODS**************************************************/
-
-
-    /*************************************
-     * CLASS SPECIFIC BEHAVIOR
-     ************************************************/
     private void sense_map() throws GameActionException {
         //Sense map
         robot.fight.spotEnemies();
         robot.fight.spotOpponents();
         robot.fight.spotZombies();
         robot.fight.spotAllies();
-        
-        
-        robot.updateEnemyArchonLocations(robot.fight.seenEnemies);
-        
 
-        //Sense terrain
-
-        //Update knowledge
-        updateArchonLocations();
-        updateEnemyArchonLocations();
-        updateZombieDenLocations();
-    }
-    
-
-
-    private void broadcastEnemyInTurretBlindSpot() throws GameActionException {
-
-        if (turretLoc != null && robot.fight.seenEnemies != null && robot.fight.seenEnemies.length > 0) {
-            MapLocation loc = enemyInTurretBlindSpot(robot.fight.seenEnemies);
-
-            if (loc != null) {
-                if (rc.isCoreReady()) {
-                    rc.broadcastMessageSignal(ATTACK_X, loc.x, rc.getType().sensorRadiusSquared);
-                    rc.broadcastMessageSignal(ATTACK_Y, loc.y, rc.getType().sensorRadiusSquared);
-                }
-
-            }
-
-        }
     }
 
-    private void updateArchonLocations() {
-        for (RobotInfo i : robot.fight.seenAllies) {
-            if (i.type == RobotType.ARCHON) {
-                if (!archonLocations.contains(i)) {
-                    archonLocations.add(i);
-                }
-            }
-        }
-    }
-
-    private void updateEnemyArchonLocations() {
-        for (RobotInfo i : robot.fight.seenOpponents) {
-            if (i.type == RobotType.ARCHON) {
-                if (!enemyArchonLocations.contains(i)) {
-                    enemyArchonLocations.add(i);
-                }
-            }
-        }
-    }
-
-    private void updateZombieDenLocations() {
-        for (RobotInfo i : robot.fight.seenZombies) {
-            if (i.type == RobotType.ZOMBIEDEN) {
-                if (!zombieDenLocations.contains(i)) {
-                    zombieDenLocations.add(i);
-                }
-            }
-        }
-    }
-
-    public void moveAwayFromArchon() throws GameActionException {
-        if (rc.isCoreReady()) {
-            if (archonLocations != null && archonLocations.size() > 0) {
-                robot.targetMoveLoc = robot.nav.averageLoc((MapLocation[]) archonLocations.toArray());
-                robot.targetMoveLoc = new MapLocation((2 * rc.getLocation().x) - robot.targetMoveLoc.x, (2 * rc.getLocation().y)
-                        - robot.targetMoveLoc.y);
-
-                robot.nav.move();
-            }
-        }
-    }
-
-
-    /*********************************
-     * END CLASS SPECIFIC BEHAVIOR
-     ************************************************/
-
-    //Returns the first enemy in the robots array that is within the turret's blindspot
-    public MapLocation enemyInTurretBlindSpot(RobotInfo[] robots) {
-
-        if (robots != null && robots.length > 0) {
-
-            if (turretLoc != null) {
-
-                for (RobotInfo i : robots) {
-                    int dist = i.location.distanceSquaredTo(turretLoc);
-
-                    if (dist < RobotType.TURRET.attackRadiusSquared && dist > RobotType.TURRET.sensorRadiusSquared) {
-                        return i.location;
-
-                    }
-                }
-
-            }
-        }
-        return null;
-    }
-
-
+    /**
+     * This method returns the MapLocation of the closest robot of a specific type
+     * from an array of robot information
+     * @param robots An array of RobotInfo of any makeup
+     * @param type A specific type of robot
+     * @return Returns a MapLocation of the closest robot of type
+     */
     public MapLocation findClosestRobot(RobotInfo[] robots, RobotType type) {
         double minDistance = 9999999;
         RobotInfo closestTarget = null;
@@ -408,17 +183,63 @@ public class Scout {
                     }
                 }
             }
-
         }
-
         if(closestTarget!=null){
             return closestTarget.location;
         }
         return null;
-
     }
 
-    //returns dps/health of the swarm
+    /**
+     * The scout signals the location of of an enemy in a turret's blindspot.
+     * This turret is the turret closest to the scout.
+     * The scout will broadcast the signal just far enough to reach the turret.
+     * A risk of this broadcast is that the signal is misinterpreted by other turrets
+     * or overlaps with another scout's signal.
+     * @throws GameActionException
+     */
+    private void broadcastEnemyInTurretBlindSpot() throws GameActionException {
+
+        if (turretLoc != null && robot.fight.seenEnemies != null && robot.fight.seenEnemies.length > 0) {
+            MapLocation loc = enemyInTurretBlindSpot(robot.fight.seenEnemies);
+
+            if (loc != null) {
+                if (rc.isCoreReady()) {
+                    rc.broadcastMessageSignal(ATTACK_X, loc.x, rc.getType().sensorRadiusSquared);
+                    rc.broadcastMessageSignal(ATTACK_Y, loc.y, rc.getType().sensorRadiusSquared);
+                }
+            }
+        }
+    }
+
+    /**
+     * If the scout has a turret close by and it has seen enemies then the MapLocation
+     * of an enemy in that turret's blindspot is returned. If multiple enemies meet
+     * this condition a random enemy's location is returned.
+     * @param robots An array of RobotInfo representing a collection of enemy robots
+     * @return Returns a MapLocation of an enemy in the blindspot of a nearby turret. Otherwise returns null.
+     */
+    public MapLocation enemyInTurretBlindSpot(RobotInfo[] robots) {
+        if (robots != null && robots.length > 0) {
+            if (turretLoc != null) {
+                for (RobotInfo i : robots) {
+                    int dist = i.location.distanceSquaredTo(turretLoc);
+                    if (dist < RobotType.TURRET.attackRadiusSquared && dist > RobotType.TURRET.sensorRadiusSquared) {
+                        return i.location;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns a measure of the strength of a group of robots. The damage per second and the
+     * health of the group are totaled and the following measure of strength is returned:
+     * total (total damage per second * total health)/100
+     * @param robots The group of robots of which to measure the strength
+     * @return (DPS per second * Health) divided by 100
+     */
     public double strengthOfRobotsInArray(RobotInfo[] robots){
         if (robots!=null && robots.length>0) {
             double dps = 0;
@@ -434,41 +255,5 @@ public class Scout {
             return -1;
         }
     }
-    
-    public boolean check_strength(){
-    	if(robot.fight.seenAllies != null && robot.fight.seenAllies.length>0){
-    		double str = strengthOfRobotsInArray(robot.fight.seenAllies);
-    		if(strength_needed < str){
-    			has_strength = true;
-    			return true;
-    		}
-    	}
-    	return false;
-    }
-
-
-    
-    public boolean can_see_robot_type(RobotType type, RobotInfo[] robots, Team team){
-    	if(robots != null && robots.length > 0){
-    		for(RobotInfo i : robots){
-    			if(i.type == type && i.team == team){
-    				return true;
-    			}
-    		}
-    	}
-    	return false;
-    }
-    
-    public RobotInfo closest_robot_type(RobotType type, RobotInfo[] robots, Team team){
-    	if(robots != null && robots.length > 0){
-    		for(RobotInfo i : robots){
-    			if(i.type == type && i.team == team){
-    				return i;
-    			}
-    		}
-    	}
-    	return null;
-    }
-    
 
 }
