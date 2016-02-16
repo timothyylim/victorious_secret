@@ -29,14 +29,11 @@ public class Defend {
     static int targetX = -1;
     static int targetY = -1;
 
-	static RobotType[] buildList = new RobotType[]{RobotType.TURRET,RobotType.SOLDIER,RobotType.SCOUT};
-	static int current_build = 0;
+
     static Random rnd;
 
 	static int nUnitsBuilt = 0;
 
-	static int PERIMETER = 2;
-	static int scout_build = 0;
 	static int map_count = 0;
 
 	static int TTMPATIENCE = 15;
@@ -53,11 +50,7 @@ public class Defend {
 	}
 
 
-	// Build around rubble
-	// Other units
-
 	public void turtle() throws GameActionException {
-        // Look for enemies
 
 
 		if (rc.isCoreReady()) {
@@ -129,7 +122,6 @@ public class Defend {
 		return false;
 	}
 
-
 	private void turretCode() throws GameActionException {
 
 		RobotInfo[] robotsAround = rc.senseNearbyRobots(2,rc.getTeam());
@@ -149,7 +141,7 @@ public class Defend {
 			}
 		}
 
-		readInstructions();
+		getAttackLoc();
 		MapLocation target = new MapLocation(targetX,targetY);
 
 		if(!lookForEnemies() && targetX!=-1 && targetY!=-1 && rc.canAttackLocation(target)){
@@ -174,17 +166,10 @@ public class Defend {
     // KILL ZOMBIES BEFORE THEIR NEST BASTARDS !!!!!!!!
 
     private void archonCode() throws GameActionException {
-//        leaderElection();
-//
-//        readInstructions();
-//        if (leader && rc.getRoundNum() < 30){
-//            sendInstructions();
-//        }
 
 		if(rc.getRoundNum() < 20){
 			get_outta_here();
 		}
-
 
 		MapLocation InitialArchons[] = rc.getInitialArchonLocations(rc.getTeam());
 
@@ -223,16 +208,11 @@ public class Defend {
 
 		if (rc.isCoreReady()) {
 
-//			// Get the distance between the archon and the leader
-//            MapLocation target = new MapLocation(targetX, targetY);
-
-            Direction dir = rc.getLocation().directionTo(leaderLocation);
-
 			double distance = thisLocation.distanceSquaredTo(leaderLocation);
 
             if(distance > 4 && !leader){
 				Flee.target = leaderLocation;
-				dir = Flee.getNextMove();
+				Direction dir = Flee.getNextMove();
 				tryToMove(dir);
             }else{
 				if(!buildUnits()){
@@ -267,7 +247,7 @@ public class Defend {
         }
     }
 
-    private static void readInstructions() throws GameActionException {
+    private static void getAttackLoc() throws GameActionException {
         Signal[] signals = rc.emptySignalQueue();
 
         for (Signal s : signals) {
@@ -440,57 +420,7 @@ public class Defend {
 			return false;
 		}
 
-		/*
-		RobotType robotType = buildList[current_build];
-
-		RobotInfo[] far = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
-		rc.setIndicatorString(1,""+PERIMETER);
-
-		if(countUnits(nearby, RobotType.TURRET) >= Math.pow(PERIMETER,2)){
-			PERIMETER ++;
-		}
-
-		if(rc.getRoundNum() ==0){
-			robotType = RobotType.SCOUT;
-		}else if(countUnits(far,RobotType.SOLDIER) < 5){
-			robotType = RobotType.SOLDIER;
-		}
-
-		if(robotType == RobotType.SCOUT && scout_build >= 2){
-			robotType = RobotType.SOLDIER;
-		}
-
-		if(rc.getTeamParts() < robotType.partCost){
-			return false;
-		}
-
-		Direction randomDir = randomDirection();
-
-		if(rc.getTeamParts()>robotType.partCost){
-			if(rc.canBuild(randomDir, robotType)){
-				rc.build(randomDir,robotType);
-			}else{
-				randomDir = randomDirection();
-				if(rc.canBuild(randomDir, robotType)){
-					rc.build(randomDir,robotType);
-				}
-			}
-		}
-
-		if(robotType == RobotType.SCOUT){
-			scout_build++;
-		}
-
-		if(current_build >= buildList.length - 1){
-			current_build = 0;
-		}else{
-			current_build ++;
-		}
-		return true;
-*/
 	}
-
-
 
     private static Direction randomDirection() {
         return Direction.values()[(int)(rnd.nextDouble()*8)];
