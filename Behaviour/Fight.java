@@ -169,7 +169,7 @@ public class Fight {
 		return closestTarget;
 	}
 
-	public MapLocation findClosestMapLocation(MapLocation[] listOfLocations, MapLocation loc)
+	public static MapLocation findClosestMapLocation(MapLocation[] listOfLocations, MapLocation loc)
 	{
 		double minDistance = 9999999;
 		MapLocation closestTarget = null;
@@ -186,7 +186,7 @@ public class Fight {
 		return closestTarget;
 	}
 
-	public MapLocation findClosestMapLocation(List<MapLocation> listOfLocations, MapLocation loc)
+	public static MapLocation findClosestMapLocation(List<MapLocation> listOfLocations, MapLocation loc)
 	{
 		double minDistance = 9999999;
 		MapLocation closestTarget = null;
@@ -203,7 +203,7 @@ public class Fight {
 		return closestTarget;
 	}
 
-	public MapLocation findClosestMapLocation(Collection<MapLocation> listOfLocations, MapLocation loc)
+	public static MapLocation findClosestMapLocation(Collection<MapLocation> listOfLocations, MapLocation loc)
 	{
 		double minDistance = 9999999;
 		MapLocation closestTarget = null;
@@ -220,7 +220,7 @@ public class Fight {
 		return closestTarget;
 	}
 
-	public MapLocation findClosestFreeMapLocation(List<MapLocation> listOfLocations, MapLocation loc) throws GameActionException {
+	public static MapLocation findClosestFreeMapLocation(List<MapLocation> listOfLocations, MapLocation loc) throws GameActionException {
 		double minDistance = 9999999;
 		MapLocation closestTarget = null;
 
@@ -236,7 +236,7 @@ public class Fight {
 		return closestTarget;
 	}
 
-	public boolean hasClearMapLocation(List<MapLocation> listOfLocations, MapLocation loc) throws GameActionException {
+	public static boolean hasClearMapLocation(List<MapLocation> listOfLocations, MapLocation loc) throws GameActionException {
 		double minDistance = 9999999;
 		MapLocation closestTarget = null;
 
@@ -250,7 +250,6 @@ public class Fight {
 		}
 		return false;
 	}
-
 
 	public static RobotInfo findLastTargeted(RobotInfo[] listOfEnemies)
 	{
@@ -316,7 +315,6 @@ public class Fight {
 		return bestTarget;
 	}
 
-
 	public static RobotInfo targetLowestHealthEnemy(RobotInfo[] listOfEnemies)
 	{
 		double minHealth = 9999999;
@@ -333,7 +331,6 @@ public class Fight {
 		return bestTarget;
 	}
 
-
 	public static RobotInfo findLowestHealthEnemyWithDelay(RobotInfo[] listOfEnemies)
 	{
 		double minHealth = 9999999;
@@ -349,7 +346,6 @@ public class Fight {
 		}
 		return bestTarget;
 	}
-
 
 	public static RobotInfo findLowestHealthUninfectedEnemy(RobotInfo[] listOfEnemies)
 	{
@@ -383,7 +379,6 @@ public class Fight {
 		return bestTarget;
 	}
 
-
 	public static RobotInfo findLowestHealthNonTerminalEnemy(RobotInfo[] listOfEnemies)
 	{
 		double minHealth = 9999999;
@@ -416,8 +411,6 @@ public class Fight {
 		}
 		return bestTarget;
 	}
-
-
 
 	public static boolean lowestHealthAttack() throws GameActionException {
 		lastTargeted = targetLowestHealthEnemy(attackableEnemies);
