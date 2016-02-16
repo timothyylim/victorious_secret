@@ -24,24 +24,43 @@ public class Fight {
 		robot = _robot;
 	}
 
-	public static RobotInfo[] spotEnemies()
+	private void sense_map() throws GameActionException {
+		//Sense map
+		spotEnemies();
+		spotOpponents();
+		spotZombies();
+		spotAllies();
+		targetEnemies();
+	}
+	public static void spotEnemies()
 	{
 		seenEnemies = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
-		return seenEnemies;
 	}
 
-	public static RobotInfo[] spotAllies()
+	public static void spotAllies()
 	{
 		seenAllies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
-		return seenAllies;
+	}
+
+	public static void spotZombies()
+	{
+		seenZombies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, Team.ZOMBIE);
+	}
+
+	public static void spotOpponents()
+	{
+		seenOpponents = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam().opponent());
+	}
+
+	public static void targetEnemies()
+	{
+		attackableEnemies = rc.senseHostileRobots(rc.getLocation(), rc.getType().attackRadiusSquared);
 	}
 
 	public static RobotInfo[] spotNearbyTurrets() {
-		RobotInfo[] nearbyAllies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
-
 		int nTurrets = 0;
 
-		for(RobotInfo i : nearbyAllies){
+		for(RobotInfo i : seenAllies){
 			if(i.type == RobotType.TURRET || i.type == RobotType.TTM){
 				nTurrets++;
 			}
@@ -49,7 +68,7 @@ public class Fight {
 		if(nTurrets > 0) {
 			RobotInfo[] turrets = new RobotInfo[nTurrets];
 			int j = 0;
-			for (RobotInfo i : nearbyAllies) {
+			for (RobotInfo i : seenAllies) {
 				if (i.type == RobotType.TURRET || i.type == RobotType.TTM) {
 					turrets[j] = i;
 					j++;
@@ -65,11 +84,9 @@ public class Fight {
 
 	public static RobotInfo[] spotAlliesOfType(RobotType type)
 	{
-		RobotInfo[] allies = spotAllies();
-
 		int nOfType = 0;
 
-		for (RobotInfo r: allies) {
+		for (RobotInfo r: seenAllies) {
 			if(r.type == type)
 			{
 				nOfType++;
@@ -80,7 +97,7 @@ public class Fight {
 		{
 			RobotInfo[] tAllies = new RobotInfo[nOfType];
 			nOfType = 0;
-			for (RobotInfo r: allies) {
+			for (RobotInfo r: seenAllies) {
 				if(r.type == type)
 				{
 					tAllies[nOfType] = r;
@@ -97,31 +114,12 @@ public class Fight {
 
 	}
 
-	public static RobotInfo[] spotZombies()
+	public static RobotInfo[] inRangeOf()
 	{
-		seenZombies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, Team.ZOMBIE);
-		return seenZombies;
+		return inRangeOf(seenEnemies, rc.getLocation());
 	}
 
-	public static RobotInfo[] spotOpponents()
-	{
-		seenOpponents = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam().opponent());
-		return seenOpponents;
-	}
-
-	//TODO: BETTER NAME
-	public static RobotInfo[] targetEnemies()
-	{
-		attackableEnemies = rc.senseHostileRobots(rc.getLocation(), rc.getType().attackRadiusSquared);
-		return attackableEnemies;
-	}
-
-	public RobotInfo[] inRangeOf()
-	{
-		return inRangeOf(spotEnemies(), rc.getLocation());
-	}
-
-	public RobotInfo[] inRangeOf(RobotInfo[] listOfEnemies, MapLocation loc)
+	public static RobotInfo[] inRangeOf(RobotInfo[] listOfEnemies, MapLocation loc)
 	{
 		List<RobotInfo> inRange = new ArrayList<>();
 
@@ -158,7 +156,6 @@ public class Fight {
 	{
 		double minDistance = 9999999;
 		RobotInfo closestTarget = null;
-
 
 		for(RobotInfo i : listOfEnemies)
 		{
@@ -278,22 +275,6 @@ public class Fight {
 
 		for(RobotInfo i : listOfEnemies)
 		{
-			if(i.health < minHealth && rc.canAttackLocation(i.location))
-			{
-				minHealth = i.health;
-				bestTarget = i;
-			}
-		}
-		return bestTarget;
-	}
-
-	public static RobotInfo findLowestHealthEnemyNoAttack(RobotInfo[] listOfEnemies)
-	{
-		double minHealth = 9999999;
-		RobotInfo bestTarget = null;
-
-		for(RobotInfo i : listOfEnemies)
-		{
 			if(i.health < minHealth)
 			{
 				minHealth = i.health;
@@ -303,48 +284,15 @@ public class Fight {
 		return bestTarget;
 	}
 
-	public static RobotInfo findLowestHealthEnemyWithDelay(RobotInfo[] listOfEnemies)
+	public static RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies, RobotType targetType)
 	{
 		double minHealth = 9999999;
 		RobotInfo bestTarget = null;
 
 		for(RobotInfo i : listOfEnemies)
 		{
-			if(i.coreDelay > 0 && i.health < minHealth)
+			if(i.type == targetType && i.health < minHealth)
 			{
-				minHealth = i.health;
-				bestTarget = i;
-			}
-		}
-		return bestTarget;
-	}
-
-	public static RobotInfo findLowestHealthUninfectedEnemy(RobotInfo[] listOfEnemies)
-	{
-		double minHealth = 9999999;
-		RobotInfo bestTarget = null;
-
-		for(RobotInfo i : listOfEnemies)
-		{
-			if(i.viperInfectedTurns < 1 && i.health < minHealth && rc.canAttackLocation(i.location))
-			{
-				minHealth = i.health;
-				bestTarget = i;
-			}
-		}
-		return bestTarget;
-	}
-
-	public static RobotInfo findLowestHealthNonTerminalEnemy(RobotInfo[] listOfEnemies)
-	{
-		double minHealth = 9999999;
-		RobotInfo bestTarget = null;
-
-		for(RobotInfo i : listOfEnemies)
-		{
-			if(i.health > (i.viperInfectedTurns * VIPER_INFECTION_DAMAGE) &&
-					i.health < minHealth &&
-					rc.canAttackLocation(i.location)){
 				minHealth = i.health;
 				bestTarget = i;
 			}
@@ -365,18 +313,114 @@ public class Fight {
 				bestTarget = i;
 			}
 		}
-		if(bestTarget == null)
-		{
-			return null;
-		}
-		else
-		{
-			return bestTarget;
-		}
+		return bestTarget;
 	}
 
+
+	public static RobotInfo targetLowestHealthEnemy(RobotInfo[] listOfEnemies)
+	{
+		double minHealth = 9999999;
+		RobotInfo bestTarget = null;
+
+		for(RobotInfo i : listOfEnemies)
+		{
+			if(i.health < minHealth && rc.canAttackLocation(i.location))
+			{
+				minHealth = i.health;
+				bestTarget = i;
+			}
+		}
+		return bestTarget;
+	}
+
+
+	public static RobotInfo findLowestHealthEnemyWithDelay(RobotInfo[] listOfEnemies)
+	{
+		double minHealth = 9999999;
+		RobotInfo bestTarget = null;
+
+		for(RobotInfo i : listOfEnemies)
+		{
+			if(i.coreDelay > 1 && i.health < minHealth)
+			{
+				minHealth = i.health;
+				bestTarget = i;
+			}
+		}
+		return bestTarget;
+	}
+
+
+	public static RobotInfo findLowestHealthUninfectedEnemy(RobotInfo[] listOfEnemies)
+	{
+		double minHealth = 9999999;
+		RobotInfo bestTarget = null;
+
+		for(RobotInfo i : listOfEnemies)
+		{
+			if(i.viperInfectedTurns < 1 && i.health < minHealth)
+			{
+				minHealth = i.health;
+				bestTarget = i;
+			}
+		}
+		return bestTarget;
+	}
+
+	public static RobotInfo targetLowestHealthUninfectedEnemy(RobotInfo[] listOfEnemies)
+	{
+		double minHealth = 9999999;
+		RobotInfo bestTarget = null;
+
+		for(RobotInfo i : listOfEnemies)
+		{
+			if(i.viperInfectedTurns < 1 && i.health < minHealth && rc.canAttackLocation(i.location))
+			{
+				minHealth = i.health;
+				bestTarget = i;
+			}
+		}
+		return bestTarget;
+	}
+
+
+	public static RobotInfo findLowestHealthNonTerminalEnemy(RobotInfo[] listOfEnemies)
+	{
+		double minHealth = 9999999;
+		RobotInfo bestTarget = null;
+
+		for(RobotInfo i : listOfEnemies)
+		{
+			if(i.health > (i.viperInfectedTurns * VIPER_INFECTION_DAMAGE) &&
+					i.health < minHealth ){
+				minHealth = i.health;
+				bestTarget = i;
+			}
+		}
+		return bestTarget;
+	}
+
+	public static RobotInfo targetLowestHealthNonTerminalEnemy(RobotInfo[] listOfEnemies)
+	{
+		double minHealth = 9999999;
+		RobotInfo bestTarget = null;
+
+		for(RobotInfo i : listOfEnemies)
+		{
+			if(i.health > (i.viperInfectedTurns * VIPER_INFECTION_DAMAGE) &&
+					i.health < minHealth &&
+					rc.canAttackLocation(i.location)){
+				minHealth = i.health;
+				bestTarget = i;
+			}
+		}
+		return bestTarget;
+	}
+
+
+
 	public static boolean lowestHealthAttack() throws GameActionException {
-		lastTargeted = findLowestHealthEnemy(attackableEnemies);
+		lastTargeted = targetLowestHealthEnemy(attackableEnemies);
 
 		if(rc.canAttackLocation(lastTargeted.location))
 		{
@@ -388,20 +432,20 @@ public class Fight {
 
 	public static boolean standardAttack() throws GameActionException {
 		//Default is to always shoot at the last thing we attacked
-		lastTargeted = findLastTargeted(attackableEnemies);
+		lastTargeted = targetLastTargeted(attackableEnemies);
 
 		//Then is to always shoot at Big Zombies if they're available
 		if(lastTargeted == null)
 		{
-			lastTargeted = findLowestHealthEnemy(attackableEnemies, RobotType.BIGZOMBIE);
+			lastTargeted = targetLowestHealthEnemy(attackableEnemies, RobotType.BIGZOMBIE);
 		}
 
 		//Otherwise just shoot at the lowest health zombie
 		if(lastTargeted == null) {
-			lastTargeted = findLowestHealthEnemy(attackableEnemies);
+			lastTargeted = targetLowestHealthEnemy(attackableEnemies);
 		}
 
-		if(rc.canAttackLocation(lastTargeted.location))
+		if(lastTargeted != null)
 		{
 			rc.attackLocation(lastTargeted.location);
 			return true;

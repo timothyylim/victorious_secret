@@ -74,19 +74,6 @@ public class Nav {
         return new MapLocation(x,  y);
     }
 
-	public static void flee() throws GameActionException
-	{
-		if(robot.fight.seenEnemies != null && robot.fight.seenEnemies.length > 0)
-		{
-            MapLocation[] locs = {rc.getLocation(), averageLoc(robot.fight.seenEnemies)};
-
-            robot.targetMoveLoc = averageLoc(locs);
-		}
-
-        move();
-
-	}
-
     public static void guard(MapLocation archonLoc) throws GameActionException
 	{
 		/*UPDATED GUARD STRATEGY - CLUMP TOGETHER */
@@ -107,59 +94,6 @@ public class Nav {
         move();
 	}
 
-    public static void move() throws GameActionException
-	{
-        if(rc.isCoreReady()) {
-            //First move to target
-            if (robot.targetMoveLoc != null)
-            {
-                if(moveToTarget(robot.targetMoveLoc))
-                {
-                    //Then we sucessfully moved towards our target
-                    return;
-                }
-            }
-
-            //If that fails then do you rand move
-            randMove();
-        }
-	}
-
-    public static boolean moveToTarget(MapLocation targetMoveLoc) throws GameActionException
-    {
-
-        Direction movingDirection = rc.getLocation().directionTo(targetMoveLoc);
-        if(rc.canMove(movingDirection))
-        {
-            rc.move(movingDirection);
-            return true;
-        }
-
-        if(rc.canMove(movingDirection.rotateLeft()))
-        {
-            rc.move(movingDirection.rotateLeft());
-            return true;
-        }
-
-        if(rc.canMove(movingDirection.rotateRight()))
-        {
-            rc.move(movingDirection.rotateRight());
-            return true;
-        }
-
-        if(rc.canMove(movingDirection.rotateLeft().rotateLeft()))
-        {
-            rc.move(movingDirection.rotateLeft().rotateLeft());
-            return true;
-        }
-
-        if(rc.canMove(movingDirection.rotateRight().rotateRight()))
-        {
-            rc.move(movingDirection.rotateRight().rotateRight());
-            return true;
-        }
-        return false;
-    }
 
     public static MapLocation spiralClockwise(MapLocation center) throws GameActionException
     {
@@ -235,20 +169,6 @@ public class Nav {
         return onRadius;
     }
 
-    public static void randMove() throws GameActionException {
-        int i = 0;
-        do
-        {
-            Direction movingDirection = Direction.values()[robot.rand.nextInt(8)];
-            if(rc.canMove(movingDirection))
-            {
-                rc.move(movingDirection);
-                break;
-            }
-            i++;
-        }while(i < 10);
-
-	}
 
     public static Direction findBestMove(MapLocation here, MapLocation target, List<Direction> allowedDirs) throws GameActionException {
         int bestDistance = 99999;

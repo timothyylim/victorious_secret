@@ -1,14 +1,10 @@
 package victorious_secret.Behaviour;
-
-/**
- * Created by APOC on 16/02/2016.
- */
-
 import battlecode.common.*;
 /**
- *
- * @author Karlson Lee And Mohammed Al-Hakim
- *
+ * This is a Bug Navigation that will approach a target and if the unit approaches an obstacle
+ * the unit will avoid the obstacle by bugging left and then if no path found, it will bug right.
+ * @author Karlson Lee & Mohammed Al-Hakim
+ * Made to Inspire
  */
 public class BugNav {
     static RobotController _rc;
@@ -25,8 +21,8 @@ public class BugNav {
     static Direction startDesiredDir;
 
     /**
-     *
-     * @param _moved        _moved is the previously moved direction
+     * Setter method that sets the last direction moved
+     * @param _moved						Parameter that is the previously moved direction
      *
      */
     public static void setMoved(Direction _moved){
@@ -34,8 +30,8 @@ public class BugNav {
     }
 
     /**
-     *
-     * @return              It returns a Maplocation that is current set target
+     * Getter method to get the current target location
+     * @return								Returns a MapLocation that is the current target
      *
      */
     public static MapLocation getTargetLoc() {
@@ -44,9 +40,9 @@ public class BugNav {
 
 
     /**
-     *
-     * @param desiredDir            Input the desired direction to flock. i.e the target that is towards the target
-     * @return                      return a direction to flock, return null if no direction avalible
+     * Method to flock in a desired direction if there is no obstacle approaching.
+     * @param desiredDir					Parameter that is the desired direction to flock. i.e the target that is towards the target
+     * @return								Returns a direction to flock to, returns null if no direction available.
      */
     private static Direction flockInDir(Direction desiredDir){
         Direction[] directions = new Direction[3];
@@ -67,18 +63,18 @@ public class BugNav {
     }
 
     /**
-     *
-     * @param dir
-     * @return
+     * Method to either rotate left or rotate right depending on the hugging boolean.
+     * @param dir							Parameter that defines the direction to which unit will hug the wall.
+     * @return								Returns a direction to turn into.
      */
     private static Direction turn(Direction dir){
         return (hugLeft ? dir.rotateRight() : dir.rotateLeft());
     }
 
     /**
-     *
-     * @param dir               check if the direction is moveable
-     * @return                  return true if possible, otherwise false
+     * Method to check if the unit can move to given direction if not prohibited.
+     * @param dir							Parameter that defines a direction to move to.
+     * @return								Returns true if it can move.
      */
     private static boolean canMove(Direction dir) {
         if (BLOCK_DIRS[myProhibitedDirs[0]][myProhibitedDirs[1]][dir.ordinal()]) {
@@ -92,10 +88,10 @@ public class BugNav {
     }
 
     /**
-     *
-     * @param desiredDir                    The direction to hug the wall
-     * @param recursed                      Boolean check whether it hugged a direction before
-     * @return
+     * Method to hug the wall in one direction and if already recursed, try hugging the wall on opposite direction.
+     * @param desiredDir					Parameter that is the direction of the target.
+     * @param recursed						Parameter that checks whether it has already hugged the direction before, boolean parameter.
+     * @return								Returns a direction to move to avoid obstacles by hugging the wall.
      * @throws GameActionException
      */
     private static Direction hug (Direction desiredDir, boolean recursed) throws GameActionException {
@@ -137,8 +133,10 @@ public class BugNav {
     }
 
     /**
-     *
-     * @return                  Return the Direction that bug around a wall
+     * Method to check whether the state is in Flocking or Bugging, if the robot can moved directly towards
+     * i.e to flock, if not, it turns into bugging mode and use the hug method to follow walls. It also adds the directions moved to prohibited
+     * directions array
+     * @return								Returns the direction that bug around a wall
      * @throws GameActionException
      */
     public static Direction getNextMove() throws GameActionException {
@@ -179,16 +177,16 @@ public class BugNav {
     }
 
     /**
-     *
-     * @param _target           It set the target location, the location to arrive to.
+     * Setter method that sets target location to a given location
+     * @param _target						Parameter that is the target location
      */
     public static void setTarget(MapLocation _target){
         target = _target;
     }
 
     /**
-     *
-     * @param rc            Initiatise the BugNav with the rc Robotcontroller
+     * Method to initialize	the RobotController
+     * @param rc            Parameter that is the BugNav RobotController (rc)
      */
     public static void initialise(RobotController rc){
         _rc=rc;
@@ -214,4 +212,3 @@ public class BugNav {
         }
     }
 }
-

@@ -116,12 +116,12 @@ public class Attack extends Fight
 
     private static boolean kiteBackSafest() throws GameActionException {
 
-        RobotInfo[] tooCloseEnemies = robot.fight.inRangeOf();
+        RobotInfo[] tooCloseEnemies = inRangeOf();
         MapLocation here = rc.getLocation();
 
         if (tooCloseEnemies.length == 0) return false;
 
-        RobotInfo[] nearbyEnemies  = robot.fight.seenEnemies;
+        RobotInfo[] nearbyEnemies  = seenEnemies;
 
         Direction bestRetreatDir = null;
         RobotInfo currentClosestEnemy = robot.fight.findClosestEnemy(nearbyEnemies);
@@ -218,6 +218,7 @@ public class Attack extends Fight
         targetArchon = robot.fight.findClosestMapLocation(archonLocs, rc.getLocation());
     }
 
+    //TODO: Tim to create better setLeader
     private static void setLeader() throws GameActionException {
         if(targetArchon != null) {
             RobotInfo[] allies = robot.fight.spotAlliesOfType(RobotType.SOLDIER);
@@ -256,7 +257,7 @@ public class Attack extends Fight
 
     private static boolean locationClear(MapLocation m)
     {
-        if(rc.canSense(m) && robot.fight.spotEnemies().length == 0)
+        if(rc.canSense(m) && seenEnemies.length == 0)
         {
             //Then the location is clear, remove the location from our list of target Archon Locations
             robot.removeArchonLocation(m);

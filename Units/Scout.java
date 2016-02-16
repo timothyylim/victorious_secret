@@ -181,15 +181,6 @@ public class Scout extends Robot {
 	 * @throws GameActionException
 	 */
 
-	private void sense_map() throws GameActionException {
-		//Sense map
-		robot.fight.spotEnemies();
-		robot.fight.spotOpponents();
-		robot.fight.spotZombies();
-		robot.fight.spotAllies();
-
-	}
-
 	/**
 	 * This method returns the MapLocation of the closest robot of a specific type
 	 * from an array of robot information

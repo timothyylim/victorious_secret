@@ -175,4 +175,14 @@ public class Archon extends Robot {
 		return false;
 	}
 
+
+	//////////////////////////////////////////
+
+	// ^^ Attack Methods ^^
+
+	// vv Defend Methods vv
+
+	////////////////////////////////////////
+
+
 }
