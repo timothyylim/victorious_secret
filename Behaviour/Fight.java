@@ -19,44 +19,87 @@ public class Fight {
 	public static RobotInfo[] attackableEnemies;
 	private static int VIPER_INFECTION_DAMAGE = 2;
 
+
+
+
+	/**
+	 * Initalises the Fight controller for use as static class
+	 * @param _rc The Robot Controller
+	 * @param _robot The Robot type
+	 */
+	public static void initialise(RobotController _rc, Robot _robot) {
+		rc = _rc;
+		robot = _robot;
+	}
+
+	/**
+	 * Initalises the Fight controller for use as non-static class
+	 * @param _rc The Robot Controller
+	 * @param _robot The Robot type
+	 * @deprecated
+	 */
 	public Fight(RobotController _rc, Robot _robot) {
 		rc = _rc;
 		robot = _robot;
 	}
 
-	private void sense_map() throws GameActionException {
-		//Sense map
+	/**
+	 * This should be called at the start of each turn as it updates all of sensor readings. i.e. this is useful for
+	 * bytecode efficiency
+	 * @throws GameActionException
+     */
+	public static void sense_map() throws GameActionException {
 		spotEnemies();
 		spotOpponents();
 		spotZombies();
 		spotAllies();
 		targetEnemies();
 	}
+
+	/**
+	 * Senses enemies within sensor range
+	 */
 	public static void spotEnemies()
 	{
 		seenEnemies = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
 	}
 
+	/**
+	 * Senses allies within sensor range
+	 */
 	public static void spotAllies()
 	{
 		seenAllies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
 	}
 
+	/**
+	 * Senses zombies within sensor range
+	 */
 	public static void spotZombies()
 	{
 		seenZombies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, Team.ZOMBIE);
 	}
 
+	/**
+	 * Senses opponents within sensor range
+	 */
 	public static void spotOpponents()
 	{
 		seenOpponents = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam().opponent());
 	}
 
+	/**
+	 * Senses enemies in weapons range
+	 */
 	public static void targetEnemies()
 	{
 		attackableEnemies = rc.senseHostileRobots(rc.getLocation(), rc.getType().attackRadiusSquared);
 	}
 
+	/**
+	 * Senses nearby allied Turrets and TTMs
+	 * @return	Returns a list of sensible turrets.
+     */
 	public static RobotInfo[] spotNearbyTurrets() {
 		int nTurrets = 0;
 
@@ -82,6 +125,11 @@ public class Fight {
 		}
 	}
 
+	/**
+	 * Senses allies of a particular type
+	 * @param type	The type of robot to sense
+	 * @return		Returns a list of robots of that type, or null if none can be sensed.
+     */
 	public static RobotInfo[] spotAlliesOfType(RobotType type)
 	{
 		int nOfType = 0;
@@ -114,16 +162,26 @@ public class Fight {
 
 	}
 
+	/**
+	 * Finds the list of enemies that we can see and that we are in range of
+	 * @return Returns the list of enemies that we can see and that we are in range of
+     */
 	public static RobotInfo[] inRangeOf()
 	{
 		return inRangeOf(seenEnemies, rc.getLocation());
 	}
 
-	public static RobotInfo[] inRangeOf(RobotInfo[] listOfEnemies, MapLocation loc)
+	/**
+	 * Finds the list of units that are within range of a specific location
+	 * @param units List of units to evaluate
+	 * @param loc	Location the units can target
+     * @return		Returns the list of units that can target the location
+     */
+	public static RobotInfo[] inRangeOf(RobotInfo[] units, MapLocation loc)
 	{
 		List<RobotInfo> inRange = new ArrayList<>();
 
-		for(RobotInfo r : listOfEnemies)
+		for(RobotInfo r : units)
 		{
 			if(loc.distanceSquaredTo(r.location) <= r.type.attackRadiusSquared) {
 				inRange.add(r);
@@ -141,17 +199,34 @@ public class Fight {
 		}
 	}
 
-	public boolean locationUnderThreat(RobotInfo[] listOfEnemies, MapLocation loc)
+	/**
+	 * Boolean function that returns true if the location can be targeted by at least one unit
+	 * @param units List of units to evaluate
+	 * @param loc	Location the units can target
+	 * @return		Returns true if at least one unit can target the location
+     */
+	public boolean locationUnderThreat(RobotInfo[] units, MapLocation loc)
 	{
-		return inRangeOf(listOfEnemies, loc) != null;
+		return inRangeOf(units, loc) != null;
 
 	}
 
+	/**
+	 * Finds the enemy closest to our location
+	 * @param listOfEnemies	List of units to evaluate
+	 * @return				The closest enemy
+     */
 	public static RobotInfo findClosestEnemy(RobotInfo[] listOfEnemies)
 	{
 		return findClosestEnemy(listOfEnemies, rc.getLocation());
 	}
 
+	/**
+	 * Finds the unit closest to a specific map location
+	 * @param listOfEnemies List of units to evaluate
+	 * @param loc			Location to measure distance from
+     * @return				The closest enemy
+     */
 	public static RobotInfo findClosestEnemy(RobotInfo[] listOfEnemies, MapLocation loc)
 	{
 		double minDistance = 9999999;
@@ -169,6 +244,12 @@ public class Fight {
 		return closestTarget;
 	}
 
+	/**
+	 * Finds the map location closest to a target map location
+	 * @param listOfLocations	List of locations to evaluate
+	 * @param loc				Location to measure distance from
+     * @return					The closest map location
+     */
 	public static MapLocation findClosestMapLocation(MapLocation[] listOfLocations, MapLocation loc)
 	{
 		double minDistance = 9999999;
@@ -186,23 +267,12 @@ public class Fight {
 		return closestTarget;
 	}
 
-	public static MapLocation findClosestMapLocation(List<MapLocation> listOfLocations, MapLocation loc)
-	{
-		double minDistance = 9999999;
-		MapLocation closestTarget = null;
-
-		for(MapLocation i : listOfLocations)
-		{
-			int sqDist = i.distanceSquaredTo(loc);
-			if(sqDist  < minDistance)
-			{
-				minDistance = sqDist;
-				closestTarget = i;
-			}
-		}
-		return closestTarget;
-	}
-
+	/**
+	 * Finds the map location closest to a target map location
+	 * @param listOfLocations	Collection of locations to evaluate
+	 * @param loc				Location to measure distance from
+	 * @return					The closest map location
+	 */
 	public static MapLocation findClosestMapLocation(Collection<MapLocation> listOfLocations, MapLocation loc)
 	{
 		double minDistance = 9999999;
@@ -220,6 +290,12 @@ public class Fight {
 		return closestTarget;
 	}
 
+	 /**
+	 * Finds the map location closest to a target map location that doesn't have a unit already on it
+	 * @param listOfLocations	List of locations to evaluate
+	 * @param loc				Location to measure distance from
+	 * @return					The closest map location
+	 */
 	public static MapLocation findClosestFreeMapLocation(List<MapLocation> listOfLocations, MapLocation loc) throws GameActionException {
 		double minDistance = 9999999;
 		MapLocation closestTarget = null;
@@ -236,6 +312,12 @@ public class Fight {
 		return closestTarget;
 	}
 
+	/**
+	 * Evaluates to true if at least one map location does not have a unit already on it
+	 * @param listOfLocations	List of locations to evaluate
+	 * @param loc				Location to measure distance from
+	 * @return					True if at least one location is clear
+	 */
 	public static boolean hasClearMapLocation(List<MapLocation> listOfLocations, MapLocation loc) throws GameActionException {
 		double minDistance = 9999999;
 		MapLocation closestTarget = null;
@@ -251,6 +333,11 @@ public class Fight {
 		return false;
 	}
 
+	/**
+	 * Finds the RobotInfo of the robot that we last targeted, if it is still sensible.
+	 * @param listOfEnemies	List of enemies to evaluate
+	 * @return				Returns the robot info of the last targeted or null
+     */
 	public static RobotInfo findLastTargeted(RobotInfo[] listOfEnemies)
 	{
 		if(lastTargeted == null)
@@ -267,6 +354,11 @@ public class Fight {
 		return null;
 	}
 
+	/**
+	 * Finds the lowest health enemy that is sensible
+	 * @param listOfEnemies	list of enemies to be evaluated
+	 * @return				Lowest health enemy
+     */
 	public static RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies)
 	{
 		double minHealth = 9999999;
@@ -283,6 +375,12 @@ public class Fight {
 		return bestTarget;
 	}
 
+	 /**
+	 * Finds the lowest health enemy that is sensible and of a particular type
+	 * @param targetType 	The target type of unit
+	 * @param listOfEnemies	List of enemies to be evaluated
+	 * @return				Lowest health enemy
+	 */
 	public static RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies, RobotType targetType)
 	{
 		double minHealth = 9999999;
@@ -299,6 +397,12 @@ public class Fight {
 		return bestTarget;
 	}
 
+	/**
+	 * Finds the lowest health enemy that is sensible and of a particular type
+	 * @param targetType 	The target type of unit
+	 * @param listOfEnemies	List of enemies to be evaluated
+	 * @return				Lowest health enemy
+	 */
 	public static RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies, RobotType targetType)
 	{
 		double minHealth = 9999999;
@@ -315,6 +419,11 @@ public class Fight {
 		return bestTarget;
 	}
 
+	 /**
+	 * Finds the lowest health enemy that is sensible and within weapon range
+	 * @param listOfEnemies	List of enemies to be evaluated
+	 * @return				Lowest health enemy that can be shot
+	 */
 	public static RobotInfo targetLowestHealthEnemy(RobotInfo[] listOfEnemies)
 	{
 		double minHealth = 9999999;
@@ -331,6 +440,11 @@ public class Fight {
 		return bestTarget;
 	}
 
+	/**
+	 * Finds the lowest health enemy that is sensible and has a delay of at least two turns
+	 * @param listOfEnemies	List of enemies to be evaluated
+	 * @return				Lowest health enemy that will still be there
+	 */
 	public static RobotInfo findLowestHealthEnemyWithDelay(RobotInfo[] listOfEnemies)
 	{
 		double minHealth = 9999999;
@@ -347,6 +461,11 @@ public class Fight {
 		return bestTarget;
 	}
 
+	/**
+	 * Finds the lowest health enemy that is sensible and does not have an infection
+	 * @param listOfEnemies	List of enemies to be evaluated
+	 * @return				Lowest health enemy that is uninfected
+	 */
 	public static RobotInfo findLowestHealthUninfectedEnemy(RobotInfo[] listOfEnemies)
 	{
 		double minHealth = 9999999;
@@ -363,6 +482,11 @@ public class Fight {
 		return bestTarget;
 	}
 
+	/**
+	 * Finds the lowest health enemy that is sensible and does not have an infection
+	 * @param listOfEnemies	List of enemies to be evaluated
+	 * @return				Lowest health enemy that can be infected
+	 */
 	public static RobotInfo targetLowestHealthUninfectedEnemy(RobotInfo[] listOfEnemies)
 	{
 		double minHealth = 9999999;
@@ -379,6 +503,11 @@ public class Fight {
 		return bestTarget;
 	}
 
+	/**
+	 * Finds the lowest health enemy that is sensible and is not going to die anyway
+	 * @param listOfEnemies	List of enemies to be evaluated
+	 * @return				Lowest health enemy
+	 */
 	public static RobotInfo findLowestHealthNonTerminalEnemy(RobotInfo[] listOfEnemies)
 	{
 		double minHealth = 9999999;
@@ -395,6 +524,12 @@ public class Fight {
 		return bestTarget;
 	}
 
+
+	/**
+	 * Finds the lowest health enemy that is sensible and is not going to die anyway
+	 * @param listOfEnemies	List of enemies to be evaluated
+	 * @return				Lowest health enemy that can be shot
+	 */
 	public static RobotInfo targetLowestHealthNonTerminalEnemy(RobotInfo[] listOfEnemies)
 	{
 		double minHealth = 9999999;
@@ -412,10 +547,15 @@ public class Fight {
 		return bestTarget;
 	}
 
+	/**
+	 * Basic attack pattern that always shoots at the lowest health enemy. Returns true if attack succeeded
+	 * @return True if attack succeeded
+	 * @throws GameActionException
+     */
 	public static boolean lowestHealthAttack() throws GameActionException {
 		lastTargeted = targetLowestHealthEnemy(attackableEnemies);
 
-		if(rc.canAttackLocation(lastTargeted.location))
+		if(lastTargeted != null)
 		{
 			rc.attackLocation(lastTargeted.location);
 			return true;
@@ -423,9 +563,15 @@ public class Fight {
 		return false;
 	}
 
+	/**
+	 * Basic attack pattern that cycles through a priority of targets. Firstly it shoots at the last unit it attacked.
+	 * Then it targets big zombies. Finally it will taget the lowest health enemy.
+	 * @return True if attack succeeded
+	 * @throws GameActionException
+	 */
 	public static boolean standardAttack() throws GameActionException {
 		//Default is to always shoot at the last thing we attacked
-		lastTargeted = targetLastTargeted(attackableEnemies);
+		lastTargeted = findLastTargeted(attackableEnemies);
 
 		//Then is to always shoot at Big Zombies if they're available
 		if(lastTargeted == null)
