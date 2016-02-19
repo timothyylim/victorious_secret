@@ -75,7 +75,8 @@ public class Archon extends Robot {
 		switch(strat)
 		{
 			case DEFEND:
-				defend.turtle();
+				//defend.turtle();
+				turtle();
 				break;
 
 			case ATTACK:
@@ -184,5 +185,75 @@ public class Archon extends Robot {
 
 	////////////////////////////////////////
 
+	
+	public void turtle() throws GameActionException {
+
+
+		if (rc.isCoreReady()) {
+			
+			if(rc.getRoundNum() < 20){
+				get_outta_here();
+			}
+
+			MapLocation InitialArchons[] = rc.getInitialArchonLocations(rc.getTeam());
+
+			MapLocation InitialEnemyArchons[] = rc.getInitialArchonLocations(rc.getTeam().opponent());
+
+			MapLocation averageEnermyLoc = Flee.averageLoc(InitialEnemyArchons);
+
+			
+			// Set archon furthest from enemy as leader and go to that motherfucker
+			int dx =0;
+			int dy=0;
+
+			int hypo=0;
+
+			int max=0;
+			int maxi=0;
+
+			for (int i = 0; i < InitialArchons.length; i++){
+				dx=InitialArchons[i].x-averageEnermyLoc.x;
+				dy=InitialArchons[i].y-averageEnermyLoc.y;
+
+				hypo = dx*dx+dy*dy;
+
+				if(hypo>max){
+					max=hypo;
+					maxi=i;
+				}
+
+			}
+
+			MapLocation leaderLocation = rc.getInitialArchonLocations(rc.getTeam())[maxi];
+
+			MapLocation thisLocation = rc.getLocation();
+
+			if(thisLocation.equals(leaderLocation)){
+				leader = true;
+			}
+
+			if (rc.isCoreReady()) {
+
+				double distance = thisLocation.distanceSquaredTo(leaderLocation);
+
+	            if(distance > 4 && !leader){
+					Flee.target = leaderLocation;
+					Direction dir = Flee.getNextMove();
+					tryToMove(dir);
+	            }else{
+					if(!buildUnits()){
+						RobotInfo[] alliesToHelp = rc.senseNearbyRobots(rc.getType().attackRadiusSquared,rc.getTeam());
+						MapLocation weakestOne = findWeakest(alliesToHelp);
+						if(weakestOne!=null){
+							rc.repair(weakestOne);
+							return;
+						}
+					}
+	            }
+	        }
+		}
+		
+		
+		
 
 }

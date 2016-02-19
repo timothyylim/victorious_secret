@@ -227,6 +227,7 @@ public class Defend {
         }
     }
 
+    // Tries to move in a direction, failing which, clear rubble
     public static void tryToMove(Direction forward) throws GameActionException{
 
         if(rc.isCoreReady()){
@@ -247,6 +248,7 @@ public class Defend {
         }
     }
 
+    // Gets attack location from a signal queue 
     private static void getAttackLoc() throws GameActionException {
         Signal[] signals = rc.emptySignalQueue();
 
@@ -268,6 +270,7 @@ public class Defend {
         }
     }
 
+    // Moves a TTM in a random direction away from the closest archon 
 	private static void moveTTMAway() throws GameActionException{
 		RobotInfo[] robots = rc.senseNearbyRobots(1,rc.getTeam());
 		int archonIndex = get_archon_index(robots);
@@ -294,6 +297,7 @@ public class Defend {
 
 	}
 
+	// Circle friendly archon, clearing rubble if necessary
 	private void soldierCode() throws GameActionException {
 
 		//Try to shoot something
@@ -350,6 +354,7 @@ public class Defend {
 		
 	}
 
+	// Gets the archon index from a robot list
 	private static int get_archon_index(RobotInfo[] robotList){
 		boolean found = false;
 		int index = 0;
@@ -369,6 +374,7 @@ public class Defend {
 
 	}
 
+	// A defensive build queue 
 	private boolean buildUnits() throws GameActionException {
 		//Our build order is to build 5 guards, then 1 scout, then try to maintain guards and
 		//scouts in equal proportion, with another scout every 16 units
@@ -422,10 +428,12 @@ public class Defend {
 
 	}
 
+	// Gets a random direction
     private static Direction randomDirection() {
         return Direction.values()[(int)(rnd.nextDouble()*8)];
     }
 
+    // Gets archon out of a corner
 	private void get_outta_here() throws GameActionException{
 		Direction possible = null;
 		if(rc.isCoreReady()){
@@ -446,6 +454,7 @@ public class Defend {
 		}
 	}
 
+	// Find robot with the lowest health in a list of robots
 	private static MapLocation findWeakest(RobotInfo[] listOfRobots){
 		double weakestSoFar = 0;
 		MapLocation weakestLocation = null;
