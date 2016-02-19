@@ -381,37 +381,12 @@ public class Fight {
 	 * @param listOfEnemies	List of enemies to be evaluated
 	 * @return				Lowest health enemy
 	 */
-	public static RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies, RobotType targetType)
-	{
+	public static RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies, RobotType targetType) {
 		double minHealth = 9999999;
 		RobotInfo bestTarget = null;
 
-		for(RobotInfo i : listOfEnemies)
-		{
-			if(i.type == targetType && i.health < minHealth)
-			{
-				minHealth = i.health;
-				bestTarget = i;
-			}
-		}
-		return bestTarget;
-	}
-
-	/**
-	 * Finds the lowest health enemy that is sensible and of a particular type
-	 * @param targetType 	The target type of unit
-	 * @param listOfEnemies	List of enemies to be evaluated
-	 * @return				Lowest health enemy
-	 */
-	public static RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies, RobotType targetType)
-	{
-		double minHealth = 9999999;
-		RobotInfo bestTarget = null;
-
-		for(RobotInfo i : listOfEnemies)
-		{
-			if(i.type == targetType && i.health < minHealth && rc.canAttackLocation(i.location))
-			{
+		for (RobotInfo i : listOfEnemies) {
+			if (i.type == targetType && i.health < minHealth) {
 				minHealth = i.health;
 				bestTarget = i;
 			}
@@ -576,7 +551,7 @@ public class Fight {
 		//Then is to always shoot at Big Zombies if they're available
 		if(lastTargeted == null)
 		{
-			lastTargeted = targetLowestHealthEnemy(attackableEnemies, RobotType.BIGZOMBIE);
+			lastTargeted = findLowestHealthEnemy(attackableEnemies, RobotType.BIGZOMBIE);
 		}
 
 		//Otherwise just shoot at the lowest health zombie
