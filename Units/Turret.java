@@ -8,6 +8,7 @@ import java.util.*;
 
 import battlecode.common.*;
 import scala.collection.parallel.ParIterableLike;
+import victorious_secret.Behaviour.BugNav;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
@@ -66,11 +67,13 @@ public class Turret extends Robot {
 		rc = _rc;
 		//rand = new Random(rc.getID());
 		rand = new Random();
-		nav = new Nav(rc, this);
-		fight = new Fight(rc, this);
+		//nav = new Nav(rc, this);
+		Nav.initialise(rc, this);
+		//fight = new Fight(rc, this);
+		Fight.initialise(rc, this);
 		defend = new Defend(rc, this);
 		team = rc.getTeam();
-		Flee.initialiseFlee(rc);
+		BugNav.initialise(rc);
 
 		strat = Strategy.DEFEND;
 
@@ -131,13 +134,6 @@ public class Turret extends Robot {
 		if(rc.isCoreReady() && targetMoveLoc != null) {
 			if (rc.getType() == RobotType.TTM) {
 				lineUp();
-				/*
-				Flee.setTarget(targetMoveLoc);
-				Direction dir = Flee.getNextMove();
-				if(dir != null && rc.canMove(dir)){
-					rc.move(dir);
-				}
-				*/
 			} else if(cooldown <= 0) {
 				rc.pack();
 			}
@@ -204,8 +200,8 @@ public class Turret extends Robot {
 					//dir = Direction.NONE;
 					List<MapLocation> allowedTargets = nav.findAllowedLocations(here, radiusToWall, targetMoveLoc);
 					if(!fight.hasClearMapLocation(allowedTargets, targetMoveLoc)){
-						Flee.setTarget(targetMoveLoc);
-						Direction dir = Flee.getNextMove();
+						BugNav.setTarget(targetMoveLoc);
+						Direction dir = BugNav.getNextMove();
 						if(dir != null && rc.canMove(dir)){
 							rc.move(dir);
 						}

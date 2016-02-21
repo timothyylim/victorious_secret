@@ -7,6 +7,7 @@ package victorious_secret.Units;
 import java.util.Random;
 
 import battlecode.common.*;
+import victorious_secret.Behaviour.BugNav;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
@@ -45,22 +46,24 @@ public class Soldier extends Robot {
 	 */
 	Defend defend;
 
-	public static Flee flee;
-
 	public Soldier(RobotController _rc){
 		rc = _rc;
 		//rand = new Random(rc.getID());
 		rand = new Random();
-		nav = new Nav(rc, this);
-		fight = new Fight(rc, this);
+		//nav = new Nav(rc, this);
+		//fight = new Fight(rc, this);
 
 		strat = Strategy.DEFEND;
 		defend = new Defend(rc, this);
+		Nav.initialise(rc, this);
+		Fight.initialise(rc, this);
+		Attack.initialise(rc, this);
 
 		/*TESTING*/
-		Flee.initialiseFlee(rc);
-		Flee.setTarget(rc.getLocation());
-		akk = new Attack(rc, this);
+		BugNav.initialise(rc);
+		BugNav.setTarget(rc.getLocation());
+		//akk = new Attack(rc, this);
+
 
 	}
 
@@ -94,9 +97,9 @@ public class Soldier extends Robot {
 				
 				listenForSignal();
 				if (rc.isCoreReady()) {
-					Direction dir = flee.getNextMove();
+					Direction dir = BugNav.getNextMove();
 					if(rc.canMove(dir)){
-						rc.move(flee.getNextMove());
+						rc.move(dir);
 					}
 				}
 				//System.out.println(flee.getNextMove());
@@ -128,7 +131,7 @@ public class Soldier extends Robot {
 			int[] message = sig.getMessage();
 			if(message != null && sig.getTeam() == rc.getTeam()) {
 				MapLocation loc = new MapLocation(message[0],message[1]);
-				Flee.setTarget(loc);
+				BugNav.setTarget(loc);
 
 
 				return true;

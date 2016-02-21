@@ -1,6 +1,7 @@
 package victorious_secret.Strategy;
 import battlecode.common.*;
 import victorious_secret.*;
+import victorious_secret.Behaviour.BugNav;
 import victorious_secret.Behaviour.Fight;
 
 import java.util.Random;
@@ -45,7 +46,7 @@ public class Defend {
 
 		rnd = new Random(rc.getID());
 		startingLocation = new MapLocation(rc.getLocation().x,rc.getLocation().y);
-		Flee.initialiseFlee(rc);
+		BugNav.initialise(rc);
 
 	}
 
@@ -211,8 +212,8 @@ public class Defend {
 			double distance = thisLocation.distanceSquaredTo(leaderLocation);
 
             if(distance > 4 && !leader){
-				Flee.target = leaderLocation;
-				Direction dir = Flee.getNextMove();
+				BugNav.setTarget(leaderLocation);
+				Direction dir = BugNav.getNextMove();
 				tryToMove(dir);
             }else{
 				if(!buildUnits()){

@@ -1,6 +1,7 @@
 package victorious_secret.Strategy;
 
 import battlecode.common.*;
+import victorious_secret.Behaviour.BugNav;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 
@@ -14,9 +15,26 @@ public class Attack extends Fight
     private static MapLocation targetArchon;
     private static RobotInfo leader;
 
+    /**
+     * Initalises the Attack controller for use as static class
+     * @param _rc The Robot Controller
+     * @param _robot The Robot type
+     */
+    public static void initialise(RobotController _rc, Robot _robot) {
+        rc = _rc;
+        robot = _robot;
+    }
+
+    /**
+     * Initalises the Attack controller for use as non-static class
+     * @param _rc The Robot Controller
+     * @param _robot The Robot type
+     * @deprecated
+     */
     public Attack(RobotController _rc, Robot _robot) {
         super(_rc, _robot);
     }
+
 
     public static void attack() throws GameActionException {
         if(targetArchon == null || locationClear(targetArchon))
@@ -28,24 +46,21 @@ public class Attack extends Fight
             }
         }
 
-        seenEnemies = spotEnemies();
-        attackableEnemies = targetEnemies();
-
         if(attackableEnemies.length > 0 && rc.isWeaponReady()) {
             lowestHealthAttack();
         }
         else
         {
             followLeader();
-            robot.nav.move();
+            //robot.nav.move();
+            if (rc.isCoreReady()){
+                rc.move(BugNav.getNextMove());
+            }
         }
     }
 
     public static boolean kiteStratgey() throws GameActionException
     {
-        seenEnemies = spotEnemies();
-        attackableEnemies = targetEnemies();
-
         if(seenEnemies.length > 0) {
             MapLocation avgL = robot.nav.averageLoc(seenEnemies);
             robot.sig.setMessage(robot.sig.FromDirection(rc.getLocation().directionTo(avgL)));
@@ -99,16 +114,17 @@ public class Attack extends Fight
         }
         else
         {
-            if(lastTargeted != null){
-                robot.targetMoveLoc = lastTargeted.location;
+            if(rc.isCoreReady()) {
+                if (lastTargeted != null) {
+                    robot.targetMoveLoc = lastTargeted.location;
+                } else if (robot.sig.lastMoveSignal != null) {
+                    robot.targetMoveLoc = rc.getLocation().add(robot.sig.lastMoveSignal);
+                } else {
+                    robot.targetMoveLoc = robot.nav.averageLoc(seenAllies);
+                }
+                BugNav.setTarget(robot.targetMoveLoc);
+                rc.move(BugNav.getNextMove());
             }
-            else if(robot.sig.lastMoveSignal != null) {
-                robot.targetMoveLoc = rc.getLocation().add(robot.sig.lastMoveSignal);
-            }
-            else{
-                robot.targetMoveLoc = robot.nav.averageLoc(spotAllies());
-            }
-            robot.nav.move();
         }
 
         return false;
@@ -144,7 +160,10 @@ public class Attack extends Fight
         if (bestRetreatDir == null) return false;
 
         robot.targetMoveLoc = robot.targetMoveLoc.add(bestRetreatDir);
-        robot.nav.move();
+        BugNav.setTarget(robot.targetMoveLoc);
+        if(rc.isCoreReady()){
+            rc.move(BugNav.getNextMove());
+        }
         return true;
     }
 
@@ -187,7 +206,9 @@ public class Attack extends Fight
                 {
                     robot.targetMoveLoc = here.add(here.directionTo(target.location));
                 }
-                robot.nav.move();
+                if (rc.isCoreReady()){
+                    rc.move(BugNav.getNextMove());
+                }
         }
 
         return true;
@@ -199,8 +220,8 @@ public class Attack extends Fight
             return;
         }
 
-        Flee.setTarget(target.location);
-        Direction dir = Flee.getNextMove();
+        BugNav.setTarget(target.location);
+        Direction dir = BugNav.getNextMove();
         if(rc.canMove(dir)) {
             rc.move(dir);
         }

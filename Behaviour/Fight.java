@@ -20,8 +20,6 @@ public class Fight {
 	private static int VIPER_INFECTION_DAMAGE = 2;
 
 
-
-
 	/**
 	 * Initalises the Fight controller for use as static class
 	 * @param _rc The Robot Controller
@@ -398,12 +396,12 @@ public class Fight {
 	}
 
 	/**
-	 * Finds the lowest health enemy that is sensible and of a particular type
+	 * Finds the lowest health enemy that is sensible and of a particular type and in attack range
 	 * @param targetType 	The target type of unit
 	 * @param listOfEnemies	List of enemies to be evaluated
 	 * @return				Lowest health enemy
 	 */
-	public static RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies, RobotType targetType)
+	public static RobotInfo targetLowestHealthEnemy(RobotInfo[] listOfEnemies, RobotType targetType)
 	{
 		double minHealth = 9999999;
 		RobotInfo bestTarget = null;

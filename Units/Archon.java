@@ -4,6 +4,7 @@
 package victorious_secret.Units;
 
 import battlecode.common.*;
+import victorious_secret.Behaviour.BugNav;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
@@ -41,10 +42,13 @@ public class Archon extends Robot {
 		rc = _rc;
 		//rand = new Random(rc.getID());
 		rand = new Random();
-		nav = new Nav(rc, this);
-		fight = new Fight(rc, this);
+		//nav = new Nav(rc, this);
+		Nav.initialise(rc, this);
+		//fight = new Fight(rc, this);
+		Fight.initialise(rc, this);
 		defend = new Defend(rc, this);
 
+		BugNav.initialise(rc);
 		Flee.initialiseFlee(rc);
 
 		strat = Strategy.DEFEND;
@@ -99,7 +103,7 @@ public class Archon extends Robot {
 
 	private void call_for_help() throws GameActionException{
 		MapLocation loc = null; //= rc.getLocation();
-		RobotInfo i = fight.findLowestHealthEnemyNoAttack(fight.seenEnemies);
+		RobotInfo i = fight.findLowestHealthEnemy(fight.seenEnemies);
 		if(i == null) {
 			int broadcastRange = 150;
 			rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
@@ -115,8 +119,8 @@ public class Archon extends Robot {
 
 	private void _move() throws GameActionException {
 		if(rc.isCoreReady() && targetMoveLoc != null) {
-			Flee.setTarget(targetMoveLoc);
-			Direction dir = Flee.getNextMove();
+			BugNav.setTarget(targetMoveLoc);
+			Direction dir = BugNav.getNextMove();
 			if(dir != null && rc.canMove(dir)) {
 				rc.move(dir);
 			}

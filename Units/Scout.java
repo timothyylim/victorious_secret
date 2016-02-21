@@ -56,9 +56,11 @@ public class Scout extends Robot {
 		rc = _rc;
 		//rand = new Random(rc.getID());
 		rand = new Random();
-		nav = new Nav(rc, this);
+		//nav = new Nav(rc, this);
+		Nav.initialise(rc, this);
 		strat = Strategy.DEFEND;
-		fight = new Fight(rc, this);
+		//fight = new Fight(rc, this);
+		Fight.initialise(rc, this);
 		flee = new BugNav();
 		flee.initialise(rc);
 	}
@@ -104,7 +106,7 @@ public class Scout extends Robot {
 	 * @throws GameActionException
 	 */
 	public void runScoutStrategy3() throws GameActionException {
-		sense_map();
+		Fight.sense_map();
 		turretLoc = findClosestRobot(robot.fight.seenAllies, RobotType.TURRET);
 
 		if(turretLoc != null){
@@ -140,7 +142,7 @@ public class Scout extends Robot {
 	public void runScoutStrategy4() throws GameActionException {
 		double attackPowerNeeded = 550;
 		double attackPowerOfSeenAllies;
-		sense_map();
+		Fight.sense_map();
 		attackPowerOfSeenAllies = strengthOfRobotsInArray(robot.fight.seenAllies);
 
 		if(attackPowerOfSeenAllies>attackPowerNeeded){

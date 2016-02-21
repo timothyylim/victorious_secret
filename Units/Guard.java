@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Random;
 
 import battlecode.common.*;
+import victorious_secret.Behaviour.BugNav;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
 import victorious_secret.Strategy.Defend;
-import victorious_secret.Strategy.Flee;
 
 /**
  * @author APOC
@@ -50,10 +50,12 @@ public class Guard extends Robot {
 		rc = _rc;
 		//rand = new Random(rc.getID());
 		rand = new Random();
-		nav = new Nav(rc, this);
-		fight = new Fight(rc, this);
+		//nav = new Nav(rc, this);
+		Nav.initialise(rc, this);
+		//fight = new Fight(rc, this);
+		Fight.initialise(rc, this);
 		defend = new Defend(rc, this);
-		Flee.initialiseFlee(rc);
+		BugNav.initialise(rc);
 
 		team = rc.getTeam();
 		strat = Strategy.DEFEND;
@@ -92,8 +94,8 @@ public class Guard extends Robot {
 
 	private void _move() throws GameActionException {
 		if(rc.isCoreReady() && targetMoveLoc != null) {
-			Flee.setTarget(targetMoveLoc);
-			Direction dir = Flee.getNextMove();
+			BugNav.setTarget(targetMoveLoc);
+			Direction dir = BugNav.getNextMove();
 			if(dir != null && rc.canMove(dir)) {
 				rc.move(dir);
 			}
@@ -106,10 +108,10 @@ public class Guard extends Robot {
 		//Unless their turret is in range of enemy turrets
 		//Guards stay in line if their turret is threatened, they can only see Archons or Zombiedens
 
-		RobotInfo[] enemiesInRange = fight.targetEnemies();
+		RobotInfo[] enemiesInRange = fight.attackableEnemies;
 		RobotInfo t = null;
 		if (enemiesInRange == null || enemiesInRange.length == 0) {
-			RobotInfo[] enemiesInSight = fight.spotEnemies();
+			RobotInfo[] enemiesInSight = fight.seenEnemies;
 
 			if(enemiesInSight != null){
 				RobotInfo[] nearbyTurrets = fight.spotNearbyTurrets();

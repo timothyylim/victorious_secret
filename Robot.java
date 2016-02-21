@@ -12,7 +12,6 @@ import java.util.Random;
 import battlecode.common.*;
 import victorious_secret.Behaviour.*;
 import victorious_secret.Strategy.Attack;
-import victorious_secret.Strategy.Flee;
 
 
 /**
@@ -66,8 +65,8 @@ public abstract class Robot {
 		if(rc.isCoreReady()){
 			MapLocation t = fight.findClosestMapLocation(ourArchonLocations.values(), rc.getLocation());
 			//System.out.println("LOST! RETURN TO BASE: " + t);
-			Flee.setTarget(t);
-			Direction dir = Flee.getNextMove();
+			BugNav.setTarget(t);
+			Direction dir = BugNav.getNextMove();
 			if(rc.canMove(dir)) {
 				rc.move(dir);
 			}
