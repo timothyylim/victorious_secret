@@ -9,6 +9,7 @@ import java.util.Random;
 
 import battlecode.common.*;
 import victorious_secret.Robot;
+import victorious_secret.Behaviour.BugNav;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
 import victorious_secret.Strategy.Defend;
@@ -53,6 +54,7 @@ public class Guard extends Robot {
 		nav = new Nav(rc, this);
 		fight = new Fight(rc, this);
 		defend = new Defend(rc, this);
+		BugNav.initialise(_rc);
 		Flee.initialiseFlee(rc);
 
 		team = rc.getTeam();
@@ -92,8 +94,8 @@ public class Guard extends Robot {
 
 	private void _move() throws GameActionException {
 		if(rc.isCoreReady() && targetMoveLoc != null) {
-			Flee.setTarget(targetMoveLoc);
-			Direction dir = Flee.getNextMove();
+			BugNav.setTarget(targetMoveLoc);
+			Direction dir = BugNav.getNextMove();
 			if(dir != null && rc.canMove(dir)) {
 				rc.move(dir);
 			}

@@ -8,6 +8,7 @@ import java.util.Random;
 
 import battlecode.common.*;
 import victorious_secret.Robot;
+import victorious_secret.Behaviour.BugNav;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
 import victorious_secret.Strategy.Attack;
@@ -57,6 +58,8 @@ public class Soldier extends Robot {
 		strat = Strategy.DEFEND;
 		defend = new Defend(rc, this);
 
+		BugNav.initialise(_rc);
+		BugNav.setTarget(_rc.getLocation());
 		/*TESTING*/
 		Flee.initialiseFlee(rc);
 		Flee.setTarget(rc.getLocation());
@@ -75,6 +78,7 @@ public class Soldier extends Robot {
 
 		switch(strat) {
 			case DEFEND:
+				
 				defend.turtle();
 				break;
 			case ATTACK:
@@ -94,9 +98,9 @@ public class Soldier extends Robot {
 				
 				listenForSignal();
 				if (rc.isCoreReady()) {
-					Direction dir = flee.getNextMove();
+					Direction dir = BugNav.getNextMove();
 					if(rc.canMove(dir)){
-						rc.move(flee.getNextMove());
+						rc.move(BugNav.getNextMove());
 					}
 				}
 				//System.out.println(flee.getNextMove());
@@ -128,9 +132,7 @@ public class Soldier extends Robot {
 			int[] message = sig.getMessage();
 			if(message != null && sig.getTeam() == rc.getTeam()) {
 				MapLocation loc = new MapLocation(message[0],message[1]);
-				Flee.setTarget(loc);
-
-
+				BugNav.setTarget(loc);
 				return true;
 			}
 		}

@@ -3,6 +3,7 @@ package victorious_secret.Strategy;
 import battlecode.common.*;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
+import victorious_secret.Behaviour.BugNav;
 
 
 
@@ -16,6 +17,7 @@ public class Attack extends Fight
 
     public Attack(RobotController _rc, Robot _robot) {
         super(_rc, _robot);
+        BugNav.initialise(_rc);
     }
 
     public static void attack() throws GameActionException {
@@ -199,8 +201,8 @@ public class Attack extends Fight
             return;
         }
 
-        Flee.setTarget(target.location);
-        Direction dir = Flee.getNextMove();
+        BugNav.setTarget(target.location);
+        Direction dir = BugNav.getNextMove();
         if(rc.canMove(dir)) {
             rc.move(dir);
         }

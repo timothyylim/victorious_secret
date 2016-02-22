@@ -11,8 +11,8 @@ import scala.collection.parallel.ParIterableLike;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
+import victorious_secret.Behaviour.BugNav;
 import victorious_secret.Strategy.Defend;
-import victorious_secret.Strategy.Flee;
 
 
 /**
@@ -53,7 +53,6 @@ turnsInto: RANGEDZOMBIE
 public class Turret extends Robot {
 
 	/**
-
 	 *
 	 */
 
@@ -70,7 +69,7 @@ public class Turret extends Robot {
 		fight = new Fight(rc, this);
 		defend = new Defend(rc, this);
 		team = rc.getTeam();
-		Flee.initialiseFlee(rc);
+		BugNav.initialise(rc);
 
 		strat = Strategy.DEFEND;
 
@@ -204,8 +203,8 @@ public class Turret extends Robot {
 					//dir = Direction.NONE;
 					List<MapLocation> allowedTargets = nav.findAllowedLocations(here, radiusToWall, targetMoveLoc);
 					if(!fight.hasClearMapLocation(allowedTargets, targetMoveLoc)){
-						Flee.setTarget(targetMoveLoc);
-						Direction dir = Flee.getNextMove();
+						BugNav.setTarget(targetMoveLoc);
+						Direction dir = BugNav.getNextMove();
 						if(dir != null && rc.canMove(dir)){
 							rc.move(dir);
 						}

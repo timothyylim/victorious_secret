@@ -12,7 +12,7 @@ import java.util.Random;
 import battlecode.common.*;
 import victorious_secret.Behaviour.*;
 import victorious_secret.Strategy.Attack;
-import victorious_secret.Strategy.Flee;
+
 
 
 /**
@@ -35,6 +35,7 @@ public abstract class Robot {
 	public MapLocation targetMoveLoc;
 	public static Map<Integer, MapLocation> enemyArchonLocations = new HashMap<>();
 	public static Map<Integer, MapLocation> ourArchonLocations = new HashMap<>();
+	
     public MapLocation[] zombieDenLocations;
     public Map<Integer, MapLocation> enemyUnitLocations;
 	
@@ -60,14 +61,17 @@ public abstract class Robot {
 		}
 	}
 
+	@SuppressWarnings("static-access")
 	protected static void returnToBase() throws GameActionException {
 		//TODO: if(can see archon){ DEFEND ARCHON }
 		//else{ ... }
+		BugNav.initialise(rc);
+		
 		if(rc.isCoreReady()){
 			MapLocation t = fight.findClosestMapLocation(ourArchonLocations.values(), rc.getLocation());
 			//System.out.println("LOST! RETURN TO BASE: " + t);
-			Flee.setTarget(t);
-			Direction dir = Flee.getNextMove();
+			BugNav.setTarget(t);
+			Direction dir = BugNav.getNextMove();
 			if(rc.canMove(dir)) {
 				rc.move(dir);
 			}
