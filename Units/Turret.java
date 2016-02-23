@@ -12,8 +12,8 @@ import victorious_secret.Behaviour.BugNav;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
+import victorious_secret.Behaviour.BugNav;
 import victorious_secret.Strategy.Defend;
-import victorious_secret.Strategy.Flee;
 
 
 /**
@@ -54,7 +54,6 @@ turnsInto: RANGEDZOMBIE
 public class Turret extends Robot {
 
 	/**
-
 	 *
 	 */
 

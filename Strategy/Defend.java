@@ -39,7 +39,11 @@ public class Defend {
 
 	static int TTMPATIENCE = 15;
 
-	
+	/**
+	 * Initialise the defense strategy
+	 * @param _rc
+	 * @param _robot
+     */
 	public Defend(RobotController _rc, Robot _robot){
 		rc = _rc;
 		robot = _robot;
@@ -50,7 +54,10 @@ public class Defend {
 
 	}
 
-
+	/**
+	 * Runs the defense strategy
+	 * @throws GameActionException
+     */
 	public void turtle() throws GameActionException {
 
 
@@ -85,7 +92,11 @@ public class Defend {
 		}
     }
 
-
+	/**
+	 * Look for enemies and attack them
+	 * @return Returns true if the attack has been made
+	 * @throws GameActionException
+	 */
 	private boolean lookForEnemies() throws GameActionException {
 		RobotInfo[] opponentEnemies = rc.senseHostileRobots(rc.getLocation(), rc.getType().attackRadiusSquared);
 
@@ -123,6 +134,12 @@ public class Defend {
 		return false;
 	}
 
+	/**
+	 * Main behaviour of the turrets in Defense strategy
+	 * Shoot an enemy if there is one or
+	 * Move around archon to give space for other units
+	 * @throws GameActionException
+	 */
 	private void turretCode() throws GameActionException {
 
 		RobotInfo[] robotsAround = rc.senseNearbyRobots(2,rc.getTeam());
@@ -142,7 +159,7 @@ public class Defend {
 			}
 		}
 
-		getAttackLoc();
+		receiveTargetLocation();
 		MapLocation target = new MapLocation(targetX,targetY);
 
 		if(!lookForEnemies() && targetX!=-1 && targetY!=-1 && rc.canAttackLocation(target)){
@@ -155,6 +172,12 @@ public class Defend {
 
 	}
 
+	/**
+	 * Count the number of units in <b> robots </b> array of the <b>type</b>
+	 * @param robots List of robots
+	 * @param type Robot type to count
+	 * @return Returns the number of robots
+	 */
 	private static int countUnits(RobotInfo[] robots,RobotType type){
 		int count = 0;
 		for(int i = 0; i<robots.length;i++){
@@ -166,6 +189,10 @@ public class Defend {
 	}
     // KILL ZOMBIES BEFORE THEIR NEST BASTARDS !!!!!!!!
 
+	/**
+	 * Count the number of units in <b> robots </b> array of the <b>type</b>
+	 * @throws GameActionException
+	 */
     private void archonCode() throws GameActionException {
 
 		if(rc.getRoundNum() < 20){
@@ -228,6 +255,13 @@ public class Defend {
         }
     }
 
+
+	/**
+	 * Try to move in the <b>forward</b> direction
+	 * If failing, clear rubble
+	 * @param forward Direction where to move
+	 * @throws GameActionException
+	 */
     public static void tryToMove(Direction forward) throws GameActionException{
 
         if(rc.isCoreReady()){
@@ -248,7 +282,16 @@ public class Defend {
         }
     }
 
-    private static void getAttackLoc() throws GameActionException {
+    // Gets attack location from a signal queue
+
+	/**
+	 * For turrets
+	 * Listen for incoming messages with the target location to attack
+	 * Broadcasted from one scout
+	 * Set turret target location to the one in the message
+	 * @throws GameActionException
+     */
+    private static void receiveTargetLocation() throws GameActionException {
         Signal[] signals = rc.emptySignalQueue();
 
         for (Signal s : signals) {
@@ -269,6 +312,11 @@ public class Defend {
         }
     }
 
+	/**
+	 * Moves a TTM in a random direction away from the closest archon
+	 * To give space for other units
+	 * @throws GameActionException
+     */
 	private static void moveTTMAway() throws GameActionException{
 		RobotInfo[] robots = rc.senseNearbyRobots(1,rc.getTeam());
 		int archonIndex = get_archon_index(robots);
@@ -295,6 +343,11 @@ public class Defend {
 
 	}
 
+	/**
+	 * Look for an enemy to kill
+	 * Otherwise, circle friendly archon, clearing rubble if necessary
+	 * @throws GameActionException
+     */
 	private void soldierCode() throws GameActionException {
 
 		//Try to shoot something
@@ -351,6 +404,11 @@ public class Defend {
 		
 	}
 
+	/**
+	 * Gets the archon index from a robot list
+	 * @param robotList
+	 * @return
+     */
 	private static int get_archon_index(RobotInfo[] robotList){
 		boolean found = false;
 		int index = 0;
@@ -370,6 +428,11 @@ public class Defend {
 
 	}
 
+	/**
+	 * Building strategy for defense
+	 * @return True if something has been built
+	 * @throws GameActionException
+     */
 	private boolean buildUnits() throws GameActionException {
 		//Our build order is to build 5 guards, then 1 scout, then try to maintain guards and
 		//scouts in equal proportion, with another scout every 16 units
@@ -423,10 +486,18 @@ public class Defend {
 
 	}
 
+	/**
+	 * Gets a random direction
+	 * @return A direction
+     */
     private static Direction randomDirection() {
         return Direction.values()[(int)(rnd.nextDouble()*8)];
     }
 
+	/**
+	 * Gets archon out of a corner
+	 * @throws GameActionException
+     */
 	private void get_outta_here() throws GameActionException{
 		Direction possible = null;
 		if(rc.isCoreReady()){
@@ -447,6 +518,12 @@ public class Defend {
 		}
 	}
 
+	/**
+	 * Find robot with the lowest health in a list of robots
+	 * @param listOfRobots
+	 * @return The location of the weakest enemy
+     */
+	// Find robot with the lowest health in a list of robots
 	private static MapLocation findWeakest(RobotInfo[] listOfRobots){
 		double weakestSoFar = 0;
 		MapLocation weakestLocation = null;

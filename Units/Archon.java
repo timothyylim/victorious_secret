@@ -10,6 +10,7 @@ import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
 import victorious_secret.Strategy.Defend;
 import victorious_secret.Strategy.Flee;
+import victorious_secret.Behaviour.BugNav;
 
 import java.util.List;
 import java.util.Random;
@@ -31,14 +32,13 @@ import java.util.Random;
 public class Archon extends Robot {
 
 	/**
-	 * 
+	 *
 	 */
 	Defend defend;
 	int buildQueue;
 
-	public Archon(RobotController _rc) 
-	{
-		
+	public Archon(RobotController _rc) {
+
 		rc = _rc;
 		//rand = new Random(rc.getID());
 		rand = new Random();
@@ -50,36 +50,34 @@ public class Archon extends Robot {
 
 		BugNav.initialise(rc);
 		Flee.initialiseFlee(rc);
+		BugNav.initialise(rc);
 
 		strat = Strategy.DEFEND;
 		buildQueue = 0;
 	}
 
 	@Override
-	public void move() throws GameActionException 
-	{
-		if(listenForSignal()){
+	public void move() throws GameActionException {
+		if (listenForSignal()) {
 			strat = Strategy.ATTACK;
 		}
 
 		RobotInfo[] hostiles = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
 		RobotInfo[] allies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
-		
-		if(rc.getHealth()<650 && hostiles.length != 0){
-			strat=Strategy.FLEE;
-		}
-		else if(rc.getHealth()<900 && hostiles.length != 0 && allies.length < 5){
-			strat=Strategy.FLEE;
-		}
-		else if (strat == Strategy.FLEE && hostiles.length == 0 && allies.length > 5){
-			strat=Strategy.DEFEND;
+
+		if (rc.getHealth() < 650 && hostiles.length != 0) {
+			strat = Strategy.FLEE;
+		} else if (rc.getHealth() < 900 && hostiles.length != 0 && allies.length < 5) {
+			strat = Strategy.FLEE;
+		} else if (strat == Strategy.FLEE && hostiles.length == 0 && allies.length > 5) {
+			strat = Strategy.DEFEND;
 		}
 
 
-		switch(strat)
-		{
+		switch (strat) {
 			case DEFEND:
-				defend.turtle();
+				//defend.turtle();
+				//turtle();
 				break;
 
 			case ATTACK:
@@ -90,7 +88,7 @@ public class Archon extends Robot {
 
 				//spawn(RobotType.SCOUT);
 				break;
-			
+
 			case FLEE:
 				Flee.runFlee(rc);
 				break;
@@ -101,12 +99,12 @@ public class Archon extends Robot {
 		}
 	}
 
-	private void call_for_help() throws GameActionException{
+	private void call_for_help() throws GameActionException {
 		MapLocation loc = null; //= rc.getLocation();
 		RobotInfo i = fight.findLowestHealthEnemy(fight.seenEnemies);
 		if(i == null) {
 			int broadcastRange = 150;
-			rc.broadcastMessageSignal(loc.x,loc.y,broadcastRange);
+			rc.broadcastMessageSignal(loc.x, loc.y, broadcastRange);
 		}
 	}
 
@@ -163,14 +161,14 @@ public class Archon extends Robot {
 		}
 	}
 
-	public boolean listenForSignal(){
+	public boolean listenForSignal() {
 		Signal[] sigs = rc.emptySignalQueue();
-		if(sigs != null && sigs.length > 0){
+		if (sigs != null && sigs.length > 0) {
 
-			Signal sig = sigs[sigs.length-1];
+			Signal sig = sigs[sigs.length - 1];
 			int[] message = sig.getMessage();
 
-			if(message != null && sig.getTeam() == rc.getTeam()) {
+			if (message != null && sig.getTeam() == rc.getTeam()) {
 				//	System.out.println("signal received");
 				targetMoveLoc = new MapLocation(message[0], message[1]);
 				return true;
@@ -178,6 +176,8 @@ public class Archon extends Robot {
 		}
 		return false;
 	}
+
+}
 
 
 	//////////////////////////////////////////
@@ -188,5 +188,3 @@ public class Archon extends Robot {
 
 	////////////////////////////////////////
 
-
-}

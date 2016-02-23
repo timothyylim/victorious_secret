@@ -10,6 +10,7 @@ import java.util.Random;
 import battlecode.common.*;
 import victorious_secret.Behaviour.BugNav;
 import victorious_secret.Robot;
+import victorious_secret.Behaviour.BugNav;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
 import victorious_secret.Strategy.Defend;
@@ -56,7 +57,6 @@ public class Guard extends Robot {
 		Fight.initialise(rc, this);
 		defend = new Defend(rc, this);
 		BugNav.initialise(rc);
-
 		team = rc.getTeam();
 		strat = Strategy.DEFEND;
 		targetMoveLoc = new MapLocation(449,172);
