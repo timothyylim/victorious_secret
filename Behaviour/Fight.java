@@ -379,7 +379,6 @@ public class Fight {
 	 * @param listOfEnemies	List of enemies to be evaluated
 	 * @return				Lowest health enemy
 	 */
-<<<<<<< HEAD
 	public static RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies, RobotType targetType)
 	{
 		double minHealth = 9999999;
