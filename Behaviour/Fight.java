@@ -130,9 +130,19 @@ public class Fight {
      */
 	public static RobotInfo[] spotAlliesOfType(RobotType type)
 	{
+		return spotUnitsOfType(type, seenAllies);
+	}
+
+	/**
+	 * Creates a list units of a particular type from a larger list of units
+	 * @param type	The type of robot to sense
+	 * @return		Returns a list of robots of that type, or null if none can be sensed.
+	 */
+	public static RobotInfo[] spotUnitsOfType(RobotType type, RobotInfo[] seenUnits)
+	{
 		int nOfType = 0;
 
-		for (RobotInfo r: seenAllies) {
+		for (RobotInfo r: seenUnits) {
 			if(r.type == type)
 			{
 				nOfType++;
@@ -141,17 +151,17 @@ public class Fight {
 
 		if(nOfType > 0)
 		{
-			RobotInfo[] tAllies = new RobotInfo[nOfType];
+			RobotInfo[] tUnits = new RobotInfo[nOfType];
 			nOfType = 0;
-			for (RobotInfo r: seenAllies) {
+			for (RobotInfo r: seenUnits) {
 				if(r.type == type)
 				{
-					tAllies[nOfType] = r;
+					tUnits[nOfType] = r;
 					nOfType++;
 				}
 			}
 
-			return tAllies;
+			return tUnits;
 		}
 		else
 		{
