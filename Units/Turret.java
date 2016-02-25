@@ -87,10 +87,10 @@ public class Turret extends Robot {
 	public void move() throws GameActionException {
 
 		updateOurArchonLocations(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
-		if(listenForSignal()){
-			strat = Strategy.ATTACK;
-		}
-		
+//		if(listenForSignal()){
+//			strat = Strategy.ATTACK;
+//		}
+//
 		switch (strat) {
 			case DEFEND:
 				//Turrets move if they can't see an enemy

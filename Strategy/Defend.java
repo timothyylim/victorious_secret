@@ -33,7 +33,7 @@ public class Defend {
 
     static Random rnd;
 
-	static int nUnitsBuilt = 0;
+    static int turretCount;
 
 	static int map_count = 0;
 
@@ -153,10 +153,23 @@ public class Defend {
 
 			int unitsAround = countUnits(closeRobots,RobotType.TURRET) + countUnits(closeRobots,RobotType.ARCHON);
 
-			if(unitsAround >= 7){
+			// If not diagonal to turrets around you, pack up and GTFO
+//			for(RobotInfo crob:closeRobots){
+//				if(crob.type == RobotType.TURRET && !rc.getLocation().directionTo(crob.location).isDiagonal()){
+//					rc.pack();
+//					return;
+//				}
+//			}
+
+			if(!onChessBoard(archonLoc,rc.getLocation())){
 				rc.pack();
 				return;
 			}
+
+//			if(unitsAround >= 4){
+//				rc.pack();
+//				return;
+//			}
 		}
 
 		receiveTargetLocation();
@@ -172,6 +185,15 @@ public class Defend {
 
 	}
 
+	private static boolean onChessBoard(MapLocation center, MapLocation current){
+		int x = Math.abs(center.x - current.x);
+		int y = Math.abs(center.y - current.y);
+
+		if((x+y) % 2 == 0){
+			return true;
+		}
+		return false;
+	}
 	/**
 	 * Count the number of units in <b> robots </b> array of the <b>type</b>
 	 * @param robots List of robots
@@ -318,31 +340,38 @@ public class Defend {
 	 * @throws GameActionException
      */
 	private static void moveTTMAway() throws GameActionException{
-		RobotInfo[] robots = rc.senseNearbyRobots(1,rc.getTeam());
+		RobotInfo[] robots = rc.senseNearbyRobots(2,rc.getTeam());
 		int archonIndex = get_archon_index(robots);
 
 		if(archonIndex>=0){
 			RobotInfo archon = robots[archonIndex];
 			archonLoc = archon.location;
-			Direction movementDirection = rc.getLocation().directionTo(archon.location).opposite();
-			if(!MOVED){
-				tryToMove(movementDirection);
-				return;
-			}
-		}else if (countUnits(robots,RobotType.TURRET)>0){
-			if(TTMPATIENCE == 0){
-				rc.unpack();
-				TTMPATIENCE = 15;
-				return;
-			}
+		}
 
-			tryToMove(randomDirection());
+		if(!onChessBoard(archonLoc,rc.getLocation())){
+			MapLocation dest = findBetterChessBoardPosition(archonLoc);
+			tryToMove(rc.getLocation().directionTo(dest));
 		}else{
 			rc.unpack();
 		}
 
 	}
 
+	private static MapLocation findBetterChessBoardPosition(MapLocation center) throws GameActionException{
+		int radius = 1;
+		while(radius < 40){
+			for(int i = -radius;i<=radius;i++){
+				for(int j=-radius;j<=radius;j++){
+					MapLocation current = new MapLocation(center.x + i,center.y + j);
+					if(onChessBoard(center,current) && rc.isLocationOccupied(current)){
+						return current;
+					}
+				}
+			}
+			radius++;
+		}
+		return null;
+	}
 	/**
 	 * Look for an enemy to kill
 	 * Otherwise, circle friendly archon, clearing rubble if necessary
@@ -440,32 +469,21 @@ public class Defend {
 		RobotInfo[] nearby =  rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
 		RobotInfo[] nearbyEnemies =  rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam().opponent());
 
+		// Robot type to build
 		RobotType robotType;
-		if(nearby == null || nearby.length < 5 || nearbyEnemies.length > 0){
+
+		if(turretCount == 5){
+			robotType = RobotType.SCOUT;
+			turretCount =0;
+		}
+
+		else if(nearby == null || nearby.length < 3){
 			robotType = RobotType.SOLDIER;
-		}else{
-			int nGuards = 0;
-			int nTurrets = 0;
+		}
 
-			for(RobotInfo r : nearby){
-				switch (r.type){
-					case SOLDIER:
-						nGuards++;
-						break;
-					case TURRET:
-					case TTM:
-						nTurrets++;
-						break;
-				}
-			}
+		else{
+			robotType = RobotType.TURRET;
 
-			if(nUnitsBuilt % 14 == 0){
-				robotType = RobotType.SCOUT;
-			}else if(nGuards > nTurrets){
-				robotType = RobotType.TURRET;
-			}else {
-				robotType = RobotType.SOLDIER;
-			}
 		}
 
 		Direction randomDir = randomDirection();
@@ -476,13 +494,14 @@ public class Defend {
 
 			for(int i = 0; i <= 10; i++){
 				if(rc.canBuild(randomDir, robotType)) {
-					nUnitsBuilt++;
+					if(robotType == RobotType.TURRET) turretCount++;
 					rc.build(randomDir, robotType);
 					return true;
 				}
 			}
 			return false;
 		}
+
 
 	}
 

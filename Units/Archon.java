@@ -58,9 +58,9 @@ public class Archon extends Robot {
 
 	@Override
 	public void move() throws GameActionException {
-		if (listenForSignal()) {
-			strat = Strategy.ATTACK;
-		}
+//		if (listenForSignal()) {
+//			strat = Strategy.ATTACK;
+//		}
 
 		RobotInfo[] hostiles = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
 		RobotInfo[] allies = rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
@@ -76,7 +76,7 @@ public class Archon extends Robot {
 
 		switch (strat) {
 			case DEFEND:
-				//defend.turtle();
+				defend.turtle();
 				//turtle();
 				break;
 

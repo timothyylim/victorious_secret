@@ -68,7 +68,7 @@ public class Scout extends Robot {
 	@Override
 	public void move() throws GameActionException
 	{
-		runScoutStrategy4();
+		runScoutStrategy3();
 
 	}
 

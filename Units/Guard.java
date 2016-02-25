@@ -70,9 +70,9 @@ public class Guard extends Robot {
 		updateOurArchonLocations(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
 		
 
-		if(listenForSignal()){
-			strat = Strategy.ATTACK;
-		}
+//		if(listenForSignal()){
+//			strat = Strategy.ATTACK;
+//		}
 		
 		switch(strat){
 			case DEFEND:

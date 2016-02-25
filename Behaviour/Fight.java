@@ -99,6 +99,7 @@ public class Fight {
 	 * @return	Returns a list of sensible turrets.
      */
 	public static RobotInfo[] spotNearbyTurrets() {
+
 		int nTurrets = 0;
 
 		for(RobotInfo i : seenAllies){
