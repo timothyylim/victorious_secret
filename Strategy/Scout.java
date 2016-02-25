@@ -26,4 +26,8 @@ public class Scout {
         robot = _robot;
         rc = _rc;
     }
+    
+    public static void explore(){
+    	
+    }
 }
