@@ -114,6 +114,36 @@ public class Scout {
     	
     	RobotInfo[] infos = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
     	
+    	for (RobotInfo e: infos){
+    		if(!e.type.canAttack()) continue;
+    		int currentDis = e.location.distanceSquaredTo(rc.getLocation());
+    		int safeDistSq = 0;
+    		
+    		switch (e.type) {
+			case STANDARDZOMBIE:
+			case BIGZOMBIE:
+			case GUARD:
+				safeDistSq = 9;
+				break;
+			case FASTZOMBIE:
+				safeDistSq = 17; // larger because it is fast
+				break;
+			case RANGEDZOMBIE:
+			case SOLDIER:
+				safeDistSq = 26;
+				break;
+			case VIPER:
+				safeDistSq = 35;
+				break;
+			case TURRET:
+				safeDistSq = 54; // Cannot be safe from TURRET
+				break;
+			default:
+			}
+    		int attackRadiusSquared = e.type.attackRadiusSquared;
+    		if(currentDis>= safeDistSq) continue;
+    		
+    	}
     	
     	
     }
