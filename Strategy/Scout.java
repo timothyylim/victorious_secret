@@ -2,8 +2,8 @@
 package victorious_secret.Strategy;
 
 import battlecode.common.*;
+import victorious_secret.Behaviour.Fight;
 import victorious_secret.Robot;
-import victorious_secret.Behaviour.Nav;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,4 +26,18 @@ public class Scout {
         robot = _robot;
         rc = _rc;
     }
+
+    //======Identify=======
+    private static void identify(){
+        RobotInfo[] zD = Fight.spotUnitsOfType(RobotType.ZOMBIEDEN, Fight.seenZombies);
+
+        if (zD == null) return;
+
+        for (RobotInfo z : zD){
+            if (!zombieDens.containsKey(z.ID)){
+                zombieDens.put(z.ID, z.location);
+            }
+        }
+    }
+
 }
