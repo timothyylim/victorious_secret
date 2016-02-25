@@ -6,6 +6,7 @@ import victorious_secret.Behaviour.Fight;
 import victorious_secret.Robot;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
 
@@ -19,19 +20,25 @@ public class Scout {
      * @param _rc The RobotController
      * @param _robot The Robot
      */
-    public static Map<Integer, MapLocation> zombieDens = new HashMap<>();
+    private static Map<Integer, MapLocation> zombieDens = new HashMap<>();
+    private static Map<Integer, Boolean> zombieDensBroadcast = new HashMap<>();
+    private static final int broadcastRange = 1000;
     private static RobotController rc;
     private static Robot robot;
     public static MapLocation dangerousLoc=null;
     public static double lastHealth;
-    pulic static int turnWhileInDanger = 0;
-    public static void init(RobotController _rc, Robot _robot) {
+    public static int turnWhileInDanger = 0;
+    public static void initialise(RobotController _rc, Robot _robot) {
         robot = _robot;
         rc = _rc;
     }
 
     //======Identify=======
-    private static void identify(){
+
+    /**
+     * Identifies the zombie dens within sensor range and adds any new ones to the zombieDen list
+     */
+    public static void identify(){
         RobotInfo[] zD = Fight.spotUnitsOfType(RobotType.ZOMBIEDEN, Fight.seenZombies);
 
         if (zD == null) return;
@@ -39,10 +46,25 @@ public class Scout {
         for (RobotInfo z : zD){
             if (!zombieDens.containsKey(z.ID)){
                 zombieDens.put(z.ID, z.location);
+                zombieDensBroadcast.put(z.ID, Boolean.FALSE);
             }
         }
     }
-    
+
+    public static void broadcast() throws GameActionException {
+        Iterator<Map.Entry<Integer,Boolean>> iter = zombieDensBroadcast.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<Integer, Boolean> entry = iter.next();
+            if(!entry.getValue()) {
+                //This has not been broadcast
+                MapLocation zdLoc = zombieDens.get(entry.getKey());
+                rc.broadcastMessageSignal(zdLoc.x, zdLoc.y, broadcastRange);
+            }
+        }
+    }
+    //====End Identify=====
+
+    //=======Explore=======
     public static void dangerLocUpdate(){
     	if(rc.getHealth()<lastHealth){
     		dangerousLoc = rc.getLocation();
