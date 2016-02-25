@@ -3,6 +3,7 @@ package victorious_secret.Strategy;
 
 import battlecode.common.*;
 import victorious_secret.Behaviour.Fight;
+import victorious_secret.Behaviour.Signalling;
 import victorious_secret.Robot;
 
 import java.util.HashMap;
@@ -53,7 +54,8 @@ public class Scout {
     }
 
     /**
-     * Broadcasts
+     * Broadcasts the location of all recently discovered Zombie Dens. The broadcast range is constant regardless of
+     * map size.
      */
     public static void broadcast() throws GameActionException {
         Iterator<Map.Entry<Integer,Boolean>> iter = zombieDensBroadcast.entrySet().iterator();
@@ -62,7 +64,8 @@ public class Scout {
             if(!entry.getValue()) {
                 //This has not been broadcast
                 MapLocation zdLoc = zombieDens.get(entry.getKey());
-                rc.broadcastMessageSignal(zdLoc.x, zdLoc.y, broadcastRange);
+                rc.broadcastMessageSignal(zdLoc.x + Signalling.zombieDenOffset, zdLoc.y + Signalling.zombieDenOffset,
+                        broadcastRange);
                 entry.setValue(true);
             }
         }
