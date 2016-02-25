@@ -52,6 +52,9 @@ public class Scout {
         }
     }
 
+    /**
+     * Broadcasts
+     */
     public static void broadcast() throws GameActionException {
         Iterator<Map.Entry<Integer,Boolean>> iter = zombieDensBroadcast.entrySet().iterator();
         while (iter.hasNext()) {
@@ -60,6 +63,7 @@ public class Scout {
                 //This has not been broadcast
                 MapLocation zdLoc = zombieDens.get(entry.getKey());
                 rc.broadcastMessageSignal(zdLoc.x, zdLoc.y, broadcastRange);
+                entry.setValue(true);
             }
         }
     }
