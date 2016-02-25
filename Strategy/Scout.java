@@ -28,6 +28,7 @@ public class Scout {
     public static MapLocation dangerousLoc=null;
     public static double lastHealth;
     public static int turnWhileInDanger = 0;
+
     public static void initialise(RobotController _rc, Robot _robot) {
         robot = _robot;
         rc = _rc;
