@@ -94,8 +94,6 @@ public class Archon extends Robot {
 				break;
 			default:
 				break;
-
-
 		}
 	}
 
