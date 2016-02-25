@@ -20,7 +20,6 @@ public class Scout {
 	
     public Scout(RobotController _rc, Robot _robot) {
 //        rc = _rc;
-//        robot = _robot;
 //
 //        flee = new Flee();
 //        flee.initialiseFlee(rc);
