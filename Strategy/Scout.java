@@ -57,5 +57,35 @@ public class Scout {
     	lastHealth = rc.getHealth();
     }
 
+    public static void moveAround() throws GameActionException{
+    	dangerLocUpdate();
+    	if(!rc.isCoreReady()) {
+    		return;
+    	}
+    	Direction[] dirs = new Direction[9];
+    	boolean[] canMoves = new boolean[9];
+    	MapLocation[] locations = new MapLocation[9];
+    	double[] attacks = new double[9];
+    	double[] scouts  = new double[9];
+    	double[] scores = new double[9];
+    	dirs[0]=null;
+    	canMoves[0]=true;
+    	locations[0] = rc.getLocation();
+    	int ndirs=1;
+    	
+    	for (int i=0;i<8;i++){
+    		dirs[ndirs] = Direction.values()[i];
+    		canMoves[ndirs]= rc.canMove(dirs[ndirs]);
+    		if(canMoves[ndirs]){
+    			locations[ndirs] = rc.getLocation().add(dirs[ndirs]);
+    			ndirs++;
+    		}
+    	}
+    	
+    	RobotInfo[] infos = rc.senseHostileRobots(rc.getLocation(), rc.getType().sensorRadiusSquared);
+    	
+    	
+    	
+    }
 
 }
