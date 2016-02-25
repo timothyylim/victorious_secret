@@ -5,6 +5,8 @@ import battlecode.common.*;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Nav;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -17,13 +19,11 @@ public class Scout {
      * @param _rc The RobotController
      * @param _robot The Robot
      */
-	
-    public Scout(RobotController _rc, Robot _robot) {
-//        rc = _rc;
-//
-//        flee = new Flee();
-//        flee.initialiseFlee(rc);
-//        robot.setArchonLocations();
-        
+    public static Map<Integer, MapLocation> zombieDens = new HashMap<>();
+    private static RobotController rc;
+    private static Robot robot;
+    public static void init(RobotController _rc, Robot _robot) {
+        robot = _robot;
+        rc = _rc;
     }
 }
