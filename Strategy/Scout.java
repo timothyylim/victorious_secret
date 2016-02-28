@@ -29,6 +29,8 @@ public class Scout {
     public static MapLocation dangerousLoc=null;
     public static double lastHealth;
     public static int turnWhileInDanger = 0;
+    private static int sameDirectionSteps = 0;
+    public static Direction lastDir = null;
 
     public static void initialise(RobotController _rc, Robot _robot) {
         robot = _robot;
@@ -140,12 +142,85 @@ public class Scout {
 				break;
 			default:
 			}
+    		
     		int attackRadiusSquared = e.type.attackRadiusSquared;
     		if(currentDis>= safeDistSq) continue;
+    		
+    		for (int i=0; i<ndirs;i++){
+    			int distSq = e.location.distanceSquaredTo(locations[i]);
+    			if (distSq<=attackRadiusSquared){
+    				attacks[i] +=e.attackPower + 0.1*(attackRadiusSquared-distSq);
+    			}else if (distSq <= attackRadiusSquared * 2){
+    				attacks[i]+= e.attackPower / (5*distSq/(attackRadiusSquared+1));
+    			}
+    		}
+    	}
+    	
+    	infos= rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam());
+    	
+    	MapLocation scoutVector = new MapLocation(0,0);
+    	
+    	for (RobotInfo f: infos){
+    		if( f.ID == rc.getID()){
+    			continue;
+    		}
+    		switch(f.type){
+    		case SCOUT:
+    			scoutVector =  scoutVector.add(rc.getLocation().directionTo(f.location));
+    			break;
+    		
+    		default:
+    		}
+    	}
+    	
+    	for(int i=0; i< ndirs;i++){
+    		scores[i]= -attacks[i]*1000;
+    		if(locations[i].equals(dangerousLoc)){
+    			scores[i] -=2000;
+    		}
+    		scores[i]-=scouts[i]*50;
+//    		need to find how they calculate MapEdge
+//    		int disEdge =100;
+//    		disEdge = Math.min(disEdge, Math.abs(loc[i].x-));
+//    		disEdge = Math.min(disEdge, b);
+//    		disEdge = Math.min(disEdge, b);
+//    		disEdge = Math.min(disEdge, b);
+//    		if(disEdge<4){
+//    			scores[i] -= (4-disEdge)*1000;
+//    		}
+    		
+    		if(sameDirectionSteps >25){
+    			sameDirectionSteps=0;
+    			lastDir = null;    			
+    		}else if (isGoodDirection(lastDir)){
+    			Direction lastDirLeft = lastDir.rotateLeft();
+    			Direction lastDirRight = lastDir.rotateRight();
+    			
+    			for(int j =1; 1<ndirs; j++){
+    				if(dirs[j] == lastDir){
+    					scores[j]+=100;
+    				}else if (dirs[j] == lastDirRight || dirs[j] == lastDirLeft){
+    					scores[j] +=50;
+    				}
+    			}
+    		}
     		
     	}
     	
     	
     }
 
+    public static boolean isGoodDirection(Direction dir) {
+		if (dir == null) {
+			return false;
+		}
+		switch (dir) {
+		case NONE:
+			return false;
+		case OMNI:
+			return false;
+		default:
+			return true;
+		}
+	}
 }
