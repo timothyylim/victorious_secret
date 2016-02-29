@@ -64,8 +64,7 @@ public class Scout {
             if(!entry.getValue()) {
                 //This has not been broadcast
                 MapLocation zdLoc = zombieDens.get(entry.getKey());
-                rc.broadcastMessageSignal(zdLoc.x + Signalling.zombieDenOffset, zdLoc.y + Signalling.zombieDenOffset,
-                        broadcastRange);
+                Signalling.encodeAndBroadcast(zdLoc, RobotType.ZOMBIEDEN);
                 entry.setValue(true);
             }
         }
@@ -237,6 +236,7 @@ public class Scout {
 		}
 	}
 
+    //TODO: Karlson, should this go in BugNav or Nav classes? I can see this being useful elsewhere
     public static boolean isGoodDirection(Direction dir) {
 		if (dir == null) {
 			return false;
