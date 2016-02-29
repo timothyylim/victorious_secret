@@ -42,7 +42,7 @@ public class NavTest {
 
     @Test
     public void testAverageLoc_MapLocation() throws Exception {
-        RobotController rc = new RobotController(false, false);
+        RobotController rc = new RobotController();
         Robot r = new Dummy(rc);
         Nav.initialise(rc, r);
 
@@ -59,7 +59,7 @@ public class NavTest {
 
     @Test
     public void testGuard_notReady() throws Exception {
-        RobotController rc = new RobotController(false, false);
+        RobotController rc = new RobotController();
         Robot r = new Dummy(rc);
         Nav.initialise(rc, r);
 
@@ -114,7 +114,8 @@ public class NavTest {
     @Test
     public void testSpiralAntiClockwise() throws Exception {
         MapLocation rcLoc = new MapLocation(0, 10);
-        RobotController rc = new RobotController(rcLoc);
+        RobotController rc = new RobotController();
+        rc.setLocation(rcLoc);
         Robot r = new Dummy(rc);
         Nav.initialise(rc, r);
 
@@ -140,7 +141,7 @@ public class NavTest {
     }
 
     @Test
-    public void testFindAllowedLocations() throws Exception {
+    public void testFindAllowedLocations_below() throws Exception {
         RobotController rc = new RobotController();
         rc.setType(RobotType.SOLDIER);
         Robot r = new Dummy(rc);
@@ -148,11 +149,41 @@ public class NavTest {
 
         MapLocation here = new MapLocation(0, 0);
         MapLocation target = new MapLocation(0, 20);
-        int radiusFromHere = 10;
+        int radiusFromHere = 18;
 
         List<MapLocation> ml = Nav.findAllowedLocations(here, radiusFromHere, target);
 
-        System.out.print(ml);
+        //List<MapLocation> exp
+        for (MapLocation m : ml) {
+            System.out.print(m.x);
+            System.out.print(", ");
+            System.out.print(m.y);
+            System.out.println();
+        }
+        System.out.print("Finished");
+    }
+
+    @Test
+    public void testFindAllowedLocations_above() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setType(RobotType.SOLDIER);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation here = new MapLocation(0, 0);
+        MapLocation target = new MapLocation(0, -20);
+        int radiusFromHere = 18;
+
+        List<MapLocation> ml = Nav.findAllowedLocations(here, radiusFromHere, target);
+
+        //List<MapLocation> exp
+        for (MapLocation m : ml) {
+            System.out.print(m.x);
+            System.out.print(", ");
+            System.out.print(m.y);
+            System.out.println();
+        }
+        System.out.print("Finished");
     }
 
     @Test
@@ -161,8 +192,49 @@ public class NavTest {
     }
 
     @Test
-    public void testMoveOrClear() throws Exception {
+    public void testMoveOrClear_canMove() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setCanMove(true);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
 
+        Nav.moveOrClear(Direction.EAST);
+    }
+
+    @Test
+    public void testMoveOrClear_cannotMove() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setCanMove(false);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        Nav.moveOrClear(Direction.EAST);
+    }
+
+    @Test
+    public void testTurnsToClear_0() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setRubble(0);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation ml = new MapLocation(0, 0);
+        int turns = Nav.turnsToClear(ml);
+
+        assertEquals(0, turns);
+    }
+
+    @Test
+    public void testTurnsToClear_100() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setRubble(100);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation ml = new MapLocation(0, 0);
+        int turns = Nav.turnsToClear(ml);
+
+        assertEquals(5, turns);
     }
 
     @Test
@@ -172,11 +244,6 @@ public class NavTest {
 
     @Test
     public void testMoveAlongRadiusSmaller() throws Exception {
-
-    }
-
-    @Test
-    public void testTurnsToClear() throws Exception {
 
     }
 
