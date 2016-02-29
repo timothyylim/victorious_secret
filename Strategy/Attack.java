@@ -61,6 +61,7 @@ public class Attack extends Fight
         }
     }
 
+    /*
     public static boolean kiteStratgey() throws GameActionException
     {
         if(seenEnemies.length > 0) {
@@ -131,7 +132,7 @@ public class Attack extends Fight
 
         return false;
     }
-
+*/
     private static boolean kiteBackSafest() throws GameActionException {
 
         RobotInfo[] tooCloseEnemies = inRangeOf();

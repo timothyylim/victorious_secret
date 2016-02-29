@@ -5,6 +5,7 @@ import victorious_secret.Robot;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.SynchronousQueue;
 
 /**
  * Created by ple15 on 15/01/16.
@@ -25,7 +26,7 @@ public class Signalling {
      * @param _rc The Robot Controller
      * @param _robot The Robot type
      */
-    public static void intialize(RobotController _rc, Robot _robot)
+    public static void initialise(RobotController _rc, Robot _robot)
     {
         rc = _rc;
         robot = _robot;
@@ -35,7 +36,7 @@ public class Signalling {
      * This function takes in an encoded message and decodes it into map coordinates
      * @return A three integer array containing the x, y coordinates and the type
      */
-    public static int[] parseMessage(int m1, int m2){
+    public static int[] decodeMessage(int m1, int m2){
         int[] message = new int[3];
         if (m1 > zombieDenOffset && m1 <= zombieDenOffset + messageRange){
             message[0] = m1 - zombieDenOffset;
@@ -60,8 +61,12 @@ public class Signalling {
             case ZOMBIEDEN:
                 message[0] = loc.x + zombieDenOffset;
                 message[1] = loc.y + zombieDenOffset;
+                break;
+            default:
+                message = null;
         }
 
+        //System.out.print(message[0], message[1], message[2]);
         return message;
     }
 
