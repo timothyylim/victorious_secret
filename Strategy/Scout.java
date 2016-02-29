@@ -44,9 +44,7 @@ public class Scout {
      */
     public static void identify(){
         RobotInfo[] zD = Fight.spotUnitsOfType(RobotType.ZOMBIEDEN, Fight.seenZombies);
-
         if (zD == null) return;
-
         for (RobotInfo z : zD){
             if (!zombieDens.containsKey(z.ID)){
                 zombieDens.put(z.ID, z.location);
@@ -91,10 +89,7 @@ public class Scout {
 
     public static void moveAround() throws GameActionException{
     	dangerLocUpdate();
-    	if(!rc.isCoreReady()) {
-    		return;
-    	}
-    	
+    	if(!rc.isCoreReady()) return;   	    	
     	Direction[] dirs = new Direction[9];
     	boolean[] canMoves = new boolean[9];
     	MapLocation[] locations = new MapLocation[9];
@@ -168,10 +163,13 @@ public class Scout {
     		switch(f.type){
     		case SCOUT:
     			scoutVector =  scoutVector.add(rc.getLocation().directionTo(f.location));
-    			break;
-    		
+    			break;   		
     		default:
     		}
+    	}
+    	
+    	for (int i=0;i<ndirs;i++){
+    		scouts[i] = dirs[i].dx * scoutVector.x + dirs[i].dy * scoutVector.y;
     	}
     	
     	for(int i=0; i< ndirs;i++){
@@ -181,7 +179,7 @@ public class Scout {
     		}
     		scores[i]-=scouts[i]*50;
     		
-//    		need to find how they calculate MapEdge
+//    		Need to find how they calculate MapEdge
 //    		int disEdge =100;
 //    		disEdge = Math.min(disEdge, Math.abs(loc[i].x-));
 //    		disEdge = Math.min(disEdge, b);
@@ -189,7 +187,7 @@ public class Scout {
 //    		disEdge = Math.min(disEdge, b);
 //    		if(disEdge<4){
 //    			scores[i] -= (4-disEdge)*1000;
-//    		}
+
     	}
     		
     		if(sameDirectionSteps >25){
@@ -227,7 +225,17 @@ public class Scout {
     		}
     		lastDir = bestDir;
     		return;
+    		
     }
+    
+    public static void suicideWhenInfected() {
+		if (rc.getInfectedTurns() == 0 
+				&& rc.getRoundNum() > 1000 
+				&& rc.senseNearbyRobots(2, Team.ZOMBIE).length > 0) {
+			//System.out.println("suiciding");
+			rc.disintegrate();
+		}
+	}
 
     public static boolean isGoodDirection(Direction dir) {
 		if (dir == null) {
