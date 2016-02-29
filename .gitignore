@@ -21,3 +21,8 @@ bin/
 *.bak
 *.swp
 *~
+
+# Battlecode source
+./ide
+./lib
+./replays
