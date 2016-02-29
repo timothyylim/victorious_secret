@@ -1,0 +1,183 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/nodejs', '/usr/bin/npm', 'install', '-g', 'zden' ]
+2 info using npm@1.3.10
+3 info using node@v0.10.25
+4 verbose cache add [ 'zden', null ]
+5 verbose cache add name=undefined spec="zden" args=["zden",null]
+6 verbose parsed url { protocol: null,
+6 verbose parsed url   slashes: null,
+6 verbose parsed url   auth: null,
+6 verbose parsed url   host: null,
+6 verbose parsed url   port: null,
+6 verbose parsed url   hostname: null,
+6 verbose parsed url   hash: null,
+6 verbose parsed url   search: null,
+6 verbose parsed url   query: null,
+6 verbose parsed url   pathname: 'zden',
+6 verbose parsed url   path: 'zden',
+6 verbose parsed url   href: 'zden' }
+7 silly lockFile 9c18ef8a-zden zden
+8 verbose lock zden /homes/ple15/.npm/9c18ef8a-zden.lock
+9 silly lockFile 9c18ef8a-zden zden
+10 silly lockFile 9c18ef8a-zden zden
+11 verbose addNamed [ 'zden', '' ]
+12 verbose addNamed [ null, '*' ]
+13 silly lockFile bbb3406d-zden zden@
+14 verbose lock zden@ /homes/ple15/.npm/bbb3406d-zden.lock
+15 silly addNameRange { name: 'zden', range: '*', hasData: false }
+16 verbose url raw zden
+17 verbose url resolving [ 'https://registry.npmjs.org/', './zden' ]
+18 verbose url resolved https://registry.npmjs.org/zden
+19 info trying registry request attempt 1 at 10:55:11
+20 http GET https://registry.npmjs.org/zden
+21 http 200 https://registry.npmjs.org/zden
+22 silly registry.get cb [ 200,
+22 silly registry.get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+22 silly registry.get     etag: '"D47Q3JUQ9HGYTW9XG2LM6HDVG"',
+22 silly registry.get     'content-type': 'application/json',
+22 silly registry.get     'cache-control': 'max-age=300',
+22 silly registry.get     'content-length': '4193',
+22 silly registry.get     'accept-ranges': 'bytes',
+22 silly registry.get     date: 'Fri, 15 Jan 2016 10:55:12 GMT',
+22 silly registry.get     via: '1.1 varnish',
+22 silly registry.get     age: '0',
+22 silly registry.get     connection: 'keep-alive',
+22 silly registry.get     'x-served-by': 'cache-lhr6325-LHR',
+22 silly registry.get     'x-cache': 'MISS',
+22 silly registry.get     'x-cache-hits': '0',
+22 silly registry.get     'x-timer': 'S1452855311.906049,VS0,VE102',
+22 silly registry.get     vary: 'Accept' } ]
+23 silly addNameRange number 2 { name: 'zden', range: '*', hasData: true }
+24 silly addNameRange versions [ 'zden', [ '0.0.1', '0.0.2' ] ]
+25 verbose addNamed [ 'zden', '0.0.2' ]
+26 verbose addNamed [ '0.0.2', '0.0.2' ]
+27 silly lockFile ab27b722-zden-0-0-2 zden@0.0.2
+28 verbose lock zden@0.0.2 /homes/ple15/.npm/ab27b722-zden-0-0-2.lock
+29 silly lockFile 8cdafb3b-ry-npmjs-org-zden-zden-0-0-2-tgz https://registry.npmjs.org/zden/-/zden-0.0.2.tgz
+30 verbose lock https://registry.npmjs.org/zden/-/zden-0.0.2.tgz /homes/ple15/.npm/8cdafb3b-ry-npmjs-org-zden-zden-0-0-2-tgz.lock
+31 verbose addRemoteTarball [ 'https://registry.npmjs.org/zden/-/zden-0.0.2.tgz',
+31 verbose addRemoteTarball   '0a8282e407b652570fca558bc8c767f6316eff65' ]
+32 info retry fetch attempt 1 at 10:55:12
+33 verbose fetch to= /homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/tmp.tgz
+34 http GET https://registry.npmjs.org/zden/-/zden-0.0.2.tgz
+35 http 200 https://registry.npmjs.org/zden/-/zden-0.0.2.tgz
+36 verbose tar unpack /homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/tmp.tgz
+37 silly lockFile 9e3d754d-2036-0-23854520125314593-package tar:///homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/package
+38 verbose lock tar:///homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/package /homes/ple15/.npm/9e3d754d-2036-0-23854520125314593-package.lock
+39 silly lockFile 898ef001-2036-0-23854520125314593-tmp-tgz tar:///homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/tmp.tgz
+40 verbose lock tar:///homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/tmp.tgz /homes/ple15/.npm/898ef001-2036-0-23854520125314593-tmp-tgz.lock
+41 silly gunzTarPerm modes [ '755', '644' ]
+42 silly gunzTarPerm extractEntry package.json
+43 silly gunzTarPerm extractEntry .npmignore
+44 silly gunzTarPerm extractEntry README.md
+45 silly gunzTarPerm extractEntry LICENSE
+46 silly gunzTarPerm extractEntry bin/zden
+47 silly gunzTarPerm extractEntry lib/constants.js
+48 silly gunzTarPerm extractEntry lib/main.js
+49 silly gunzTarPerm extractEntry lib/map.js
+50 silly lockFile 9e3d754d-2036-0-23854520125314593-package tar:///homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/package
+51 silly lockFile 9e3d754d-2036-0-23854520125314593-package tar:///homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/package
+52 silly lockFile 898ef001-2036-0-23854520125314593-tmp-tgz tar:///homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/tmp.tgz
+53 silly lockFile 898ef001-2036-0-23854520125314593-tmp-tgz tar:///homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/tmp.tgz
+54 verbose tar pack [ '/homes/ple15/.npm/zden/0.0.2/package.tgz',
+54 verbose tar pack   '/homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/package' ]
+55 verbose tarball /homes/ple15/.npm/zden/0.0.2/package.tgz
+56 verbose folder /homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/package
+57 silly lockFile 9e3d754d-2036-0-23854520125314593-package tar:///homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/package
+58 verbose lock tar:///homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/package /homes/ple15/.npm/9e3d754d-2036-0-23854520125314593-package.lock
+59 silly lockFile acf291a5-ple15-npm-zden-0-0-2-package-tgz tar:///homes/ple15/.npm/zden/0.0.2/package.tgz
+60 verbose lock tar:///homes/ple15/.npm/zden/0.0.2/package.tgz /homes/ple15/.npm/acf291a5-ple15-npm-zden-0-0-2-package-tgz.lock
+61 silly lockFile 9e3d754d-2036-0-23854520125314593-package tar:///homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/package
+62 silly lockFile 9e3d754d-2036-0-23854520125314593-package tar:///homes/ple15/tmp/npm-12465-JN4CAtrR/1452855312036-0.23854520125314593/package
+63 silly lockFile acf291a5-ple15-npm-zden-0-0-2-package-tgz tar:///homes/ple15/.npm/zden/0.0.2/package.tgz
+64 silly lockFile acf291a5-ple15-npm-zden-0-0-2-package-tgz tar:///homes/ple15/.npm/zden/0.0.2/package.tgz
+65 silly lockFile a2389829-mes-ple15-npm-zden-0-0-2-package /homes/ple15/.npm/zden/0.0.2/package
+66 verbose lock /homes/ple15/.npm/zden/0.0.2/package /homes/ple15/.npm/a2389829-mes-ple15-npm-zden-0-0-2-package.lock
+67 silly lockFile a2389829-mes-ple15-npm-zden-0-0-2-package /homes/ple15/.npm/zden/0.0.2/package
+68 silly lockFile a2389829-mes-ple15-npm-zden-0-0-2-package /homes/ple15/.npm/zden/0.0.2/package
+69 verbose tar unpack /homes/ple15/.npm/zden/0.0.2/package.tgz
+70 silly lockFile 35e31b47-mes-ple15-npm-zden-0-0-2-package tar:///homes/ple15/.npm/zden/0.0.2/package
+71 verbose lock tar:///homes/ple15/.npm/zden/0.0.2/package /homes/ple15/.npm/35e31b47-mes-ple15-npm-zden-0-0-2-package.lock
+72 silly lockFile acf291a5-ple15-npm-zden-0-0-2-package-tgz tar:///homes/ple15/.npm/zden/0.0.2/package.tgz
+73 verbose lock tar:///homes/ple15/.npm/zden/0.0.2/package.tgz /homes/ple15/.npm/acf291a5-ple15-npm-zden-0-0-2-package-tgz.lock
+74 silly gunzTarPerm modes [ '755', '644' ]
+75 silly gunzTarPerm extractEntry package.json
+76 silly gunzTarPerm extractEntry .npmignore
+77 silly gunzTarPerm extractEntry README.md
+78 silly gunzTarPerm extractEntry LICENSE
+79 silly gunzTarPerm extractEntry bin/zden
+80 silly gunzTarPerm extractEntry lib/constants.js
+81 silly gunzTarPerm extractEntry lib/main.js
+82 silly gunzTarPerm extractEntry lib/map.js
+83 silly lockFile 35e31b47-mes-ple15-npm-zden-0-0-2-package tar:///homes/ple15/.npm/zden/0.0.2/package
+84 silly lockFile 35e31b47-mes-ple15-npm-zden-0-0-2-package tar:///homes/ple15/.npm/zden/0.0.2/package
+85 silly lockFile acf291a5-ple15-npm-zden-0-0-2-package-tgz tar:///homes/ple15/.npm/zden/0.0.2/package.tgz
+86 silly lockFile acf291a5-ple15-npm-zden-0-0-2-package-tgz tar:///homes/ple15/.npm/zden/0.0.2/package.tgz
+87 verbose chmod /homes/ple15/.npm/zden/0.0.2/package.tgz 644
+88 verbose chown /homes/ple15/.npm/zden/0.0.2/package.tgz [ 11853, 612 ]
+89 silly lockFile 8cdafb3b-ry-npmjs-org-zden-zden-0-0-2-tgz https://registry.npmjs.org/zden/-/zden-0.0.2.tgz
+90 silly lockFile 8cdafb3b-ry-npmjs-org-zden-zden-0-0-2-tgz https://registry.npmjs.org/zden/-/zden-0.0.2.tgz
+91 silly lockFile ab27b722-zden-0-0-2 zden@0.0.2
+92 silly lockFile ab27b722-zden-0-0-2 zden@0.0.2
+93 silly lockFile bbb3406d-zden zden@
+94 silly lockFile bbb3406d-zden zden@
+95 silly resolved [ { name: 'zden',
+95 silly resolved     version: '0.0.2',
+95 silly resolved     description: 'A tool to create random maps for battlecode 2016',
+95 silly resolved     main: './lib/main',
+95 silly resolved     bin: { zden: './bin/zden' },
+95 silly resolved     scripts: { test: 'echo \\"Error: no test specified\\" && exit 1' },
+95 silly resolved     repository: { type: 'git', url: 'git+ssh://git@github.com/bovard/zden.git' },
+95 silly resolved     keywords: [ 'battlecode', 'map', 'creator' ],
+95 silly resolved     author:
+95 silly resolved      { name: 'Bovard Doerschuk-Tiberi',
+95 silly resolved        email: 'bovard.tiberi@gmail.com',
+95 silly resolved        url: 'http://github.com/bovard' },
+95 silly resolved     license: 'MIT',
+95 silly resolved     bugs: { url: 'https://github.com/bovard/zden/issues' },
+95 silly resolved     homepage: 'https://github.com/bovard/zden#readme',
+95 silly resolved     dependencies: { minimist: '^1.2.0', 'random-name': '^0.1.1', xml: '^1.0.0' },
+95 silly resolved     readme: '# zden\nnpm package for generating random maps for 2016 [battlecode](http://www.battlecode.org/)\n\nzden *(zombie den? zombie eden? no one knows)* creates a bunch of maps for you to test your bot on! You can easily create 100s of random maps (so you should probably be using [archon](https://www.npmjs.com/package/archon) to test). \n\nInstallation:\n\n```\nnpm install -g zden\n```\n\n\nSample Usage:\n\n```\nzden -n 100 \n```\n\nWill create 100 maps in the current directory!\n\n```\nzden -n 100 -d maps/\n```\nWill create 100 maps in the maps/ directory!\n\n\nMaps include:\n\n1. between 30x30 and 80x80\n2. rubble <= 1,000,000\n3. zombie den placement [1-8 dens] follows the spec (30% closer to one player)\n4. zombie spawn schedule from light to max\n5. random terrain\n6. random parts\n7. random neutrals (including up to 4 archons)\n8. starting archons [1, 4]\n9. archons start together, or seperate\n10. all the rotations, symmetry!\n11. really weird names!\n\nThis is a very early release so look for more features coming soon! If you\'d like to see something please open an [issue](https://github.com/bovard/zden/issues) or submit a PR!\n',
+95 silly resolved     readmeFilename: 'README.md',
+95 silly resolved     _id: 'zden@0.0.2',
+95 silly resolved     dist: { shasum: 'fad198a3db64b2a2c271b28f2b427a27a6660eab' },
+95 silly resolved     _from: 'zden@',
+95 silly resolved     _resolved: 'https://registry.npmjs.org/zden/-/zden-0.0.2.tgz' } ]
+96 info install zden@0.0.2 into /usr/local/lib
+97 info installOne zden@0.0.2
+98 info /usr/local/lib/node_modules/zden unbuild
+99 verbose tar unpack /homes/ple15/.npm/zden/0.0.2/package.tgz
+100 silly lockFile feb5b98c--usr-local-lib-node-modules-zden tar:///usr/local/lib/node_modules/zden
+101 verbose lock tar:///usr/local/lib/node_modules/zden /homes/ple15/.npm/feb5b98c--usr-local-lib-node-modules-zden.lock
+102 silly lockFile acf291a5-ple15-npm-zden-0-0-2-package-tgz tar:///homes/ple15/.npm/zden/0.0.2/package.tgz
+103 verbose lock tar:///homes/ple15/.npm/zden/0.0.2/package.tgz /homes/ple15/.npm/acf291a5-ple15-npm-zden-0-0-2-package-tgz.lock
+104 silly gunzTarPerm modes [ '755', '644' ]
+105 error Error: EACCES, mkdir '/usr/local/lib/node_modules'
+105 error  { [Error: EACCES, mkdir '/usr/local/lib/node_modules']
+105 error   errno: 3,
+105 error   code: 'EACCES',
+105 error   path: '/usr/local/lib/node_modules',
+105 error   fstream_type: 'Directory',
+105 error   fstream_path: '/usr/local/lib/node_modules/zden',
+105 error   fstream_class: 'DirWriter',
+105 error   fstream_stack:
+105 error    [ '/usr/lib/nodejs/fstream/lib/writer.js:171:23',
+105 error      '/usr/lib/nodejs/mkdirp/index.js:37:53',
+105 error      'Object.oncomplete (fs.js:107:15)' ] }
+106 error Please try running this command again as root/Administrator.
+107 error System Linux 3.13.0-74-generic
+108 error command "/usr/bin/nodejs" "/usr/bin/npm" "install" "-g" "zden"
+109 error cwd /homes/ple15/Documents/BattleCode 2016/battlecode-scaffold-master
+110 error node -v v0.10.25
+111 error npm -v 1.3.10
+112 error path /usr/local/lib/node_modules
+113 error fstream_path /usr/local/lib/node_modules/zden
+114 error fstream_type Directory
+115 error fstream_class DirWriter
+116 error code EACCES
+117 error errno 3
+118 error stack Error: EACCES, mkdir '/usr/local/lib/node_modules'
+119 error fstream_stack /usr/lib/nodejs/fstream/lib/writer.js:171:23
+119 error fstream_stack /usr/lib/nodejs/mkdirp/index.js:37:53
+119 error fstream_stack Object.oncomplete (fs.js:107:15)
+120 verbose exit [ 3, true ]

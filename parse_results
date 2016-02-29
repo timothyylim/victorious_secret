@@ -1,0 +1,2 @@
+MATCH_ID="$(echo "cat /object-stream/MatchHeader/text()" | xmllint --nocdata --shell  | sed '1d;$d')"
+echo $MATCH_ID
