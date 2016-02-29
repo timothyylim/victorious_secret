@@ -94,6 +94,7 @@ public class Scout {
     	if(!rc.isCoreReady()) {
     		return;
     	}
+    	
     	Direction[] dirs = new Direction[9];
     	boolean[] canMoves = new boolean[9];
     	MapLocation[] locations = new MapLocation[9];
@@ -179,6 +180,7 @@ public class Scout {
     			scores[i] -=2000;
     		}
     		scores[i]-=scouts[i]*50;
+    		
 //    		need to find how they calculate MapEdge
 //    		int disEdge =100;
 //    		disEdge = Math.min(disEdge, Math.abs(loc[i].x-));
@@ -188,6 +190,7 @@ public class Scout {
 //    		if(disEdge<4){
 //    			scores[i] -= (4-disEdge)*1000;
 //    		}
+    	}
     		
     		if(sameDirectionSteps >25){
     			sameDirectionSteps=0;
@@ -204,10 +207,26 @@ public class Scout {
     				}
     			}
     		}
+    		scores[0]-=128;
     		
-    	}
-    	
-    	
+    		double bestScore = -1000000;
+    		Direction bestDir =null;
+    		int rdn = (int) Math.random();
+    		for (int j = 0; j < ndirs; ++j) {
+    			if (bestScore < scores[(rdn + j) % ndirs]) {
+    				bestDir = dirs[(rdn + j) % ndirs];
+    				bestScore = scores[(rdn + j) % ndirs];
+    			}
+    		}
+    		if (bestDir !=null){
+    			rc.move(bestDir);
+    		}
+    		
+    		if(lastDir==bestDir){
+    			sameDirectionSteps+=1;
+    		}
+    		lastDir = bestDir;
+    		return;
     }
 
     public static boolean isGoodDirection(Direction dir) {
