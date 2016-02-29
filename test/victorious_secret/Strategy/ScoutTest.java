@@ -14,14 +14,14 @@ import victorious_secret.Testing_stubs.RobotController;
 public class ScoutTest {
     @Test
     public void testInit(){
-        RobotController rc = new RobotController(false, false);
+        RobotController rc = new RobotController();
         Robot r = new Dummy(rc);
         Scout.initialise(rc, r);
     }
 
     @Test
     public void testIdentify(){
-        RobotController rc = new RobotController(false, false);
+        RobotController rc = new RobotController();
         Robot r = new Dummy(rc);
 
         Scout.initialise(rc, r);
@@ -31,7 +31,7 @@ public class ScoutTest {
 
     @Test
     public void testBroadcast(){
-        RobotController rc = new RobotController(false, false);
+        RobotController rc = new RobotController();
         Robot r = new Dummy(rc);
 
         Scout.initialise(rc, r);
@@ -42,5 +42,4 @@ public class ScoutTest {
             Assert.fail();
         }
     }
-
 }
