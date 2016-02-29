@@ -6,6 +6,38 @@ import battlecode.common.*;
  * Created by ple15 on 25/02/16.
  */
 public class RobotController implements battlecode.common.RobotController {
+        private boolean coreReady = false;
+        private boolean weaponReady = false;
+        private MapLocation location;
+        private RobotType robotType;
+
+        public RobotController(){}
+
+    /**
+     *
+     * @param _coreReady
+     * @param _weaponReady
+     * @deprecated
+     */
+        public RobotController(boolean _coreReady, boolean _weaponReady){
+                coreReady = _coreReady;
+                weaponReady = _weaponReady;
+        }
+
+    /**
+     *
+     * @param loc
+     * @deprecated
+     */
+        public RobotController(MapLocation loc){
+            location = loc;
+        }
+
+        public void setType(RobotType rt){robotType = rt;}
+        public void setCoreReady(boolean _coreReady) {coreReady = _coreReady;}
+        public void setWeaponReady(boolean _weaponReady) {weaponReady = _weaponReady;}
+        public void setLocation(MapLocation loc){location = loc;}
+
         @Override
         public int getRoundLimit() {
             return 0;
@@ -58,12 +90,12 @@ public class RobotController implements battlecode.common.RobotController {
 
         @Override
         public RobotType getType() {
-            return null;
+            return robotType;
         }
 
         @Override
         public MapLocation getLocation() {
-            return null;
+            return location;
         }
 
         @Override
@@ -188,12 +220,12 @@ public class RobotController implements battlecode.common.RobotController {
 
         @Override
         public boolean isCoreReady() {
-            return false;
+            return coreReady;
         }
 
         @Override
         public boolean isWeaponReady() {
-            return false;
+            return weaponReady;
         }
 
         @Override

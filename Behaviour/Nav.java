@@ -4,6 +4,7 @@
 package victorious_secret.Behaviour;
 
 import battlecode.common.*;
+import scala.reflect.io.File;
 import victorious_secret.Robot;
 import victorious_secret.Strategy.Flee;
 
@@ -15,10 +16,6 @@ import java.util.List;
  *
  */
 public class Nav {
-
-	/**
-	 *
-	 */
 	private static RobotController rc;
 	private static Robot robot;
 
@@ -112,11 +109,16 @@ public class Nav {
         //Since this is a movement function there's no point running it if the core is not ready
         if(rc.isCoreReady()) {
             //locs is a list of two locations - an archon location and the average enemy location
-            MapLocation[] locs = {archonLoc, averageLoc(Fight.seenEnemies)};
-
+            if (Fight.seenEnemies != null) {
+                MapLocation[] locs = {archonLoc, averageLoc(Fight.seenEnemies)};
+                robot.targetMoveLoc = averageLoc(locs);
+            }
+            else{
+                robot.targetMoveLoc = archonLoc;
+            }
             //The average of those two locations will be in be between the two, thus moving us towards a
             //high risk area
-            robot.targetMoveLoc = averageLoc(locs);
+
 
             BugNav.setTarget(robot.targetMoveLoc);
             Direction dir = BugNav.getNextMove();
@@ -136,7 +138,7 @@ public class Nav {
     {
         if(center != null)
         {
-            return rc.getLocation().add(rc.getLocation().directionTo(center).rotateLeft());
+            return rc.getLocation().add(rc.getLocation().directionTo(center).rotateRight());
         }
         else
         {
@@ -154,7 +156,7 @@ public class Nav {
     {
         if(center != null)
         {
-            return rc.getLocation().add(rc.getLocation().directionTo(center).rotateRight());
+            return rc.getLocation().add(rc.getLocation().directionTo(center).rotateLeft());
         }
         else
         {
