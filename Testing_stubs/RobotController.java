@@ -13,6 +13,8 @@ public class RobotController implements battlecode.common.RobotController {
     private boolean ifCanMove = false;
     private double rubble = 0;
     private int roundNum=0;
+    private boolean canSense=false;
+    private boolean onMap=false;
     public RobotController(){}
 
     /**
@@ -150,12 +152,19 @@ public class RobotController implements battlecode.common.RobotController {
 
     @Override
     public boolean canSense(MapLocation mapLocation) {
-        return false;
+        return canSense;
     }
 
+    public void setCanSense(boolean sense){
+        canSense= sense;
+
+    }
     @Override
     public boolean onTheMap(MapLocation mapLocation) throws GameActionException {
-        return true;
+        return onMap;
+    }
+    public void setOnMap(boolean map){
+        onMap=map;
     }
 
     @Override
