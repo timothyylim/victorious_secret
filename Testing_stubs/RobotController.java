@@ -95,12 +95,12 @@ public class RobotController implements battlecode.common.RobotController {
 
     @Override
     public RobotType getType() {
-        return robotType;
+        return RobotType.ARCHON;
     }
 
     @Override
     public MapLocation getLocation() {
-        return location;
+        return new MapLocation(0,0);
     }
 
     @Override
@@ -220,7 +220,20 @@ public class RobotController implements battlecode.common.RobotController {
 
     @Override
     public RobotInfo[] senseHostileRobots(MapLocation mapLocation, int i) {
-        return new RobotInfo[0];
+        MapLocation[] loc = new MapLocation[3];
+
+        loc[0] = new MapLocation(0,0);
+        loc[1] = new MapLocation(0,0);
+        loc[2] = new MapLocation(0,0);
+
+        RobotInfo[] infos = new RobotInfo[3];
+
+        infos[0]= new RobotInfo(1, Team.A, RobotType.ARCHON,loc[0], 1,2,2,2,2,2,2);
+        infos[1]= new RobotInfo(1, Team.A, RobotType.ARCHON,loc[1], 1,2,2,2,2,2,2);
+        infos[2]= new RobotInfo(1, Team.A, RobotType.ARCHON,loc[2], 1,2,2,2,2,2,2);
+
+
+        return infos;
     }
 
     @Override
