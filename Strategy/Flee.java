@@ -1,6 +1,7 @@
 package victorious_secret.Strategy;
 import battlecode.common.*;
 import victorious_secret.Behaviour.BugNav;
+import victorious_secret.Behaviour.Nav;
 
 public class Flee{
     static RobotController _rc;
@@ -47,7 +48,7 @@ public class Flee{
         neutrals = _rc.senseNearbyRobots(_rc.getLocation(), 1, Team.NEUTRAL);
         parts = _rc.sensePartLocations(1);
 
-        temp = averageLoc(hostiles);
+        temp = Nav.averageLoc(hostiles);
         mine = _rc.getLocation();
 
         int dx,dy;
@@ -181,45 +182,13 @@ public class Flee{
     // to be deleted, duplicate code from pete
     public static MapLocation averageLoc(RobotInfo[] listOfEnemies) throws GameActionException
     {
-        if(listOfEnemies.length == 0){
-            return null;
-        }
-
-        int x = 0;
-        int y = 0;
-
-        for(RobotInfo i : listOfEnemies)
-        {
-            x += i.location.x;
-            y += i.location.y;
-        }
-
-        x /= listOfEnemies.length;
-        y /= listOfEnemies.length;
-
-        return new MapLocation(x,  y);
+        return Nav.averageLoc(listOfEnemies);
 
     }
 
     public static MapLocation averageLoc(MapLocation[] listOfEnemies) throws GameActionException
     {
-        if(listOfEnemies.length == 0){
-            return null;
-        }
-
-        int x = 0;
-        int y = 0;
-
-        for(MapLocation i : listOfEnemies)
-        {
-            x += i.x;
-            y += i.y;
-        }
-
-        x /= listOfEnemies.length;
-        y /= listOfEnemies.length;
-
-        return new MapLocation(x,  y);
+        return Nav.averageLoc(listOfEnemies);
 
     }
 }

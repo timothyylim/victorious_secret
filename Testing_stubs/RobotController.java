@@ -12,6 +12,7 @@ public class RobotController implements battlecode.common.RobotController {
     private RobotType robotType;
     private boolean ifCanMove = false;
     private double rubble = 0;
+    private int roundNum=0;
     public RobotController(){}
 
     /**
@@ -45,6 +46,7 @@ public class RobotController implements battlecode.common.RobotController {
     public int getRoundLimit() {
         return 0;
     }
+
 
     @Override
     public double getTeamParts() {
