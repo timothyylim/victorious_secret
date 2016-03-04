@@ -37,6 +37,9 @@ public class RobotController implements battlecode.common.RobotController {
         location = loc;
     }
 
+    public void setRoundNum(int _roundNum){
+        roundNum=_roundNum;
+    }
     public void setType(RobotType rt){robotType = rt;}
     public void setCoreReady(boolean _coreReady) {coreReady = _coreReady;}
     public void setWeaponReady(boolean _weaponReady) {weaponReady = _weaponReady;}
@@ -57,7 +60,7 @@ public class RobotController implements battlecode.common.RobotController {
 
     @Override
     public int getRoundNum() {
-        return 0;
+        return roundNum;
     }
 
     @Override

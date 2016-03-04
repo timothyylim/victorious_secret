@@ -5,7 +5,7 @@ import victorious_secret.Behaviour.Nav;
 
 public class Flee{
     static RobotController _rc;
-    static MapLocation temp;
+    static MapLocation temp=null;
     static MapLocation mine;
     static Direction moved;
 
@@ -101,6 +101,7 @@ public class Flee{
             }
         }
     }
+
     /**
      * Method for the rc to do the actual movements that makes the robots to flee to a target direction
      * but also consider other complimentary cases, like awaking the neutral unit and picking up parts
@@ -149,7 +150,6 @@ public class Flee{
                                 lrubble = false;
                             }
                         }
-
                         //if i is greater than or equal to 4 don't go there.
                         //otherwise ignore it.
                         //corner avoid
