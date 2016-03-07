@@ -70,7 +70,6 @@ public class Defend {
             // ARCHON
             if (rc.getType() == RobotType.ARCHON) {
                 archonCode();
-
             }
 
             // Soldier
@@ -102,16 +101,18 @@ public class Defend {
      * @return Returns true if the attack has been made
      * @throws GameActionException
      */
-    private boolean lookForEnemies() throws GameActionException {
+    public boolean lookForEnemies() throws GameActionException {
         RobotInfo[] opponentEnemies = rc.senseHostileRobots(rc.getLocation(), rc.getType().attackRadiusSquared);
 
         if (opponentEnemies.length > 0 && rc.getType().canAttack()) {
             // Optimize who to attack?
             if (rc.isWeaponReady()) {
                 RobotInfo toKill = Fight.findLowestHealthEnemy(opponentEnemies, RobotType.BIGZOMBIE);
-
+                if(toKill == null){
+                    toKill = Fight.findLowestHealthEnemy(opponentEnemies);
+                }
                 if (toKill != null) {
-                    if (rc.getType() == RobotType.TURRET && rc.getLocation().distanceSquaredTo(toKill.location) > 5) {
+                    if (rc.getType() == RobotType.TURRET && rc.canAttackLocation(toKill.location)) {
                         rc.attackLocation(toKill.location);
                         return true;
                     } else if (rc.getType() != RobotType.TURRET) {
@@ -119,20 +120,7 @@ public class Defend {
                         return true;
                     }
                 }
-
-                for (RobotInfo enemy : opponentEnemies) {
-                    if (rc.getType() == RobotType.TURRET && rc.getLocation().distanceSquaredTo(enemy.location) > 5) {
-                        rc.attackLocation(enemy.location);
-                        return true;
-                    } else if (rc.getType() != RobotType.TURRET) {
-                        rc.attackLocation(enemy.location);
-                        return true;
-                    }
-                }
-
-
             }
-
         }
         return false;
     }
@@ -150,36 +138,25 @@ public class Defend {
 
         int index = get_archon_index(robotsAround);
 
-        if (!lookForEnemies() && index >= 0) {
+        if(lookForEnemies())
+            return;
+
+        if (index >= 0) {
             RobotInfo archon = robotsAround[index];
             archonLoc = archon.location;
-            RobotInfo[] closeRobots = rc.senseNearbyRobots(archonLoc, 2, rc.getTeam());
-
-            int unitsAround = countUnits(closeRobots, RobotType.TURRET) + countUnits(closeRobots, RobotType.ARCHON);
-
-            // If not diagonal to turrets around you, pack up and GTFO
-//			for(RobotInfo crob:closeRobots){
-//				if(crob.type == RobotType.TURRET && !rc.getLocation().directionTo(crob.location).isDiagonal()){
-//					rc.pack();
-//					return;
-//				}
-//			}
 
             if (!onChessBoard(archonLoc, rc.getLocation())) {
                 rc.pack();
                 return;
             }
 
-//			if(unitsAround >= 4){
-//				rc.pack();
-//				return;
-//			}
         }
 
         receiveTargetLocation();
         MapLocation target = new MapLocation(targetX, targetY);
 
-        if (!lookForEnemies() && targetX != -1 && targetY != -1 && rc.canAttackLocation(target)) {
+        System.out.println(targetX);
+        if (targetX != -1 && targetY != -1 && rc.canAttackLocation(target)) {
             if (rc.isWeaponReady()) {
                 rc.attackLocation(target);
             }
@@ -189,7 +166,7 @@ public class Defend {
 
     }
 
-    private static boolean onChessBoard(MapLocation center, MapLocation current) {
+    public static boolean onChessBoard(MapLocation center, MapLocation current) {
         int x = Math.abs(center.x - current.x);
         int y = Math.abs(center.y - current.y);
 
@@ -206,7 +183,7 @@ public class Defend {
      * @param type   Robot type to count
      * @return Returns the number of robots
      */
-    private static int countUnits(RobotInfo[] robots, RobotType type) {
+    public static int countUnits(RobotInfo[] robots, RobotType type) {
         int count = 0;
         for (int i = 0; i < robots.length; i++) {
             if (robots[i].type == type) {
@@ -215,7 +192,6 @@ public class Defend {
         }
         return count;
     }
-    // KILL ZOMBIES BEFORE THEIR NEST BASTARDS !!!!!!!!
 
     /**
      * Count the number of units in <b> robots </b> array of the <b>type</b>
@@ -225,7 +201,7 @@ public class Defend {
     private void archonCode() throws GameActionException {
 
         if (rc.getRoundNum() < 20) {
-            get_outta_here();
+            get_out_corner();
         }
 
         MapLocation InitialArchons[] = rc.getInitialArchonLocations(rc.getTeam());
@@ -302,6 +278,7 @@ public class Defend {
                     return;
                 }
             }
+
             if (rc.getType().canClearRubble()) {
                 //failed to move, look to clear rubble
                 MapLocation ahead = rc.getLocation().add(forward);
@@ -322,8 +299,9 @@ public class Defend {
      *
      * @throws GameActionException
      */
-    private static void receiveTargetLocation() throws GameActionException {
+    public static boolean receiveTargetLocation() throws GameActionException {
         Signal[] signals = rc.emptySignalQueue();
+        boolean messageReceived = false;
 
         for (Signal s : signals) {
             if (s.getTeam() != rc.getTeam()) {
@@ -337,10 +315,13 @@ public class Defend {
             int command = s.getMessage()[0];
             if (command == ATTACK_X) {
                 targetX = s.getMessage()[1];
+                messageReceived = true;
             } else if (command == ATTACK_Y) {
                 targetY = s.getMessage()[1];
+                messageReceived = true;
             }
         }
+        return messageReceived;
     }
 
     /**
@@ -372,14 +353,13 @@ public class Defend {
 
     }
 
-    private static MapLocation findBetterChessBoardPosition(MapLocation center) throws GameActionException {
+    public static MapLocation findBetterChessBoardPosition(MapLocation center) throws GameActionException {
         int radius = 1;
         while (radius < 16) {
             for (int i = -radius; i <= radius; i++) {
                 for (int j = -radius; j <= radius; j++) {
                     MapLocation current = new MapLocation(center.x + i, center.y + j);
                     if (onChessBoard(center, current) && rc.canSenseLocation(current) && !rc.isLocationOccupied(current)) {
-                        rc.setIndicatorString(1, "" + current);
                         return current;
                     }
                 }
@@ -456,7 +436,7 @@ public class Defend {
      * @param robotList
      * @return
      */
-    private static int get_archon_index(RobotInfo[] robotList) {
+    public static int get_archon_index(RobotInfo[] robotList) {
         boolean found = false;
         int index = 0;
 
@@ -481,7 +461,7 @@ public class Defend {
      * @return True if something has been built
      * @throws GameActionException
      */
-    private boolean buildUnits() throws GameActionException {
+    public boolean buildUnits() throws GameActionException {
         //Our build order is to build 5 guards, then 1 scout, then try to maintain guards and
         //scouts in equal proportion, with another scout every 16 units
 
@@ -500,7 +480,7 @@ public class Defend {
             robotType = RobotType.TURRET;
         }
 
-        Direction randomDir = randomDirection();
+        Direction randomDir =  Direction.values()[(int) (rnd.nextDouble() * 8)];
 
         if (rc.getTeamParts() < robotType.partCost) {
             return false;
@@ -520,20 +500,11 @@ public class Defend {
     }
 
     /**
-     * Gets a random direction
-     *
-     * @return A direction
-     */
-    private static Direction randomDirection() {
-        return Direction.values()[(int) (rnd.nextDouble() * 8)];
-    }
-
-    /**
      * Gets archon out of a corner
      *
      * @throws GameActionException
      */
-    private void get_outta_here() throws GameActionException {
+    public boolean get_out_corner() throws GameActionException {
         Direction possible = null;
         if (rc.isCoreReady()) {
             map_count = 0;
@@ -548,9 +519,10 @@ public class Defend {
 
             if (map_count >= 5 && possible != null) {
                 tryToMove(possible);
-
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -560,7 +532,7 @@ public class Defend {
      * @return The location of the weakest enemy
      */
     // Find robot with the lowest health in a list of robots
-    private static MapLocation findWeakest(RobotInfo[] listOfRobots) {
+    public static MapLocation findWeakest(RobotInfo[] listOfRobots) {
         double weakestSoFar = 0;
         MapLocation weakestLocation = null;
         for (RobotInfo r : listOfRobots) {
