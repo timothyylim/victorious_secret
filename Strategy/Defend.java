@@ -155,7 +155,6 @@ public class Defend {
         receiveTargetLocation();
         MapLocation target = new MapLocation(targetX, targetY);
 
-        System.out.println(targetX);
         if (targetX != -1 && targetY != -1 && rc.canAttackLocation(target)) {
             if (rc.isWeaponReady()) {
                 rc.attackLocation(target);
@@ -210,28 +209,7 @@ public class Defend {
 
         MapLocation averageEnermyLoc = Flee.averageLoc(InitialEnemyArchons);
 
-        int dx = 0;
-        int dy = 0;
-
-        int hypo = 0;
-
-        int max = 0;
-        int maxi = 0;
-
-        for (int i = 0; i < InitialArchons.length; i++) {
-            dx = InitialArchons[i].x - averageEnermyLoc.x;
-            dy = InitialArchons[i].y - averageEnermyLoc.y;
-
-            hypo = dx * dx + dy * dy;
-
-            if (hypo > max) {
-                max = hypo;
-                maxi = i;
-            }
-
-        }
-
-        MapLocation leaderLocation = rc.getInitialArchonLocations(rc.getTeam())[maxi];
+        MapLocation leaderLocation = getFurthestArchonFromEnemyLocation(InitialArchons, averageEnermyLoc);
 
         MapLocation thisLocation = rc.getLocation();
 
@@ -258,6 +236,25 @@ public class Defend {
                 }
             }
         }
+    }
+
+    public static MapLocation getFurthestArchonFromEnemyLocation(MapLocation[] initialArchons, MapLocation averageEnermyLoc) {
+        int max = 0;
+        int maxi = 0;
+
+        for (int i = 0; i < initialArchons.length; i++) {
+            int dx = initialArchons[i].x - averageEnermyLoc.x;
+            int dy = initialArchons[i].y - averageEnermyLoc.y;
+
+            int hypo = dx * dx + dy * dy;
+
+            if (hypo > max) {
+                max = hypo;
+                maxi = i;
+            }
+
+        }
+        return initialArchons[maxi];
     }
 
 
@@ -390,32 +387,18 @@ public class Defend {
         if (archonIndex >= 0) {
             RobotInfo archon = robots[archonIndex];
             archonLoc = archon.location;
-            Direction archon_direction = rc.getLocation().directionTo(archon.location);
 
-            MapLocation destination = rc.getLocation().add(archon_direction, 1);
-
-            int distance_from_archon = destination.distanceSquaredTo(archon.location);
-
-//            if (distance_from_archon <= 2) {
-//                tryToMove(archon_direction.opposite());
-//                return;
-//            }
-
-
-            //Else try to clear rubble
-            if (rc.getType().canClearRubble()) {
-
-                // Sense around
-                for (int i : possibleDirections) {
-                    Direction candidateDirection = Direction.values()[(movingDirection.ordinal() + i + 8) % 8];
-                    if (rc.senseRubble(rc.getLocation().add(candidateDirection)) >= GameConstants.RUBBLE_OBSTRUCTION_THRESH) {
-                        rc.clearRubble(candidateDirection);
-                        return;
-                    }
+            //Try to clear rubble by sensing around
+            for (int i : possibleDirections) {
+                Direction candidateDirection = Direction.values()[(movingDirection.ordinal() + i + 8) % 8];
+                if (rc.senseRubble(rc.getLocation().add(candidateDirection)) >= GameConstants.RUBBLE_OBSTRUCTION_THRESH) {
+                    rc.clearRubble(candidateDirection);
+                    return;
                 }
-                // If rubble < perimeter clear it
             }
 
+            //Spiral around archon
+            System.out.println(archonLoc);
             tryToMove(rc.getLocation().directionTo(Nav.spiralClockwise(archonLoc)));
 
         } else if (countUnits(closeRobots, RobotType.TURRET) == 0) {

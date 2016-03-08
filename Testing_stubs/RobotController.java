@@ -13,14 +13,19 @@ public class RobotController implements battlecode.common.RobotController {
     private boolean ifCanMove = false;
     private Direction possibleMoves[];
     private double rubble = 0;
-    public boolean rubbleCleared = false;
+    private boolean rubbleCleared = false;
     private MapLocation occupiedLocations[];
     private RobotInfo[] hostileRobots;
     private Signal signals[];
     private int parts;
     private boolean attacked = false;
     private boolean pack = false;
+    private boolean repaired = false;
     private RobotInfo[] nearbyRobots;
+    private MapLocation[] initialFriendlyArchonsLoc;
+    private MapLocation[] initialEnemyArchonsLoc;
+    private int round;
+    private boolean moved = false;
     public RobotController(){}
 
     /**
@@ -55,9 +60,15 @@ public class RobotController implements battlecode.common.RobotController {
     public void setSignals(Signal[] incoming){signals = incoming;}
     public void setNearbyRobots(RobotInfo[] robots){nearbyRobots = robots;}
     public void setParts(int _parts){parts=_parts;}
+    public void setRound(int _round){round=_round;}
+    public void setInitialFriendlyArchonsLoc(MapLocation[] archonsLoc){initialFriendlyArchonsLoc = archonsLoc;}
+    public void setInitialEnemyArchonsLoc(MapLocation[] archonsLoc){initialEnemyArchonsLoc = archonsLoc;}
 
-    public boolean getPack(){return pack;}
-    public boolean getAttacked(){return attacked;}
+    public boolean hasPacked(){return pack;}
+    public boolean hasAttacked(){return attacked;}
+    public boolean hasRepaired(){return repaired;}
+    public boolean hasMoved(){return moved;}
+    public boolean hasCleared(){return rubbleCleared;}
 
     @Override
     public int getRoundLimit() {
@@ -71,7 +82,7 @@ public class RobotController implements battlecode.common.RobotController {
 
     @Override
     public int getRoundNum() {
-        return 0;
+        return round;
     }
 
     @Override
@@ -96,7 +107,11 @@ public class RobotController implements battlecode.common.RobotController {
 
     @Override
     public MapLocation[] getInitialArchonLocations(Team team) {
-        return new MapLocation[0];
+        if(team == getTeam()){
+            return initialFriendlyArchonsLoc;
+        }else{
+            return initialEnemyArchonsLoc;
+        }
     }
 
     @Override
@@ -270,7 +285,7 @@ public class RobotController implements battlecode.common.RobotController {
 
     @Override
     public void move(Direction direction) throws GameActionException {
-
+        moved = true;
     }
 
     @Override
@@ -325,7 +340,7 @@ public class RobotController implements battlecode.common.RobotController {
 
     @Override
     public void repair(MapLocation mapLocation) throws GameActionException {
-
+        repaired = true;
     }
 
     @Override
