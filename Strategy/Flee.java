@@ -150,6 +150,7 @@ public class Flee{
                                 lrubble = false;
                             }
                         }
+                        //pete is gay
                         //if i is greater than or equal to 4 don't go there.
                         //otherwise ignore it.
                         //corner avoid
