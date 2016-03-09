@@ -29,6 +29,10 @@ public class BugNav {
         moved=_moved;
     }
 
+    public static Direction getMovedDir(){
+        return moved;
+    }
+
     /**
      * Getter method to get the current target location
      * @return								Returns a MapLocation that is the current target
@@ -190,7 +194,6 @@ public class BugNav {
      */
     public static void initialise(RobotController rc){
         _rc=rc;
-
         for (Direction d: Direction.values()) {
             if (d == Direction.NONE || d == Direction.OMNI || d.isDiagonal())
                 continue;

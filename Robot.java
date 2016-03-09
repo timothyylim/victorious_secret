@@ -11,6 +11,7 @@ import java.util.Random;
 
 import battlecode.common.*;
 import victorious_secret.Behaviour.*;
+import victorious_secret.Strategy.Attack;
 
 /**
  * @author APOC
@@ -21,9 +22,10 @@ public abstract class Robot {
 	
 	protected static RobotController rc;
 	public Random rand;
-	//public static Nav nav;
-	//public static Fight fight;
-    //public static Attack akk;
+
+	public static Nav nav;
+	public static Fight fight;
+    public static Attack akk;
 
 	public static Signalling sig;
 	public static Team team;

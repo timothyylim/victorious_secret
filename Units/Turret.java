@@ -18,11 +18,7 @@ import victorious_secret.Strategy.Defend;
 
 /**
  * @author APOC
-<<<<<<< HEAD
  *
-=======
- * 
->>>>>>> 45b64142e44a0dd44af44b58ab8e8ebf56678b6c
  * http://s3.amazonaws.com/battlecode-releases-2016/releases/javadoc/battlecode/common/RobotType.html#TURRET
 An immobile unit designed to reinforce an area; transforms into a TTM in order to move.
 canAttack(): true
@@ -87,10 +83,11 @@ public class Turret extends Robot {
 	public void move() throws GameActionException {
 
 		updateOurArchonLocations(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
-		if(listenForSignal()){
-			strat = Strategy.ATTACK;
-		}
-		
+
+//		if(listenForSignal()){
+//			strat = Strategy.ATTACK;
+//		}
+//
 		switch (strat) {
 			case DEFEND:
 				//Turrets move if they can't see an enemy
@@ -199,6 +196,7 @@ public class Turret extends Robot {
 					//dir = Direction.NONE;
 					List<MapLocation> allowedTargets = Nav.findAllowedLocations(here, radiusToWall, targetMoveLoc);
 					if(!Fight.hasClearMapLocation(allowedTargets, targetMoveLoc)){
+
 						BugNav.setTarget(targetMoveLoc);
 						Direction dir = BugNav.getNextMove();
 						if(dir != null && rc.canMove(dir)){

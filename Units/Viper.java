@@ -42,8 +42,8 @@ public class Viper extends Robot {
 		rc = _rc;
 		//rand = new Random(rc.getID());
 		rand = new Random();
-		//nav = new Nav(rc, this);
-		//fight = new Fight(rc, this);
+		nav = new Nav(rc, this);
+		fight = new Fight(rc, this);
 		strat = Strategy.DEFEND;
 	}
 
@@ -70,7 +70,5 @@ public class Viper extends Robot {
 			rc.move(Direction.WEST);
 			return;
 		}
-
-
 	}
 }

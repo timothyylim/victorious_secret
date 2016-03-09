@@ -30,6 +30,17 @@ public class Fight {
 		robot = _robot;
 	}
 
+	/**
+	 * Initalises the Fight controller for use as non-static class
+	 * @param _rc The Robot Controller
+	 * @param _robot The Robot type
+	 * @deprecated
+	 */
+	public Fight(RobotController _rc, Robot _robot) {
+		rc = _rc;
+		robot = _robot;
+	}
+
 
 	/**
 	 * This should be called at the start of each turn as it updates all of sensor readings. i.e. this is useful for
@@ -146,7 +157,6 @@ public class Fight {
 					nOfType++;
 				}
 			}
-
 			return tUnits;
 		}
 		else {
@@ -169,6 +179,7 @@ public class Fight {
 	 * @param loc	Location the units can target
      * @return		Returns the list of units that can target the location
      */
+
 	public static RobotInfo[] inRangeOf(RobotInfo[] units, MapLocation loc) {
 		List<RobotInfo> inRange = new ArrayList<>();
 
@@ -313,16 +324,12 @@ public class Fight {
 	 * @param listOfEnemies	List of enemies to evaluate
 	 * @return				Returns the robot info of the last targeted or null
      */
-	public static RobotInfo findLastTargeted(RobotInfo[] listOfEnemies)
-	{
-		if(lastTargeted == null)
-		{
+	public static RobotInfo findLastTargeted(RobotInfo[] listOfEnemies) {
+		if(lastTargeted == null) {
 			return null;
 		}
-		for(RobotInfo i : listOfEnemies)
-		{
-			if(i.ID == lastTargeted.ID)
-			{
+		for(RobotInfo i : listOfEnemies) {
+			if(i.ID == lastTargeted.ID) {
 				return i;
 			}
 		}
@@ -356,10 +363,8 @@ public class Fight {
 		double minHealth = 9999999;
 		RobotInfo bestTarget = null;
 
-		for(RobotInfo i : listOfEnemies)
-		{
-			if(i.health < minHealth)
-			{
+		for(RobotInfo i : listOfEnemies) {
+			if(i.health < minHealth) {
 				minHealth = i.health;
 				bestTarget = i;
 			}
@@ -373,8 +378,7 @@ public class Fight {
 	 * @param listOfEnemies	List of enemies to be evaluated
 	 * @return				Lowest health enemy
 	 */
-	public static RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies, RobotType targetType)
-	{
+	public static RobotInfo findLowestHealthEnemy(RobotInfo[] listOfEnemies, RobotType targetType) {
 		double minHealth = 9999999;
 		RobotInfo bestTarget = null;
 
@@ -527,7 +531,6 @@ public class Fight {
      */
 	public static boolean lowestHealthAttack() throws GameActionException {
 		lastTargeted = targetLowestHealthEnemy(attackableEnemies);
-
 		if(lastTargeted != null){
 			rc.attackLocation(lastTargeted.location);
 			return true;

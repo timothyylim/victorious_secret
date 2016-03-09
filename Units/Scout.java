@@ -66,10 +66,8 @@ public class Scout extends Robot {
 	}
 
 	@Override
-	public void move() throws GameActionException
-	{
-		runScoutStrategy4();
-
+	public void move() throws GameActionException {
+		runScoutStrategy3();
 	}
 
 
@@ -107,6 +105,7 @@ public class Scout extends Robot {
 	 */
 	public void runScoutStrategy3() throws GameActionException {
 		Fight.sense_map();
+
 		turretLoc = findClosestRobot(Fight.seenAllies, RobotType.TURRET);
 
 		if(turretLoc != null){
@@ -114,7 +113,6 @@ public class Scout extends Robot {
 		}else{
 			flee.setTarget(rc.getLocation());
 		}
-
 
 		if (rc.isCoreReady()) {
 			broadcastEnemyInTurretBlindSpot();
@@ -143,6 +141,7 @@ public class Scout extends Robot {
 		double attackPowerNeeded = 550;
 		double attackPowerOfSeenAllies;
 		Fight.sense_map();
+
 		attackPowerOfSeenAllies = strengthOfRobotsInArray(Fight.seenAllies);
 
 		if(attackPowerOfSeenAllies>attackPowerNeeded){

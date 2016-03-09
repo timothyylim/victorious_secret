@@ -4,7 +4,6 @@
 package victorious_secret.Behaviour;
 
 import battlecode.common.*;
-import scala.reflect.io.File;
 import victorious_secret.Robot;
 import victorious_secret.Strategy.Flee;
 
@@ -30,12 +29,23 @@ public class Nav {
     }
 
     /**
+     * Initalises the Nav controller for use as non-static class
+     * @param _rc The Robot Controller
+     * @param _robot The Robot type
+     * @deprecated
+     */
+	public Nav(RobotController _rc, Robot _robot)
+	{
+		rc = _rc;
+		robot = _robot;
+	}
+
+    /**
      * Gets the average location of a list of units. Returns your location if the list of units is empty.
      * @param units The list of units to average
      * @return      The average location of the list of units
      */
     public static MapLocation averageLoc(RobotInfo[] units) {
-
         if(units.length == 0) {
             return rc.getLocation();
         }
@@ -52,7 +62,6 @@ public class Nav {
         y /= units.length;
 
         return new MapLocation(x,  y);
-
     }
 
     /**
@@ -99,8 +108,6 @@ public class Nav {
             }
             //The average of those two locations will be in be between the two, thus moving us towards a
             //high risk area
-
-
             BugNav.setTarget(robot.targetMoveLoc);
             Direction dir = BugNav.getNextMove();
             if(rc.canMove(dir)){
@@ -252,6 +259,7 @@ public class Nav {
         //Tile is passable once it is below 50 rubble
         return (int) Math.max((r - 50) / 10, 0);
     }
+
     /**
      * Navigation where units do not move beyond an allowed distance to a location without getting closer than the
      * target radius. As such, robots on the radius will move sidways rather than forward.
@@ -360,6 +368,4 @@ public class Nav {
             rc.move(dir);
         }
     }
-
-
 }

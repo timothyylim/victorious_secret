@@ -22,20 +22,58 @@ public class RobotController implements battlecode.common.RobotController {
         private int id;
         private boolean canSense;
 
+        private Direction possibleMoves[];
+        private boolean rubbleCleared = false;
+        private MapLocation occupiedLocations[];
+        private RobotInfo[] hostileRobots;
+        private Signal signals[];
+        private int parts;
+        private boolean attacked = false;
+        private boolean pack = false;
+        private boolean repaired = false;
+        private RobotInfo[] nearbyRobots;
+        private MapLocation[] initialFriendlyArchonsLoc;
+        private MapLocation[] initialEnemyArchonsLoc;
+        private int round;
+        private boolean moved = false;
+        public RobotController(){}
+
+
         public void setType(RobotType rt){robotType = rt;}
         public void setCoreReady(boolean _coreReady) {coreReady = _coreReady;}
         public void setWeaponReady(boolean _weaponReady) {weaponReady = _weaponReady;}
         public void setLocation(MapLocation loc){location = loc;}
+        public void setParts(int _parts){parts=_parts;}
+        public void setRound(int _round){round=_round;}
+        public void setCanSense(boolean _canSense){canSense = _canSense;}
+        public void setCanMove(Direction dir[]){possibleMoves = dir;}
         public void setCanMove(boolean _canMove){ifCanMove = _canMove;}
         public void setRubble(int _rubble){rubble = _rubble;}
+        public void setOccupiedLocations(MapLocation locations[]){occupiedLocations = locations;}
+
         public void setSensibleHostiles(RobotInfo[] sensibleHostiles1){sensibleHostiles = sensibleHostiles1;}
+        public void setHostileRobots(RobotInfo[] robots){hostileRobots = robots;}
+
         public void setSensibleRobots(RobotInfo[] sensibleRobots1){sensibleRobots = sensibleRobots1;}
+        public void setNearbyRobots(RobotInfo[] robots){nearbyRobots = robots;}
+
         public void setTeam(Team team1){team = team1;}
         public void setCanAttackLoc(boolean canAttackLoc1){canAttackLoc = canAttackLoc1;}
+
         public void setOurInitialArchonLocations(MapLocation[] _initalArchonLocations){ourInitalArchonLocations = _initalArchonLocations;}
         public void setEnemyInitialArchonLocations(MapLocation[] _initalArchonLocations){enemyInitalArchonLocations = _initalArchonLocations;}
+        public void setInitialFriendlyArchonsLoc(MapLocation[] archonsLoc){initialFriendlyArchonsLoc = archonsLoc;}
+        public void setInitialEnemyArchonsLoc(MapLocation[] archonsLoc){initialEnemyArchonsLoc = archonsLoc;}
+
         public void setID(int _id){id = _id;}
-        public void setCanSense(boolean _canSense){canSense = _canSense;}
+        public void setSignals(Signal[] incoming){signals = incoming;}
+
+        public boolean hasPacked(){return pack;}
+        public boolean hasAttacked(){return attacked;}
+        public boolean hasRepaired(){return repaired;}
+        public boolean hasMoved(){return moved;}
+        public boolean hasCleared(){return rubbleCleared;}
+
 
         @Override
         public int getRoundLimit() {
@@ -44,12 +82,12 @@ public class RobotController implements battlecode.common.RobotController {
 
         @Override
         public double getTeamParts() {
-            return 0;
+            return parts;
         }
 
         @Override
         public int getRoundNum() {
-            return 0;
+            return round;
         }
 
         @Override
@@ -78,6 +116,15 @@ public class RobotController implements battlecode.common.RobotController {
                 return ourInitalArchonLocations;
             }else{
                 return enemyInitalArchonLocations;
+            }
+        }
+
+        @Override
+        public MapLocation[] getInitialArchonLocations(Team team) {
+            if(team == getTeam()){
+                return initialFriendlyArchonsLoc;
+            }else{
+                return initialEnemyArchonsLoc;
             }
         }
 
@@ -163,7 +210,7 @@ public class RobotController implements battlecode.common.RobotController {
 
         @Override
         public double senseParts(MapLocation mapLocation) {
-            return 0;
+            return parts;
         }
 
         @Override
@@ -173,11 +220,16 @@ public class RobotController implements battlecode.common.RobotController {
 
         @Override
         public boolean canSenseLocation(MapLocation mapLocation) {
-            return false;
+            return true;
         }
 
         @Override
         public boolean isLocationOccupied(MapLocation mapLocation) throws GameActionException {
+            for(MapLocation loc: occupiedLocations){
+                if(mapLocation.x == loc.x && mapLocation.y == loc.y){
+                    return true;
+                }
+            }
             return false;
         }
 
@@ -223,8 +275,12 @@ public class RobotController implements battlecode.common.RobotController {
             return ri;
         }
 
-
         @Override
+        public RobotInfo[] senseNearbyRobots(int i, Team team) {
+            return nearbyRobots;
+        }
+
+    @Override
         public RobotInfo[] senseNearbyRobots(int i, Team team) {
             return senseNearbyRobots(location, i, team);
         }
@@ -257,6 +313,11 @@ public class RobotController implements battlecode.common.RobotController {
         }
 
         @Override
+        public RobotInfo[] senseHostileRobots(MapLocation mapLocation, int i) {
+            return hostileRobots;
+        }
+
+        @Override
         public boolean isCoreReady() {
             return coreReady;
         }
@@ -268,7 +329,7 @@ public class RobotController implements battlecode.common.RobotController {
 
         @Override
         public void clearRubble(Direction direction) throws GameActionException {
-
+            rubbleCleared = true;
         }
 
         @Override
@@ -288,7 +349,7 @@ public class RobotController implements battlecode.common.RobotController {
 
         @Override
         public void attackLocation(MapLocation mapLocation) throws GameActionException {
-
+            attacked = true;
         }
 
         @Override
@@ -298,7 +359,7 @@ public class RobotController implements battlecode.common.RobotController {
 
         @Override
         public Signal[] emptySignalQueue() {
-            return new Signal[0];
+            return signals;
         }
 
         @Override
@@ -318,7 +379,7 @@ public class RobotController implements battlecode.common.RobotController {
 
         @Override
         public boolean canBuild(Direction direction, RobotType robotType) {
-            return false;
+            return true;
         }
 
         @Override
@@ -333,12 +394,12 @@ public class RobotController implements battlecode.common.RobotController {
 
         @Override
         public void repair(MapLocation mapLocation) throws GameActionException {
-
+            repaired = true;
         }
 
         @Override
         public void pack() throws GameActionException {
-
+            pack = true;
         }
 
         @Override
@@ -396,3 +457,4 @@ public class RobotController implements battlecode.common.RobotController {
 
         }
     }
+}

@@ -25,5 +25,5 @@ public class Dummy extends Robot {
     public void move() throws GameActionException {
 
     }
-
 }
+

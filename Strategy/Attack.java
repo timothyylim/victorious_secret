@@ -5,8 +5,6 @@ import victorious_secret.Behaviour.BugNav;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 
-
-
 /**
  * Created by ple15 on 15/01/16.
  */
@@ -22,6 +20,17 @@ public class Attack extends Fight {
     public static void initialise(RobotController _rc, Robot _robot) {
         rc = _rc;
         robot = _robot;
+    }
+
+    /**
+     * Initalises the Attack controller for use as non-static class
+     * @param _rc The Robot Controller
+     * @param _robot The Robot type
+     * @deprecated
+     */
+    public Attack(RobotController _rc, Robot _robot) {
+        super(_rc, _robot);
+        BugNav.initialise(_rc);
     }
 
     public static void attack() throws GameActionException {

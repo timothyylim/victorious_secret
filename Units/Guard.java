@@ -13,7 +13,10 @@ import victorious_secret.Robot;
 import victorious_secret.Behaviour.BugNav;
 import victorious_secret.Behaviour.Fight;
 import victorious_secret.Behaviour.Nav;
+<<<<<<< HEAD
 import victorious_secret.Strategy.Attack;
+=======
+>>>>>>> 5770751ee26ed3c47ba42d75eb2f7cb645f8cc9e
 import victorious_secret.Strategy.Defend;
 
 /**
@@ -69,11 +72,10 @@ public class Guard extends Robot {
 	public void move() throws GameActionException 
 	{
 		updateOurArchonLocations(rc.senseNearbyRobots(rc.getType().sensorRadiusSquared, rc.getTeam()));
-		
 
-		if(listenForSignal()){
-			strat = Strategy.ATTACK;
-		}
+//		if(listenForSignal()){
+//			strat = Strategy.ATTACK;
+//		}
 		
 		switch(strat){
 			case DEFEND:
@@ -201,6 +203,7 @@ public class Guard extends Robot {
 			Fight.targetEnemies();
 			if(Fight.attackableEnemies != null && Fight.attackableEnemies.length>0){
 				RobotInfo i = Fight.findLowestHealthEnemy(Fight.attackableEnemies);
+
 			//	attackLoc = i.location;
 			}else{
 			//	attackLoc = null;
