@@ -340,7 +340,7 @@ public class Defend {
             MapLocation dest = findBetterChessBoardPosition(archonLoc);
             BugNav.setTarget(dest);
             Direction dir = BugNav.getNextMove();
-            rc.setIndicatorString(0, "destination : " + dir);
+//            rc.setIndicatorString(0, "destination : " + dir);
             if(rc.canMove(dir) && rc.isCoreReady()){
                 rc.move(dir);
             }
@@ -398,8 +398,9 @@ public class Defend {
             }
 
             //Spiral around archon
-            System.out.println(archonLoc);
-            tryToMove(rc.getLocation().directionTo(Nav.spiralClockwise(archonLoc)));
+            Nav.initialise(rc,robot);
+            MapLocation target = Nav.spiralClockwise(archonLoc);
+            tryToMove(rc.getLocation().directionTo(target));
 
         } else if (countUnits(closeRobots, RobotType.TURRET) == 0) {
             if (archonLoc != null) {
