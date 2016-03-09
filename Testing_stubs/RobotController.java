@@ -13,12 +13,7 @@ public class RobotController implements battlecode.common.RobotController {
         private RobotType robotType;
         private boolean ifCanMove = false;
         private double rubble = 0;
-        public RobotController(){}
-        private RobotInfo[] sensibleHostiles;
-        private RobotInfo[] sensibleRobots;
         private Team team;
-        private MapLocation[] enemyInitalArchonLocations;
-        private MapLocation[] ourInitalArchonLocations;
         private int id;
         private boolean canSense;
 
@@ -50,18 +45,12 @@ public class RobotController implements battlecode.common.RobotController {
         public void setCanMove(boolean _canMove){ifCanMove = _canMove;}
         public void setRubble(int _rubble){rubble = _rubble;}
         public void setOccupiedLocations(MapLocation locations[]){occupiedLocations = locations;}
-
-        public void setSensibleHostiles(RobotInfo[] sensibleHostiles1){sensibleHostiles = sensibleHostiles1;}
         public void setHostileRobots(RobotInfo[] robots){hostileRobots = robots;}
-
-        public void setSensibleRobots(RobotInfo[] sensibleRobots1){sensibleRobots = sensibleRobots1;}
         public void setNearbyRobots(RobotInfo[] robots){nearbyRobots = robots;}
 
         public void setTeam(Team team1){team = team1;}
         public void setCanAttackLoc(boolean canAttackLoc1){canAttackLoc = canAttackLoc1;}
 
-        public void setOurInitialArchonLocations(MapLocation[] _initalArchonLocations){ourInitalArchonLocations = _initalArchonLocations;}
-        public void setEnemyInitialArchonLocations(MapLocation[] _initalArchonLocations){enemyInitalArchonLocations = _initalArchonLocations;}
         public void setInitialFriendlyArchonsLoc(MapLocation[] archonsLoc){initialFriendlyArchonsLoc = archonsLoc;}
         public void setInitialEnemyArchonsLoc(MapLocation[] archonsLoc){initialEnemyArchonsLoc = archonsLoc;}
 
@@ -113,15 +102,6 @@ public class RobotController implements battlecode.common.RobotController {
         @Override
         public MapLocation[] getInitialArchonLocations(Team team) {
             if(team == this.team){
-                return ourInitalArchonLocations;
-            }else{
-                return enemyInitalArchonLocations;
-            }
-        }
-
-        @Override
-        public MapLocation[] getInitialArchonLocations(Team team) {
-            if(team == getTeam()){
                 return initialFriendlyArchonsLoc;
             }else{
                 return initialEnemyArchonsLoc;
@@ -250,66 +230,39 @@ public class RobotController implements battlecode.common.RobotController {
 
         @Override
         public RobotInfo[] senseNearbyRobots() {
-            return sensibleRobots;
+            return nearbyRobots;
         }
 
         @Override
         public RobotInfo[] senseNearbyRobots(int i) {
-            if (sensibleRobots == null){return null;}
-            int n = 0;
-
-            for (RobotInfo r : sensibleRobots) {
-                if (r.location.distanceSquaredTo(location) < i) {
-                    n++;
-                }
-            }
-
-            RobotInfo[] ri = new RobotInfo[n];
-
-            for (RobotInfo r : sensibleRobots) {
-                if (r.location.distanceSquaredTo(location) < i) {
-                    n--;
-                    ri[n] = r;
-                }
-            }
-            return ri;
-        }
-
-        @Override
-        public RobotInfo[] senseNearbyRobots(int i, Team team) {
             return nearbyRobots;
         }
 
-    @Override
-        public RobotInfo[] senseNearbyRobots(int i, Team team) {
-            return senseNearbyRobots(location, i, team);
+        @Override
+        public RobotInfo[] senseNearbyRobots(int _i, Team _team) {
+            return senseNearbyRobots(location, _i, _team);
         }
 
         @Override
         public RobotInfo[] senseNearbyRobots(MapLocation mapLocation, int i, Team team) {
-            if (sensibleRobots == null){return null;}
+            if (nearbyRobots == null){return null;}
             int n = 0;
-            for (RobotInfo r : sensibleRobots){
-                if (r.location.distanceSquaredTo(mapLocation) < i && r.team == team){
+            for (RobotInfo r : nearbyRobots){
+                if (r.team == team){
                     n++;
                 }
             }
 
             RobotInfo[] ri = new RobotInfo[n];
 
-            for (RobotInfo r : sensibleRobots){
-                if (r.location.distanceSquaredTo(location) < i && r.team == team){
+            for (RobotInfo r : nearbyRobots){
+                if (r.team == team){
                     n--;
                     ri[n] = r;
                 }
             }
 
             return ri;
-        }
-
-        @Override
-        public RobotInfo[] senseHostileRobots(MapLocation mapLocation, int i) {
-            return sensibleHostiles;
         }
 
         @Override
@@ -457,4 +410,3 @@ public class RobotController implements battlecode.common.RobotController {
 
         }
     }
-}
