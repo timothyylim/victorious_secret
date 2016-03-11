@@ -1,0 +1,239 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Robot</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">victorious_secret</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Robot (victorious_secret)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Robot</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (5/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    49%
+  </span>
+  <span class="absValue">
+    (24/ 49)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Robot$Strategy</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    45,5%
+  </span>
+  <span class="absValue">
+    (5/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    48%
+  </span>
+  <span class="absValue">
+    (24/ 50)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;/**
+<i>2</i>&nbsp; * 
+<i>3</i>&nbsp; */
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;package victorious_secret;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;import java.util.HashMap;
+<i>8</i>&nbsp;import java.util.Iterator;
+<i>9</i>&nbsp;import java.util.Map;
+<i>10</i>&nbsp;import java.util.Random;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;import battlecode.common.*;
+<i>13</i>&nbsp;import victorious_secret.Behaviour.*;
+<i>14</i>&nbsp;import victorious_secret.Strategy.Attack;
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;/**
+<i>17</i>&nbsp; * @author APOC
+<i>18</i>&nbsp; * This serves as the root class from which all other robots derive
+<i>19</i>&nbsp; */
+<i>20</i>&nbsp;
+<b class="fc"><i>21</i>&nbsp;public abstract class Robot {</b>
+<i>22</i>&nbsp;	
+<i>23</i>&nbsp;	protected static RobotController rc;
+<i>24</i>&nbsp;	public Random rand;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;	public static Nav nav;
+<i>27</i>&nbsp;	public static Fight fight;
+<i>28</i>&nbsp;    public static Attack akk;
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;	public static Signalling sig;
+<i>31</i>&nbsp;	public static Team team;
+<i>32</i>&nbsp;
+<i>33</i>&nbsp;	public MapLocation targetShootLoc;
+<i>34</i>&nbsp;	public MapLocation targetMoveLoc;
+<b class="fc"><i>35</i>&nbsp;	public static Map&lt;Integer, MapLocation&gt; enemyArchonLocations = new HashMap&lt;&gt;();</b>
+<b class="fc"><i>36</i>&nbsp;	public static Map&lt;Integer, MapLocation&gt; ourArchonLocations = new HashMap&lt;&gt;();</b>
+<i>37</i>&nbsp;	
+<i>38</i>&nbsp;    public MapLocation[] zombieDenLocations;
+<i>39</i>&nbsp;    public Map&lt;Integer, MapLocation&gt; enemyUnitLocations;
+<i>40</i>&nbsp;	
+<i>41</i>&nbsp;	public int listeningTo;
+<i>42</i>&nbsp;	public Direction messageIn;
+<i>43</i>&nbsp;
+<i>44</i>&nbsp;	//TODO: put enum into own class
+<b class="nc"><i>45</i>&nbsp;	public enum Strategy {ATTACK, DEFEND, FLEE, SCOUT, RETURN_TO_BASE}</b>
+<i>46</i>&nbsp;	public Strategy strat;
+<i>47</i>&nbsp;	
+<i>48</i>&nbsp;	public abstract void move() throws GameActionException;
+<i>49</i>&nbsp;
+<i>50</i>&nbsp;	private static void updateUnitLocations(Map&lt;Integer, MapLocation&gt; locationMap, RobotInfo[] units,
+<i>51</i>&nbsp;											RobotType rType){
+<b class="nc"><i>52</i>&nbsp;		for(RobotInfo r : units){</b>
+<b class="nc"><i>53</i>&nbsp;			if(r.type == rType){</b>
+<b class="nc"><i>54</i>&nbsp;				if(locationMap.containsKey(r.ID)){</b>
+<b class="nc"><i>55</i>&nbsp;					locationMap.replace(r.ID, r.location);</b>
+<i>56</i>&nbsp;				}else{
+<b class="nc"><i>57</i>&nbsp;					locationMap.put(r.ID, r.location);</b>
+<i>58</i>&nbsp;				}
+<i>59</i>&nbsp;			}
+<i>60</i>&nbsp;		}
+<b class="nc"><i>61</i>&nbsp;	}</b>
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;	@SuppressWarnings(&quot;static-access&quot;)
+<i>64</i>&nbsp;	protected static void returnToBase() throws GameActionException {
+<i>65</i>&nbsp;		//TODO: if(can see archon){ DEFEND ARCHON }
+<i>66</i>&nbsp;		//else{ ... }
+<b class="nc"><i>67</i>&nbsp;		BugNav.initialise(rc);</b>
+<i>68</i>&nbsp;		
+<b class="nc"><i>69</i>&nbsp;		if(rc.isCoreReady()){</b>
+<b class="nc"><i>70</i>&nbsp;			MapLocation t = Fight.findClosestMapLocation(ourArchonLocations.values(), rc.getLocation());</b>
+<i>71</i>&nbsp;			//System.out.println(&quot;LOST! RETURN TO BASE: &quot; + t);
+<b class="nc"><i>72</i>&nbsp;			BugNav.setTarget(t);</b>
+<b class="nc"><i>73</i>&nbsp;			Direction dir = BugNav.getNextMove();</b>
+<b class="nc"><i>74</i>&nbsp;			if(rc.canMove(dir)) {</b>
+<b class="nc"><i>75</i>&nbsp;				rc.move(dir);</b>
+<i>76</i>&nbsp;			}
+<i>77</i>&nbsp;		}
+<i>78</i>&nbsp;		
+<b class="nc"><i>79</i>&nbsp;	}</b>
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;	public static void updateOurArchonLocations(RobotInfo[] allies){
+<b class="nc"><i>82</i>&nbsp;		updateUnitLocations(ourArchonLocations, allies, RobotType.ARCHON);</b>
+<b class="nc"><i>83</i>&nbsp;	}</b>
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;	public static void updateEnemyArchonLocations(RobotInfo[] enemies){
+<b class="nc"><i>86</i>&nbsp;		updateUnitLocations(enemyArchonLocations, enemies, RobotType.ARCHON);</b>
+<b class="nc"><i>87</i>&nbsp;	}</b>
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    public static void setArchonLocations() {
+<b class="fc"><i>90</i>&nbsp;		setEnemyArchonLocations();</b>
+<b class="fc"><i>91</i>&nbsp;		setOurArchonLocations();</b>
+<b class="fc"><i>92</i>&nbsp;    }</b>
+<i>93</i>&nbsp;
+<i>94</i>&nbsp;	private static void setEnemyArchonLocations(){
+<b class="fc"><i>95</i>&nbsp;		enemyArchonLocations = new HashMap&lt;&gt;();</b>
+<b class="fc"><i>96</i>&nbsp;		MapLocation[] initialArchonLocations = rc.getInitialArchonLocations(rc.getTeam().opponent());</b>
+<b class="fc"><i>97</i>&nbsp;		if(initialArchonLocations != null) {</b>
+<b class="fc"><i>98</i>&nbsp;			int i = -1;</b>
+<b class="fc"><i>99</i>&nbsp;			for (MapLocation m : initialArchonLocations) {</b>
+<b class="fc"><i>100</i>&nbsp;				enemyArchonLocations.put(i, m);</b>
+<b class="fc"><i>101</i>&nbsp;				i--;</b>
+<i>102</i>&nbsp;			}
+<b class="fc"><i>103</i>&nbsp;			enemyArchonLocations.put(0, Nav.averageLoc(initialArchonLocations));</b>
+<i>104</i>&nbsp;		}
+<b class="fc"><i>105</i>&nbsp;	}</b>
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;	private static void setOurArchonLocations(){
+<b class="fc"><i>108</i>&nbsp;		ourArchonLocations = new HashMap&lt;&gt;();</b>
+<b class="fc"><i>109</i>&nbsp;		MapLocation[] initialArchonLocations = rc.getInitialArchonLocations(team);</b>
+<b class="fc"><i>110</i>&nbsp;		if(initialArchonLocations != null) {</b>
+<b class="fc"><i>111</i>&nbsp;			int i = -1;</b>
+<b class="fc"><i>112</i>&nbsp;			for (MapLocation m : initialArchonLocations) {</b>
+<b class="fc"><i>113</i>&nbsp;				ourArchonLocations.put(i, m);</b>
+<b class="fc"><i>114</i>&nbsp;				i--;</b>
+<i>115</i>&nbsp;			}
+<b class="fc"><i>116</i>&nbsp;			ourArchonLocations.put(0, Nav.averageLoc(initialArchonLocations));</b>
+<i>117</i>&nbsp;		}
+<b class="fc"><i>118</i>&nbsp;	}</b>
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;	public static void removeArchonLocation(MapLocation m)
+<i>121</i>&nbsp;	{
+<b class="nc"><i>122</i>&nbsp;		Iterator&lt;Map.Entry&lt;Integer,MapLocation&gt;&gt; iter = enemyArchonLocations.entrySet().iterator();</b>
+<b class="nc"><i>123</i>&nbsp;		while (iter.hasNext()) {</b>
+<b class="nc"><i>124</i>&nbsp;			Map.Entry&lt;Integer, MapLocation&gt; entry = iter.next();</b>
+<b class="nc"><i>125</i>&nbsp;			if(entry.getValue().compareTo(m) == 0) {</b>
+<b class="nc"><i>126</i>&nbsp;				iter.remove();</b>
+<i>127</i>&nbsp;			}
+<b class="nc"><i>128</i>&nbsp;		}</b>
+<b class="nc"><i>129</i>&nbsp;	}</b>
+<i>130</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2016-03-11 11:53</div>
+</div>
+</body>
+</html>

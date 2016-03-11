@@ -1,0 +1,374 @@
+package victorious_secret.Behaviour;
+
+import battlecode.common.*;
+import org.junit.Test;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+import victorious_secret.Robot;
+import victorious_secret.Testing_stubs.Dummy;
+import victorious_secret.Testing_stubs.RobotController;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
+/**
+ * Created by ple15 on 29/02/16.
+ */
+public class NavTest {
+
+    @Test
+    public void testInitialise() throws Exception {
+        RobotController rc = new RobotController();
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+    }
+
+    @Test
+    public void testAverageLoc_RobotInfo() throws Exception {
+        RobotController rc = new RobotController();
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        RobotInfo[] ri = new RobotInfo[3];
+        ri[0] = new RobotInfo(1, Team.A, RobotType.ARCHON, new MapLocation(100, 100), 0, 0, 100, 100, 100, 0, 0);
+        ri[1] = new RobotInfo(1, Team.ZOMBIE, RobotType.ZOMBIEDEN, new MapLocation(200, 100), 0, 0, 100, 100, 100, 0, 0);
+        ri[2] = new RobotInfo(1, Team.A, RobotType.SCOUT, new MapLocation(0, 100), 0, 0, 100, 100, 100, 0, 0);
+
+        MapLocation avLoc = Nav.averageLoc(ri);
+
+        assertEquals(avLoc.x, 100);
+        assertEquals(avLoc.y, 100);
+    }
+
+    @Test
+    public void testAverageLoc_RobotInfo_zero() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setLocation(new MapLocation(100, 100));
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        RobotInfo[] ri = new RobotInfo[0];
+
+        MapLocation avLoc = Nav.averageLoc(ri);
+
+        assertEquals(avLoc.x, 100);
+        assertEquals(avLoc.y, 100);
+    }
+
+    @Test
+    public void testAverageLoc_MapLocation() throws Exception {
+        RobotController rc = new RobotController();
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation[] ml = new MapLocation[3];
+        ml[0] = new MapLocation(100, 100);
+        ml[1] = new MapLocation(200, 100);
+        ml[2] = new MapLocation(0, 100);
+
+        MapLocation avLoc = Nav.averageLoc(ml);
+
+        assertEquals(avLoc.x, 100);
+        assertEquals(avLoc.y, 100);
+    }
+
+    @Test
+    public void testAverageLoc_MapLocation_zero() throws Exception {
+        RobotController rc = new RobotController();
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+        rc.setLocation(new MapLocation(100, 100));
+
+        MapLocation[] ml = new MapLocation[0];
+
+        MapLocation avLoc = Nav.averageLoc(ml);
+
+        assertEquals(avLoc.x, 100);
+        assertEquals(avLoc.y, 100);
+    }
+
+    @Test
+    public void testGuard_notReady() throws Exception {
+        RobotController rc = new RobotController();
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation archonLoc = new MapLocation(100, 100);
+
+        Nav.guard(archonLoc);
+    }
+
+    @Test
+    public void testGuard_ready() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setCoreReady(true);
+        rc.setLocation(new MapLocation(100, 100));
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+        Fight.initialise(rc, r);
+        BugNav.initialise(rc);
+        //Fight.sense_map();
+
+        MapLocation archonLoc = new MapLocation(100, 100);
+
+        Nav.guard(archonLoc);
+    }
+
+    @Test
+    public void testSpiralClockwise() throws Exception {
+        MapLocation rcLoc = new MapLocation(0, 10);
+        RobotController rc = new RobotController();
+        rc.setLocation(rcLoc);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation center = new MapLocation(0, 0);
+        MapLocation target = Nav.spiralClockwise(center);
+
+        assertEquals(1, target.x);
+        assertEquals(9, target.y);
+    }
+
+    @Test
+    public void testSpiralClockwise_null() throws Exception {
+        MapLocation rcLoc = new MapLocation(0, 10);
+        RobotController rc = new RobotController();
+        rc.setLocation(rcLoc);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation center = null;
+        MapLocation target = Nav.spiralClockwise(center);
+        assertNull(target);
+    }
+
+    @Test
+    public void testSpiralAntiClockwise() throws Exception {
+        MapLocation rcLoc = new MapLocation(0, 10);
+        RobotController rc = new RobotController();
+        rc.setLocation(rcLoc);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation center = new MapLocation(0, 0);
+        MapLocation target = Nav.spiralAntiClockwise(center);
+
+        assertEquals(-1, target.x);
+        assertEquals(9, target.y);
+    }
+
+    @Test
+    public void testSpiralAntiClockwise_null() throws Exception {
+        MapLocation rcLoc = new MapLocation(0, 10);
+        RobotController rc = new RobotController();
+        rc.setLocation(rcLoc);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation center = null;
+        MapLocation target = Nav.spiralAntiClockwise(center);
+
+        assertNull(target);
+    }
+
+    @Test
+    public void testFindAllowedLocations_below() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setType(RobotType.SOLDIER);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation here = new MapLocation(0, 0);
+        MapLocation target = new MapLocation(0, 20);
+        int radiusFromHere = 18;
+
+        List<MapLocation> ml = Nav.findAllowedLocations(here, radiusFromHere, target);
+
+        //List<MapLocation> exp
+        for (MapLocation m : ml) {
+            System.out.print(m.x);
+            System.out.print(", ");
+            System.out.print(m.y);
+            System.out.println();
+        }
+        System.out.print("Finished");
+    }
+
+    @Test
+    public void testFindAllowedLocations_above() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setType(RobotType.SOLDIER);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation here = new MapLocation(0, 0);
+        MapLocation target = new MapLocation(0, -20);
+        int radiusFromHere = 18;
+
+        List<MapLocation> ml = Nav.findAllowedLocations(here, radiusFromHere, target);
+
+        //List<MapLocation> exp
+        for (MapLocation m : ml) {
+            System.out.print(m.x);
+            System.out.print(", ");
+            System.out.print(m.y);
+            System.out.println();
+        }
+        System.out.print("Finished");
+    }
+
+    @Test
+    public void testFindBestMove() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setCanMove(true);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation h = new MapLocation(0, 0);
+        MapLocation t = new MapLocation(0, 10);
+
+        List<Direction> dirsAct = new ArrayList<>();
+        dirsAct.add(Direction.NORTH);
+        dirsAct.add(Direction.NORTH_EAST);
+        dirsAct.add(Direction.NORTH_WEST);
+
+        Nav.findBestMove(h, t, dirsAct);
+    }
+
+    @Test
+    public void testMoveOrClear_canMove() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setCanMove(true);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        Nav.moveOrClear(Direction.EAST);
+    }
+
+    @Test
+    public void testMoveOrClear_cannotMove() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setCanMove(false);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        Nav.moveOrClear(Direction.EAST);
+    }
+
+    @Test
+    public void testTurnsToClear_0() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setRubble(0);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation ml = new MapLocation(0, 0);
+        int turns = Nav.turnsToClear(ml);
+
+        assertEquals(0, turns);
+    }
+
+    @Test
+    public void testTurnsToClear_100() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setRubble(100);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation ml = new MapLocation(0, 0);
+        int turns = Nav.turnsToClear(ml);
+
+        assertEquals(5, turns);
+    }
+
+    @Test
+    public void testMoveAlongRadiusLarger() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setCoreReady(true);
+        rc.setCanMove(true);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation h = new MapLocation(0, 0);
+        MapLocation t = new MapLocation(0, 10);
+
+        Nav.moveAlongRadiusLarger(h, t, 10);
+    }
+
+    @Test
+    public void testMoveAlongRadiusSmaller() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setCoreReady(true);
+        rc.setCanMove(true);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation h = new MapLocation(0, 0);
+        MapLocation t = new MapLocation(0, 10);
+
+        Nav.moveAlongRadiusSmaller(h, t, 10);
+
+    }
+
+    @Test
+    public void testGetAllowedDirectionsLarger() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setCoreReady(true);
+        rc.setCanMove(true);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation h = new MapLocation(0, 0);
+        MapLocation t = new MapLocation(0, 10);
+
+        List<Direction> dirs = Nav.getAllowedDirectionsLarger(h, t, 10);
+        List<Direction> dirsAct = new ArrayList<>();
+        dirsAct.add(Direction.NORTH);
+        dirsAct.add(Direction.NORTH_EAST);
+        dirsAct.add(Direction.NORTH_WEST);
+        assertEquals(dirsAct, dirs);
+    }
+
+    @Test
+    public void testGetAllowedDirectionsSmaller() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setCoreReady(true);
+        rc.setCanMove(true);
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+
+        MapLocation h = new MapLocation(0, 0);
+        MapLocation t = new MapLocation(0, 10);
+
+        List<Direction> dirs = Nav.getAllowedDirectionsSmaller(h, t, 10);
+        List<Direction> dirsAct = new ArrayList<>();
+        dirsAct.add(Direction.SOUTH_EAST);
+        dirsAct.add(Direction.SOUTH);
+        dirsAct.add(Direction.SOUTH_WEST);
+        assertEquals(dirsAct, dirs);
+    }
+
+    @Test
+    public void testMoveToFreeLocation() throws Exception {
+        RobotController rc = new RobotController();
+        rc.setCoreReady(true);
+        rc.setCanMove(true);
+        rc.setLocation(new MapLocation(100, 100));
+        Robot r = new Dummy(rc);
+        Nav.initialise(rc, r);
+        BugNav.initialise(rc);
+        Fight.initialise(rc, r);
+
+        List<MapLocation> ml = new ArrayList<>();
+
+        ml.add(new MapLocation(100, 100));
+        ml.add(new MapLocation(100, 101));
+        ml.add(new MapLocation(101, 101));
+
+        MapLocation h = new MapLocation(99, 100);
+        MapLocation t = new MapLocation(102, 101);
+
+        Nav.moveToFreeLocation(ml, h, t);
+    }
+}

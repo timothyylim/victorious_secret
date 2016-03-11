@@ -20,6 +20,7 @@ public class DefendTest {
         rc.setLocation(new MapLocation(100,100));
         Defend def = new Defend(rc,dummy_robot);
         rc.setCoreReady(true);
+        rc.setTeam(Team.A);
 
         //-------- TURRET ---------
         rc.setType(RobotType.TURRET);
@@ -27,10 +28,10 @@ public class DefendTest {
         // Nothing to attack, no signals,
         //Set the nearby robots
         RobotInfo[] robotInfo = new RobotInfo[4];
-        robotInfo[0] = new RobotInfo(0,null, RobotType.TURRET,new MapLocation(100,100),0,0,0,50,100,0,0);
-        robotInfo[1] = new RobotInfo(1,null, RobotType.TURRET,new MapLocation(101,101),0,0,0,50,100,0,0);
-        robotInfo[2] = new RobotInfo(2,null, RobotType.ARCHON,new MapLocation(102,102),0,0,0,30,100,0,0);
-        robotInfo[3] = new RobotInfo(3,null, RobotType.TURRET,new MapLocation(103,103),0,0,0,40,100,0,0);
+        robotInfo[0] = new RobotInfo(0,Team.A, RobotType.TURRET,new MapLocation(100,100),0,0,0,50,100,0,0);
+        robotInfo[1] = new RobotInfo(1,Team.A, RobotType.TURRET,new MapLocation(101,101),0,0,0,50,100,0,0);
+        robotInfo[2] = new RobotInfo(2,Team.A, RobotType.ARCHON,new MapLocation(102,102),0,0,0,30,100,0,0);
+        robotInfo[3] = new RobotInfo(3,Team.A, RobotType.TURRET,new MapLocation(103,103),0,0,0,40,100,0,0);
         rc.setNearbyRobots(robotInfo);
         //Nothing to attack
         rc.setHostileRobots(new RobotInfo[0]);
@@ -42,12 +43,13 @@ public class DefendTest {
         signals[1] = new Signal(null,0,Team.A,ATTACK_Y,101);
         rc.setSignals(signals);
         rc.setWeaponReady(true);
+        rc.setCanAttackLoc(true);
         def.turtle();
         assertFalse(rc.hasPacked());
         assertTrue(rc.hasAttacked());
 
         //Not on the chessboard
-        robotInfo[2] = new RobotInfo(2,null, RobotType.ARCHON,new MapLocation(101,102),0,0,0,30,100,0,0);
+        robotInfo[2] = new RobotInfo(2,Team.A, RobotType.ARCHON,new MapLocation(101,102),0,0,0,30,100,0,0);
         rc.setNearbyRobots(robotInfo);
         def.turtle();
         assertTrue(rc.hasPacked());
@@ -60,9 +62,10 @@ public class DefendTest {
         def = new Defend(rc,dummy_robot);
         rc.setType(RobotType.ARCHON);
         rc.setRound(0);
-        rc.setCanMove(Direction.values());
+        rc.setCanMove(true);
         rc.setCoreReady(true);
         rc.setNearbyRobots(robotInfo);
+        rc.setTeam(Team.A);
 
         //Initial archons on the map
         MapLocation initialArchons[] = new MapLocation[3];
@@ -91,10 +94,11 @@ public class DefendTest {
         rc.setLocation(new MapLocation(200,200));
         def = new Defend(rc,dummy_robot);
         rc.setType(RobotType.SOLDIER);
-        rc.setCanMove(new Direction[0]);
+        rc.setCanMove(true);
         rc.setCoreReady(true);
         rc.setNearbyRobots(robotInfo);
         rc.setRubble(1000);
+        rc.setTeam(Team.A);
 
         //No enemies, clearing rubble
         rc.setHostileRobots(new RobotInfo[0]);
@@ -102,7 +106,7 @@ public class DefendTest {
         assertTrue(rc.hasCleared());
 
         //No rubble, circle archon
-        rc.setCanMove(Direction.values());
+        rc.setCanMove(true);
         rc.setRubble(0);
         def.turtle();
         assertTrue(rc.hasMoved());
@@ -112,8 +116,9 @@ public class DefendTest {
         dummy_robot = new Dummy(rc);
         rc.setLocation(new MapLocation(200,200));
         def = new Defend(rc,dummy_robot);
+        rc.setTeam(Team.A);
         rc.setType(RobotType.TTM);
-        rc.setCanMove(new Direction[0]);
+        rc.setCanMove(false);
         rc.setCoreReady(true);
         rc.setNearbyRobots(robotInfo);
         rc.setOccupiedLocations(new MapLocation[0]);
@@ -133,7 +138,7 @@ public class DefendTest {
         rc.setType(RobotType.SOLDIER);
         rc.setCoreReady(true);
         rc.setLocation(new MapLocation(100,100));
-        rc.setCanMove(new Direction[0]);
+        rc.setCanMove(false);
         rc.setRubble(10000);
         Defend def = new Defend(rc,dummy_robot);
         def.tryToMove(Direction.EAST);
@@ -255,6 +260,7 @@ public class DefendTest {
 
             }
         });
+        rc.setTeam(Team.A);
         rc.setWeaponReady(true);
 
         //For a turret
@@ -262,17 +268,18 @@ public class DefendTest {
 
         //create the list of enemies
         RobotInfo[] robotInfo = new RobotInfo[10];
-        robotInfo[0] = new RobotInfo(0,null, RobotType.TURRET,null,0,0,0,0,0,0,0);
-        robotInfo[1] = new RobotInfo(0,null, RobotType.TURRET,null,0,0,0,0,0,0,0);
-        robotInfo[2] = new RobotInfo(0,null, RobotType.BIGZOMBIE,null,0,0,0,0,0,0,0);
-        robotInfo[3] = new RobotInfo(0,null, RobotType.TURRET,null,0,0,0,0,0,0,0);
-        robotInfo[4] = new RobotInfo(0,null, RobotType.SOLDIER,null,0,0,0,0,0,0,0);
-        robotInfo[5] = new RobotInfo(0,null, RobotType.SOLDIER,null,0,0,0,0,0,0,0);
-        robotInfo[6] = new RobotInfo(0,null, RobotType.SOLDIER,null,0,0,0,0,0,0,0);
-        robotInfo[7] = new RobotInfo(0,null, RobotType.ARCHON,null,0,0,0,0,0,0,0);
-        robotInfo[8] = new RobotInfo(0,null, RobotType.ARCHON,null,0,0,0,0,0,0,0);
-        robotInfo[9] = new RobotInfo(0,null, RobotType.ARCHON,null,0,0,0,0,0,0,0);
+        robotInfo[0] = new RobotInfo(0,Team.B, RobotType.TURRET,null,0,0,0,0,0,0,0);
+        robotInfo[1] = new RobotInfo(0,Team.B, RobotType.TURRET,null,0,0,0,0,0,0,0);
+        robotInfo[2] = new RobotInfo(1,Team.B, RobotType.BIGZOMBIE,new MapLocation(110,110),0,0,0,0,0,0,0);
+        robotInfo[3] = new RobotInfo(0,Team.B, RobotType.TURRET,null,0,0,0,0,0,0,0);
+        robotInfo[4] = new RobotInfo(0,Team.B, RobotType.SOLDIER,null,0,0,0,0,0,0,0);
+        robotInfo[5] = new RobotInfo(0,Team.B, RobotType.SOLDIER,null,0,0,0,0,0,0,0);
+        robotInfo[6] = new RobotInfo(0,Team.B, RobotType.SOLDIER,null,0,0,0,0,0,0,0);
+        robotInfo[7] = new RobotInfo(0,Team.B, RobotType.ARCHON,null,0,0,0,0,0,0,0);
+        robotInfo[8] = new RobotInfo(0,Team.B, RobotType.ARCHON,null,0,0,0,0,0,0,0);
+        robotInfo[9] = new RobotInfo(0,Team.B, RobotType.ARCHON,null,0,0,0,0,0,0,0);
         rc.setHostileRobots(robotInfo);
+        rc.setCanAttackLoc(true);
 
         assertTrue(def.lookForEnemies());
 
@@ -320,6 +327,7 @@ public class DefendTest {
         RobotController rc = new RobotController();
         rc.setLocation(new MapLocation(100,100));
         Dummy dummy_robot = new Dummy(rc);
+        rc.setTeam(Team.A);
         rc.setCoreReady(true);
 
         //Generate 5 directions (in a corner)
@@ -334,7 +342,7 @@ public class DefendTest {
         assertTrue(def.get_out_corner());
 
         //Not in a corner
-        rc.setCanMove(new Direction[0]);
+        rc.setCanMove(Direction.values());
         assertFalse(def.get_out_corner());
 
 
@@ -349,6 +357,7 @@ public class DefendTest {
         Dummy dummy_bot = new Dummy(rc);
         rc.setLocation(new MapLocation(100,100));
         Defend def = new Defend(rc,dummy_bot);
+        rc.setTeam(Team.A);
 
         Signal[] signals = new Signal[4];
         signals[0] = new Signal(null,0,Team.A,ATTACK_X,100);
@@ -365,6 +374,7 @@ public class DefendTest {
         Dummy dummy_bot = new Dummy(rc);
         rc.setLocation(new MapLocation(100,100));
         rc.setType(RobotType.ARCHON);
+        rc.setTeam(Team.A);
         Defend def = new Defend(rc,dummy_bot);
 
         // Enough parts and soldiers < 5
