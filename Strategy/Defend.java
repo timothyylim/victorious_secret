@@ -398,7 +398,7 @@ public class Defend {
 			}
 
 			//Spiral around archon
-			System.out.println(archonLoc);
+			Nav.initialise(rc,robot);
 			tryToMove(rc.getLocation().directionTo(Nav.spiralClockwise(archonLoc)));
 
 		} else if (countUnits(closeRobots, RobotType.TURRET) == 0) {

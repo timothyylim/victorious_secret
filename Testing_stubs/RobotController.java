@@ -16,6 +16,7 @@ public class RobotController implements battlecode.common.RobotController {
         private Team team;
         private int id;
         private boolean canSense;
+        private boolean onMap = false;
 
         private Direction possibleMoves[];
         private boolean rubbleCleared = false;
@@ -56,6 +57,7 @@ public class RobotController implements battlecode.common.RobotController {
 
         public void setID(int _id){id = _id;}
         public void setSignals(Signal[] incoming){signals = incoming;}
+        public void setOnMap(boolean _onMap){onMap = _onMap;}
 
         public boolean hasPacked(){return pack;}
         public boolean hasAttacked(){return attacked;}
@@ -180,7 +182,7 @@ public class RobotController implements battlecode.common.RobotController {
 
         @Override
         public boolean onTheMap(MapLocation mapLocation) throws GameActionException {
-            return true;
+            return onMap;
         }
 
         @Override
@@ -287,12 +289,21 @@ public class RobotController implements battlecode.common.RobotController {
 
         @Override
         public boolean canMove(Direction direction) {
-            return ifCanMove;
+            if(possibleMoves!=null){
+                for(Direction d:possibleMoves){
+                    if(direction == d){
+                        return true;
+                    }
+                }
+                return false;
+            }else{
+                return ifCanMove;
+            }
         }
 
         @Override
         public void move(Direction direction) throws GameActionException {
-
+            moved = true;
         }
 
         @Override
