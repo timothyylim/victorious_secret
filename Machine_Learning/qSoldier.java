@@ -36,8 +36,9 @@ public class qSoldier extends Robot {
         ENEMY_WEAPON_READY, DISTANCE_TO_ENEMY, ACTION}
     private enum actions{DO_NOTHING, MOVE_NORTH, MOVE_NORTH_EAST, MOVE_EAST, MOVE_SOUTH_EAST, MOVE_SOUTH,
         MOVE_SOUTH_WEST, MOVE_WEST, MOVE_NORTH_WEST, ATTACK_TARGET}
+    private double MAX_DISTANCE = 100;
 
-    RealMatrix _weights;
+    private RealMatrix _weights;
 
     public qSoldier(RobotController _rc){
         rc = _rc;
@@ -60,18 +61,18 @@ public class qSoldier extends Robot {
     private double[][] read_state() throws GameActionException {
         double[][] state = new double[1][statenames.values().length];
         //Get robot state
-        state[0][statenames.SELF_HEALTH.ordinal()] = rc.getHealth();
-        state[0][statenames.SELF_CORE_READY.ordinal()] = rc.getCoreDelay();
-        state[0][statenames.SELF_WEAPON_READY.ordinal()] = rc.getWeaponDelay();
+        state[0][statenames.SELF_HEALTH.ordinal()] = normalise_health(rc.getType(), rc.getHealth());
+        state[0][statenames.SELF_CORE_READY.ordinal()] = normalise_core_delay(rc.getType(), rc.getCoreDelay());
+        state[0][statenames.SELF_WEAPON_READY.ordinal()] = normalise_weapon_delay(rc.getType(), rc.getWeaponDelay());
 
         //Get enemy state
         Fight.sense_map();
 
         RobotInfo enemy = Fight.findClosestEnemy(Fight.seenEnemies);
         if (enemy != null) {
-            state[0][statenames.ENEMY_HEALTH.ordinal()] = enemy.health;
-            state[0][statenames.ENEMY_CORE_READY.ordinal()] = enemy.coreDelay;
-            state[0][statenames.ENEMY_WEAPON_READY.ordinal()] = enemy.weaponDelay;
+            state[0][statenames.ENEMY_HEALTH.ordinal()] = normalise_health(enemy.type, enemy.health);
+            state[0][statenames.ENEMY_CORE_READY.ordinal()] = normalise_core_delay(enemy.type, enemy.coreDelay);
+            state[0][statenames.ENEMY_WEAPON_READY.ordinal()] = normalise_weapon_delay(enemy.type, enemy.weaponDelay);
         }else{
             state[0][statenames.ENEMY_HEALTH.ordinal()] = 0;
             state[0][statenames.ENEMY_CORE_READY.ordinal()] = 0;
@@ -80,9 +81,9 @@ public class qSoldier extends Robot {
 
         //Get world state
         if (enemy != null) {
-            state[0][statenames.DISTANCE_TO_ENEMY.ordinal()] = enemy.location.distanceSquaredTo(rc.getLocation());
+            state[0][statenames.DISTANCE_TO_ENEMY.ordinal()] = enemy.location.distanceSquaredTo(rc.getLocation()) / MAX_DISTANCE;
         }else{
-            state[0][statenames.DISTANCE_TO_ENEMY.ordinal()] = 100;
+            state[0][statenames.DISTANCE_TO_ENEMY.ordinal()] = MAX_DISTANCE;
         }
 
         return state;
@@ -100,5 +101,16 @@ public class qSoldier extends Robot {
         return weights;
     }
 
+    private double normalise_health(RobotType t, double h){
+        return h / t.maxHealth;
+    }
+
+    private double normalise_core_delay(RobotType t, double d){
+        return d / Math.max(t.cooldownDelay, t.movementDelay);
+    }
+
+    private double normalise_weapon_delay(RobotType t, double d){
+        return d / t.attackDelay;
+    }
 }
 
