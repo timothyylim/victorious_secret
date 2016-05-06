@@ -3,15 +3,15 @@ package victorious_secret.Machine_Learning;
 /**
  * Created by peter on 05/05/2016.
  */
-public class neural_net {
-    double[] INPUT_LAYER;
+class neural_net {
+    private double[] INPUT_LAYER;
 
-    double[] HIDDEN_LAYER_1;
-    int[][] HIDDEN_LAYER_1_CONNECTIONS;
+    private double[] HIDDEN_LAYER_1;
+    private int[][] HIDDEN_LAYER_1_CONNECTIONS;
 
-    double[] OUTPUT_LAYER;
+    private double[] OUTPUT_LAYER;
 
-    public neural_net(){
+    neural_net(){
         INPUT_LAYER = new double[]{ 0.58629629,  0.99510976,  0.73934298,  0.36032988,  0.93614847,
                 0.54643643,  0.50120677,  0.60612685,  0.78293491,  0.60960467, 0.16403161};
 
@@ -24,7 +24,7 @@ public class neural_net {
 
     }
 
-    public double feed_forward(double[] inputs){
+    double feed_forward(double[] inputs){
         double[] l1 = softmax(inputs, INPUT_LAYER, 0.01);
         /*
         System.out.print("L1: ");
@@ -60,7 +60,8 @@ public class neural_net {
 
         for(int i = 0; i < connections.length; i++){
             for(int j : connections[i]){
-                out[i] += Math.exp(input[j] * layer[i] + bias);
+                //out[i] += Math.exp(input[j] * layer[i] + bias);
+                out[i] += input[j] * layer[i] + bias;
             }
             tot += out[i];
         }
@@ -77,8 +78,9 @@ public class neural_net {
         double tot = 0;
 
         for(int i = 0; i < layer.length; i++){
-            for(int j = 0; j < input.length; j++){
-                out[i] += Math.exp(input[j] * layer[i] + bias);
+            for (double anInput : input) {
+                //out[i] += Math.exp(input[j] * layer[i] + bias);
+                out[i] += anInput * layer[i] + bias;
             }
             tot += out[i];
         }

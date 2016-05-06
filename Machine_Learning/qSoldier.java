@@ -4,6 +4,8 @@ import battlecode.common.*;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 
+//import org.apache.commons.math3.linear.*;
+
 import java.util.Random;
 
 /**
@@ -40,6 +42,8 @@ public class qSoldier extends Robot {
     private double prev_health;
     private Direction last_known_direction = Direction.NONE;
 
+
+
     public qSoldier(RobotController _rc){
         rc = _rc;
         _weights =  new neural_net();
@@ -47,6 +51,9 @@ public class qSoldier extends Robot {
         prev_health = rc.getHealth();
 
         Fight.initialise(rc, this);
+
+    //    double[][] b = new double[10][10];
+  //      RealMatrix a = MatrixUtils.createRealMatrix(b);
     }
 
     @Override
@@ -60,7 +67,7 @@ public class qSoldier extends Robot {
         actions best_action = actions.DO_NOTHING;
         //pick action
         for (actions action:actions.values()) {
-            state[statenames.ACTION.ordinal()] = action.ordinal() / (double) action.values().length;
+            state[statenames.ACTION.ordinal()] = action.ordinal() / (double) actions.values().length;
 
             double p = _weights.feed_forward(state); //This should be a single value
 
