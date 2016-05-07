@@ -1,7 +1,7 @@
 package victorious_secret;
 
 import battlecode.common.*;
-import victorious_secret.Machine_Learning.qSoldier;
+import victorious_secret.Machine_Learning.*;
 import victorious_secret.Units.*;
 
 public class RobotPlayer
@@ -48,6 +48,7 @@ public class RobotPlayer
 		catch (GameActionException e) 
 		{
 			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 	}

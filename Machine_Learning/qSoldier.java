@@ -4,56 +4,43 @@ import battlecode.common.*;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 
-//import org.apache.commons.math3.linear.*;
+import org.neuroph.core.NeuralNetwork;
+import org.neuroph.core.data.DataSet;
+import org.neuroph.nnet.MultiLayerPerceptron;
+import org.neuroph.util.TransferFunctionType;
 
 import java.util.Random;
 
-/**
- * @author APOC
- * http://s3.amazonaws.com/battlecode-releases-2016/releases/javadoc/battlecode/common/RobotType.html#SOLDIER
-An all-around ranged unit.
-canAttack(): true
-
-attackDelay: 2
-attackPower: 4
-attackRadiusSquared: 13
-buildTurns: 10
-bytecodeLimit: 10000
-cooldownDelay: 1
-maxHealth: 60
-movementDelay: 2
-partCost: 30
-sensorRadiusSquared: 24
-spawnSource: ARCHON
-turnsInto: STANDARDZOMBIE
- */
 public class qSoldier extends Robot {
-
-    /**
-     *
-     */
     private enum statenames{SELF_HEALTH, SELF_HEALTH_LAST_TURN, SELF_CORE_READY, SELF_WEAPON_READY, ENEMY_HEALTH, ENEMY_CORE_READY,
         ENEMY_WEAPON_READY, DISTANCE_TO_ENEMY, DIRECTION_OF_ENEMY, ACTION, RANDOM_FACTOR}
     private enum actions{DO_NOTHING, MOVE_NORTH, MOVE_NORTH_EAST, MOVE_EAST, MOVE_SOUTH_EAST, MOVE_SOUTH,
         MOVE_SOUTH_WEST, MOVE_WEST, MOVE_NORTH_WEST, ATTACK_TARGET}
     private double MAX_DISTANCE = 100;
 
-    private neural_net _weights;
+    private Direction last_known_direction;
     private double prev_health;
-    private Direction last_known_direction = Direction.NONE;
-
+    private NeuralNetwork _nn;
+    private DataSet _hist;
+    String key;
 
 
     public qSoldier(RobotController _rc){
         rc = _rc;
-        _weights =  new neural_net();
         rand = new Random();
         prev_health = rc.getHealth();
-
         Fight.initialise(rc, this);
+        key = String.valueOf(rand.nextDouble());
+        //NeuralNetwork neuralNetwork = NeuralNetwork.createFromFile("g_soldier.nnet");
 
-    //    double[][] b = new double[10][10];
-  //      RealMatrix a = MatrixUtils.createRealMatrix(b);
+        _nn = new MultiLayerPerceptron(TransferFunctionType.TANH, statenames.values().length, 7, 5, 1);
+        _hist = new DataSet(statenames.values().length);
+    }
+
+    public void save_all(){
+        String turn = String.valueOf(rc.getRoundNum());
+        _hist.save("hist_".concat(key).concat("_").concat(turn));
+        _nn.save("nn_".concat(key).concat("_").concat(turn));
     }
 
     @Override
@@ -69,7 +56,11 @@ public class qSoldier extends Robot {
         for (actions action:actions.values()) {
             state[statenames.ACTION.ordinal()] = action.ordinal() / (double) actions.values().length;
 
-            double p = _weights.feed_forward(state); //This should be a single value
+            _nn.setInput(state);
+            _nn.calculate();
+            double[] out = _nn.getOutput();
+
+            double p = out[0];
 
             if(p > best_action_score){
                 best_action_score = p;
@@ -83,6 +74,10 @@ public class qSoldier extends Robot {
             System.out.println();
             System.out.println("Action score: ".concat(String.valueOf(best_action_score)));
         }
+
+        //store the state
+        state[statenames.ACTION.ordinal()] = best_action.ordinal();
+        _hist.addRow(state);
 
         switch (best_action){
             case DO_NOTHING:
@@ -125,6 +120,7 @@ public class qSoldier extends Robot {
                 rc.attackLocation(enemy.location);
                 break;
         }
+        save_all();
     }
 
     private double[] read_state(RobotInfo enemy) throws GameActionException {

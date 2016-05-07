@@ -1,8 +1,8 @@
 package victorious_secret.Machine_Learning;
-/*
+
+//import org.apache.commons.math3.linear.*;
 import javax.vecmath.GMatrix;
-import javax.vecmath.GVector;
-*/
+//import javax.vecmath.GVector;
 import java.util.Random;
 
 /**
@@ -18,12 +18,16 @@ class neural_net {
 
     private double[] OUTPUT_LAYER;
 
-    /*private GMatrix M_L1;
+    private GMatrix M_L1;
     private GMatrix M_L1_B;
-*/
+
+
     neural_net(){
+
+
         INPUT_LAYER = new double[]{ 0.58629629,  0.99510976,  0.73934298,  0.36032988,  0.93614847,
                 0.54643643,  0.50120677,  0.60612685,  0.78293491,  0.60960467, 0.16403161};
+
 
         HIDDEN_LAYER_1 = new double[]{0.30239306,  0.9796161 ,  0.27558155,  0.43716384,  0.39062958,
                 0.11049753,  0.85775946,  0.67021565,  0.02871146,  0.07785323, 0.22107331};
@@ -65,6 +69,9 @@ class neural_net {
                     0.02122439,  0.37132155,  0.76966553,  0.06516268,  0.65682672,
                     0.28394742}};
 
+//        double[][] matrixData = { {1d,2d,3d}, {2d,5d,3d}};
+//        RealMatrix m = MatrixUtils.createRealMatrix(matrixData);
+//        System.out.println(m.toString());
 
         OUTPUT_LAYER = new double[]{0.3135107};
 
@@ -78,11 +85,18 @@ class neural_net {
             t_b[i] = r.nextDouble();
         }
 
-  /*      M_L1 = new GMatrix(INPUT_LAYER.length, INPUT_LAYER.length, t_h);
-        M_L1 = new GMatrix(1, INPUT_LAYER.length, t_b);
-  */  }
+        M_L1 = new GMatrix(INPUT_LAYER.length, INPUT_LAYER.length, t_h);
+        M_L1_B = new GMatrix(1, INPUT_LAYER.length, t_b);
+    }
 
     double feed_forward(double[] inputs){
+        double q = 0;
+        for(int i = 0; i < 1000; i++){
+            q += Math.exp(i);
+        }
+        System.out.println(q);
+        return q;
+        /*
         double[] l1 = softmax(inputs, INPUT_LAYER, 0.01);
         print_vector(l1, "L1");
 
@@ -96,6 +110,7 @@ class neural_net {
         print_vector(l4, "L4");
 
         return l4[0];
+*/
     }
 
 
@@ -147,7 +162,11 @@ class neural_net {
      * @return softmax output, same shape as layer
      */
     private double[] softmax(double[] input, double[] layer, double bias){
-        double[][] t = new double[][]{mmult(layer, input)};
+        double [] g = mmult(layer, input);
+        double[][] t = new double[1][g.length];
+        for(int i = 0; i < g.length; i++){
+            t[i][0] = g[i];
+        }
         t = madd(t, bias);
         return _softmax(t);
     }
