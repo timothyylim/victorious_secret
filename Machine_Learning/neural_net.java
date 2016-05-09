@@ -248,14 +248,7 @@ class neural_net {
      * @param v vector to be printed
      * @param name name of vector
      */
-    private void print_vector(double[] v, String name){
-        System.out.print(name.concat(": "));
-        for (double s : v) {
-            System.out.print(s);
-            System.out.print(", ");
-        }
-        System.out.println();
-    }
+
     /*private GMatrix g_softmax(GMatrix input, GMatrix weights, GMatrix bias){
         GMatrix j = new GMatrix(weights.getNumCol(), weights.getNumRow());
         j.mul(weights, input);

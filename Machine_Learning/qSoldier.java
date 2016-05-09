@@ -4,12 +4,17 @@ import battlecode.common.*;
 import victorious_secret.Robot;
 import victorious_secret.Behaviour.Fight;
 
-import org.neuroph.core.NeuralNetwork;
-import org.neuroph.core.data.DataSet;
-import org.neuroph.nnet.MultiLayerPerceptron;
-import org.neuroph.util.TransferFunctionType;
+
+//import org.apache.commons.math3.linear.*;
+
+import victorious_secret.org.neuroph.core.NeuralNetwork;
+import victorious_secret.org.neuroph.core.data.DataSet;
+import victorious_secret.org.neuroph.nnet.MultiLayerPerceptron;
+import victorious_secret.org.neuroph.util.TransferFunctionType;
 
 import java.util.Random;
+
+import static java.lang.Math.abs;
 
 public class qSoldier extends Robot {
     private enum statenames{SELF_HEALTH, SELF_HEALTH_LAST_TURN, SELF_CORE_READY, SELF_WEAPON_READY, ENEMY_HEALTH, ENEMY_CORE_READY,
@@ -26,11 +31,14 @@ public class qSoldier extends Robot {
 
 
     public qSoldier(RobotController _rc){
+
+
         rc = _rc;
         rand = new Random();
         prev_health = rc.getHealth();
         Fight.initialise(rc, this);
-        key = String.valueOf(rand.nextDouble());
+        key = String.valueOf(abs(rand.nextInt()));
+        last_known_direction = Direction.EAST;
         //NeuralNetwork neuralNetwork = NeuralNetwork.createFromFile("g_soldier.nnet");
 
         _nn = new MultiLayerPerceptron(TransferFunctionType.TANH, statenames.values().length, 7, 5, 1);
@@ -38,9 +46,9 @@ public class qSoldier extends Robot {
     }
 
     public void save_all(){
-        String turn = String.valueOf(rc.getRoundNum());
-        _hist.save("hist_".concat(key).concat("_").concat(turn));
-        _nn.save("nn_".concat(key).concat("_").concat(turn));
+        _hist.save("hist_".concat(key).concat(".dat"));
+        _nn.save("nn_".concat(key).concat(".nnet"));
+        System.out.println("SAVED!");
     }
 
     @Override
@@ -50,7 +58,12 @@ public class qSoldier extends Robot {
         RobotInfo enemy = Fight.findClosestEnemy(Fight.seenEnemies);
 
         double[] state = read_state(enemy);
-        double best_action_score = 0;
+
+//        RealMatrix r;
+//        r = MatrixUtils.createRealMatrix(new double[][]{state});
+//        System.out.println(r.toString());
+
+        double best_action_score = -100;
         actions best_action = actions.DO_NOTHING;
         //pick action
         for (actions action:actions.values()) {
@@ -60,7 +73,9 @@ public class qSoldier extends Robot {
             _nn.calculate();
             double[] out = _nn.getOutput();
 
+            print_vector(out, "Out");
             double p = out[0];
+//            double p = 5;
 
             if(p > best_action_score){
                 best_action_score = p;
@@ -77,7 +92,7 @@ public class qSoldier extends Robot {
 
         //store the state
         state[statenames.ACTION.ordinal()] = best_action.ordinal();
-        _hist.addRow(state);
+//        _hist.addRow(state);
 
         switch (best_action){
             case DO_NOTHING:
@@ -157,6 +172,14 @@ public class qSoldier extends Robot {
         return state;
     }
 
+    private void print_vector(double[] v, String name){
+        System.out.print(name.concat(": "));
+        for (double s : v) {
+            System.out.print(s);
+            System.out.print(", ");
+        }
+        System.out.println();
+    }
     private double normalise_health(RobotType t, double h){
         return h / t.maxHealth;
     }
