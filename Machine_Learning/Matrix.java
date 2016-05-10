@@ -156,6 +156,31 @@ public class Matrix {
 
     }
 
+    public double max(){
+        double max = data[0][0];
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++)
+                if(data[i][j] > max){
+                    max = data[i][j];
+                }
+        }
+        return max;
+    }
+
+    public int[] max_idx(){
+        double max = data[0][0];
+        int[] idx = new int[]{0,0};
+        for (int i = 0; i < M; i++) {
+            for (int j = 0; j < N; j++)
+                if(data[i][j] > max){
+                    max = data[i][j];
+                    idx[0] = i;
+                    idx[j] = j;
+                }
+        }
+        return idx;
+    }
+
     // print matrix to standard output
     public void show() {
         for (int i = 0; i < M; i++) {
